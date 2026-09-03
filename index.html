@@ -1,1838 +1,1786 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Gestão de Prontuário Psicológico</title>
-  <!-- Tailwind CSS CDN para estilização ágil e responsiva -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- jsPDF para geração do PDF Semanal Integral -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            pink: {
-              50: '#fdf2f8',
-              100: '#fce7f3',
-              200: '#fbcfe8',
-              300: '#f472b6',
-              400: '#e879f9',
-              500: '#ec4899',
-              600: '#db2777',
-              700: '#be185d',
-              800: '#9d174d',
-              900: '#831843',
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão de Prontuário Psicológico</title>
+    <!-- Tailwind CSS CDN para layout responsivo moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF para Geração de PDFs integrais sem limite de páginas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Configuração de Tema em Tons de Rosa -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rosa: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f472b6',
+                            400: '#e879f9',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d',
+                            900: '#831843'
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-  <style>
-    body { background-color: #fdf2f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .btn-pink { background-color: #db2777; color: white; transition: all 0.2s; }
-    .btn-pink:hover { background-color: #be185d; }
-    .btn-pink-light { background-color: #fbcfe8; color: #831843; }
-    .btn-pink-light:hover { background-color: #f472b6; color: white; }
-    .card-pink { background-color: white; border: 1px solid #fbcfe8; border-radius: 0.75rem; box-shadow: 0 2px 4px rgba(219, 39, 119, 0.05); }
-    .alert-red { background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-    /* Modal styles */
-    .modal-backdrop { background-color: rgba(0,0,0,0.5); }
-  </style>
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .bg-pattern { background-color: #fdf2f8; background-image: radial-gradient(#fbcfe8 0.75px, transparent 0.75px); background-size: 16px 16px; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #f472b6; border-radius: 4px; }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col text-gray-800">
+<body class="bg-pattern min-h-screen flex flex-col text-gray-800">
 
-  <!-- CABEÇALHO PRINCIPAL -->
-  <header class="bg-pink-700 text-white shadow-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <button id="btn-back" onclick="navigateBack()" class="hidden bg-pink-800 hover:bg-pink-900 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1 transition">
-          ← Voltar
-        </button>
-        <h1 class="text-xl font-bold tracking-wide flex items-center gap-2">
-          🧠 Prontuário Psicológico
-        </h1>
-      </div>
-      <nav class="hidden md:flex space-x-1">
-        <button onclick="navigateTo('dashboard')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition">Dashboard</button>
-        <button onclick="navigateTo('patients')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition">Pacientes</button>
-        <button onclick="navigateTo('sessions')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition">Sessões</button>
-        <button onclick="navigateTo('financial')" class="px-3 py-2 rounded-lg text-sm font-medium hover:bg-pink-600 transition">Financeiro</button>
-      </nav>
-      <!-- Menu Mobile Button -->
-      <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-pink-600">
-        ☰
-      </button>
-    </div>
-    <!-- Menu Mobile Dropdown -->
-    <div id="mobile-menu" class="hidden md:hidden bg-pink-800 px-4 pt-2 pb-4 space-y-2">
-      <button onclick="navigateTo('dashboard'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded text-white hover:bg-pink-700">Dashboard</button>
-      <button onclick="navigateTo('patients'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded text-white hover:bg-pink-700">Pacientes</button>
-      <button onclick="navigateTo('sessions'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded text-white hover:bg-pink-700">Sessões</button>
-      <button onclick="navigateTo('financial'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded text-white hover:bg-pink-700">Financeiro</button>
-    </div>
-  </header>
-
-  <!-- CONTEÚDO PRINCIPAL (SPA VIEWS) -->
-  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
-
-    <!-- VIEW: DASHBOARD -->
-    <section id="view-dashboard" class="space-y-6">
-      <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold text-pink-900">Painel do Consultório</h2>
-        <div class="flex gap-2">
-          <button onclick="openPatientModal()" class="btn-pink px-4 py-2 rounded-lg font-medium text-sm shadow">
-            + Novo Paciente
-          </button>
-          <button onclick="openSessionModal()" class="btn-pink-light px-4 py-2 rounded-lg font-medium text-sm shadow">
-            + Nova Sessão
-          </button>
-        </div>
-      </div>
-
-      <!-- PAINEL DE ALERTAS E PENDÊNCIAS (EM VERMELHO) -->
-      <div id="dashboard-alerts" class="space-y-2"></div>
-
-      <!-- CARDS DE ESTATÍSTICAS -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="card-pink p-4 border-l-4 border-pink-600">
-          <p class="text-xs text-pink-700 font-semibold uppercase">Total Pacientes</p>
-          <p id="dash-total-patients" class="text-2xl font-bold text-pink-900 mt-1">0</p>
-          <p class="text-xs text-gray-500 mt-1"><span id="dash-active-patients">0</span> ativos | <span id="dash-inactive-patients">0</span> inativos</p>
-        </div>
-        <div class="card-pink p-4 border-l-4 border-pink-500">
-          <p class="text-xs text-pink-700 font-semibold uppercase">Sessões do Mês</p>
-          <p id="dash-month-sessions" class="text-2xl font-bold text-pink-900 mt-1">0</p>
-          <p class="text-xs text-gray-500 mt-1"><span id="dash-realized-sessions">0</span> realizadas | <span id="dash-absent-sessions">0</span> faltas/canc.</p>
-        </div>
-        <div class="card-pink p-4 border-l-4 border-green-500">
-          <p class="text-xs text-green-700 font-semibold uppercase">Recebido (Mês)</p>
-          <p id="dash-received-amount" class="text-2xl font-bold text-green-800 mt-1">R$ 0,00</p>
-          <p class="text-xs text-gray-500 mt-1">Efetivamente pago</p>
-        </div>
-        <div class="card-pink p-4 border-l-4 border-red-500">
-          <p class="text-xs text-red-700 font-semibold uppercase">Pendente (Mês)</p>
-          <p id="dash-pending-amount" class="text-2xl font-bold text-red-800 mt-1">R$ 0,00</p>
-          <p class="text-xs text-gray-500 mt-1">A receber</p>
-        </div>
-      </div>
-
-      <!-- ACESSO RÁPIDO & PRÓXIMAS SESSÕES -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="card-pink p-5">
-          <h3 class="text-lg font-bold text-pink-900 mb-3">Próximas Sessões Agendadas</h3>
-          <div id="dash-upcoming-sessions" class="space-y-3 max-h-80 overflow-y-auto">
-            <p class="text-sm text-gray-500 italic">Nenhuma sessão futura agendada.</p>
-          </div>
-        </div>
-
-        <div class="card-pink p-5">
-          <h3 class="text-lg font-bold text-pink-900 mb-3">Pacientes Atendidos Recente</h3>
-          <div id="dash-recent-patients" class="space-y-3 max-h-80 overflow-y-auto">
-            <p class="text-sm text-gray-500 italic">Nenhum registro encontrado.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW: LISTA DE PACIENTES -->
-    <section id="view-patients" class="hidden space-y-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h2 class="text-2xl font-bold text-pink-900">Gestão de Pacientes</h2>
-        <button onclick="openPatientModal()" class="btn-pink px-4 py-2 rounded-lg font-medium text-sm shadow self-start">
-          + Cadastrar Paciente
-        </button>
-      </div>
-
-      <!-- FILTROS DE PACIENTE -->
-      <div class="card-pink p-4 flex flex-col md:flex-row gap-4 items-center">
-        <div class="flex-grow w-full">
-          <input type="text" id="patient-search-input" oninput="renderPatientsList()" placeholder="Buscar paciente pelo nome..." class="w-full px-3 py-2 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
-        </div>
-        <div class="flex gap-2 w-full md:w-auto">
-          <select id="patient-filter-status" onchange="renderPatientsList()" class="px-3 py-2 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm bg-white">
-            <option value="ativos">Status: Ativos</option>
-            <option value="inativos">Status: Inativos</option>
-            <option value="todos">Status: Todos</option>
-          </select>
-          <select id="patient-filter-type" onchange="renderPatientsList()" class="px-3 py-2 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm bg-white">
-            <option value="todos">Tipo: Todos</option>
-            <option value="Adulto">Adulto</option>
-            <option value="Infantil">Infantil</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- TABELA DE PACIENTES -->
-      <div class="card-pink overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-pink-100 text-pink-900 text-sm border-b border-pink-200">
-                <th class="p-3">Nome</th>
-                <th class="p-3">Tipo</th>
-                <th class="p-3">Contato</th>
-                <th class="p-3">Status</th>
-                <th class="p-3 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody id="patients-table-body" class="divide-y divide-pink-100 text-sm">
-              <!-- Renderização Dinâmica -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW: PRONTUÁRIO INDIVIDUAL DO PACIENTE -->
-    <section id="view-medical-record" class="hidden space-y-6">
-      <!-- CABEÇALHO DO PRONTUÁRIO -->
-      <div class="card-pink p-6 border-t-4 border-pink-700">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <div class="flex items-center gap-3">
-              <h2 id="mr-patient-name" class="text-3xl font-bold text-pink-900">Nome do Paciente</h2>
-              <span id="mr-patient-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold">Ativo</span>
-              <span id="mr-patient-type-badge" class="px-2.5 py-0.5 bg-pink-100 text-pink-800 rounded-full text-xs font-semibold">Adulto</span>
+    <!-- CABEÇALHO / MENU PRINCIPAL -->
+    <header class="bg-rosa-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navegarPara('dashboard')">
+                <div class="bg-white text-rosa-700 p-2 rounded-full font-bold shadow-sm">
+                    🧠
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">PsiGestão</h1>
+                    <p class="text-xs text-rosa-200">Prontuário & Consultório</p>
+                </div>
             </div>
-            <p id="mr-patient-details" class="text-sm text-gray-600 mt-1"></p>
-            <p id="mr-guardian-details" class="text-sm text-pink-800 font-medium mt-0.5 hidden"></p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button onclick="editCurrentPatient()" class="btn-pink-light px-3 py-1.5 rounded-lg text-xs font-semibold">
-              ✏️ Editar Dados
+            
+            <nav class="hidden md:flex space-x-2">
+                <button onclick="navegarPara('dashboard')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Dashboard</button>
+                <button onclick="navegarPara('pacientes')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Pacientes</button>
+                <button onclick="navegarPara('sessoes')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Sessões & Agenda</button>
+                <button onclick="navegarPara('financeiro')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Financeiro</button>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <button onclick="exportarBackup()" title="Baixar Cópias dos Dados Reais" class="bg-rosa-800 hover:bg-rosa-900 text-white text-xs px-3 py-2 rounded shadow flex items-center gap-1 transition">
+                    💾 Backup
+                </button>
+                <label title="Restaurar Dados" class="bg-rosa-600 hover:bg-rosa-500 text-white text-xs px-3 py-2 rounded shadow cursor-pointer transition">
+                    📥 Importar
+                    <input type="file" id="inputImportarBackup" class="hidden" onchange="importarBackup(event)">
+                </label>
+            </div>
+        </div>
+
+        <!-- Menu Mobile Sub-Barra -->
+        <div class="md:hidden bg-rosa-800 flex justify-around py-2 text-xs border-t border-rosa-600">
+            <button onclick="navegarPara('dashboard')" class="py-1 px-2 hover:bg-rosa-700 rounded">Dashboard</button>
+            <button onclick="navegarPara('pacientes')" class="py-1 px-2 hover:bg-rosa-700 rounded">Pacientes</button>
+            <button onclick="navegarPara('sessoes')" class="py-1 px-2 hover:bg-rosa-700 rounded">Sessões</button>
+            <button onclick="navegarPara('financeiro')" class="py-1 px-2 hover:bg-rosa-700 rounded">Financeiro</button>
+        </div>
+    </header>
+
+    <!-- BARRA DE NAVEGAÇÃO SECUNDÁRIA (BOTÃO VOLTAR DINÂMICO) -->
+    <div id="barraVoltar" class="hidden bg-white border-b border-rosa-200 py-2 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <button onclick="voltarPagina()" class="flex items-center text-rosa-700 font-semibold hover:text-rosa-900 transition text-sm">
+                ⬅️ Voltar para a tela anterior
             </button>
-            <button id="mr-toggle-status-btn" onclick="toggleCurrentPatientStatus()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">
-              Inativar Paciente
-            </button>
-          </div>
+            <span id="labelCaminho" class="text-xs text-gray-500 font-medium"></span>
         </div>
-      </div>
+    </div>
 
-      <!-- ALERTAS ESPECÍFICOS DO PACIENTE -->
-      <div id="patient-alerts" class="space-y-2"></div>
+    <!-- CONTEÚDO PRINCIPAL (TELAS DINÂMICAS) -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-      <!-- BOTÕES DE AÇÕES RÁPIDAS DO PRONTUÁRIO -->
-      <div class="flex flex-wrap gap-3">
-        <button onclick="openSessionModalForCurrentPatient()" class="btn-pink px-4 py-2 rounded-lg text-sm font-semibold shadow flex items-center gap-2">
-          ➕ Registrar Nova Sessão
-        </button>
-        <button onclick="generateWeeklyPDF()" class="bg-pink-800 hover:bg-pink-900 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow flex items-center gap-2">
-          ✨ GERAR PDF SEMANAL INTEGRAL
-        </button>
-        <button onclick="openWeeklyPdfUploadModal()" class="btn-pink-light px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2">
-          📄 ADICIONAR PDF EXTERNO
-        </button>
-        <button onclick="openSummaryModal()" class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow flex items-center gap-2">
-          ✨ GERAR RESUMO DO PRONTUÁRIO
-        </button>
-      </div>
+        <!-- 1. TELA DASHBOARD -->
+        <section id="tela-dashboard" class="space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-rosa-900">Painel Principal</h2>
+                    <p class="text-gray-600 text-sm">Visão geral do consultório psicológico e pendências prioritárias.</p>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="abrirModalPaciente()" class="flex-1 md:flex-initial bg-rosa-600 hover:bg-rosa-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
+                        ➕ Novo Paciente
+                    </button>
+                    <button onclick="abrirModalSessao()" class="flex-1 md:flex-initial bg-rosa-700 hover:bg-rosa-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
+                        📅 Agendar Sessão
+                    </button>
+                </div>
+            </div>
 
-      <!-- ABAS DO PRONTUÁRIO -->
-      <div class="border-b border-pink-200 flex space-x-4">
-        <button onclick="switchProntuarioTab('sessions')" id="tab-btn-sessions" class="py-2 px-4 border-b-2 border-pink-600 text-pink-800 font-bold text-sm">Sessões & Evoluções</button>
-        <button onclick="switchProntuarioTab('pdfs')" id="tab-btn-pdfs" class="py-2 px-4 border-b-2 border-transparent text-gray-500 hover:text-pink-700 text-sm font-medium">Histórico de PDFs</button>
-        <button onclick="switchProntuarioTab('financial')" id="tab-btn-financial" class="py-2 px-4 border-b-2 border-transparent text-gray-500 hover:text-pink-700 text-sm font-medium">Pagamentos & Recibos</button>
-      </div>
+            <!-- CARDS DE METRICAS -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-rosa-600 uppercase">Pacientes</span>
+                    <div class="my-2">
+                        <span id="dash-tot-pacientes" class="text-2xl font-bold text-rosa-900">0</span>
+                    </div>
+                    <span id="dash-sub-pacientes" class="text-xs text-gray-500">0 ativos | 0 inativos</span>
+                </div>
 
-      <!-- CONTEÚDO DAS ABAS -->
-      <!-- ABA 1: SESSÕES E EVOLUÇÕES -->
-      <div id="tab-content-sessions" class="space-y-4">
-        <div class="flex justify-between items-center">
-          <h3 class="text-lg font-bold text-pink-900">Histórico Completo de Sessões</h3>
-          <span class="text-xs text-gray-500">Da mais recente para a mais antiga</span>
-        </div>
-        <div id="patient-sessions-list" class="space-y-4">
-          <!-- Renderização Dinâmica -->
-        </div>
-      </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-rosa-600 uppercase">Sessões</span>
+                    <div class="my-2">
+                        <span id="dash-tot-sessoes" class="text-2xl font-bold text-rosa-900">0</span>
+                    </div>
+                    <span id="dash-sub-sessoes" class="text-xs text-gray-500">0 realizadas | 0 cancel./faltas</span>
+                </div>
 
-      <!-- ABA 2: HISTÓRICO DE PDFS SEMANAIS -->
-      <div id="tab-content-pdfs" class="hidden space-y-4">
-        <h3 class="text-lg font-bold text-pink-900">PDFs do Prontuário Vinculados</h3>
-        <div class="card-pink overflow-hidden">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-pink-100 text-pink-900">
-              <tr>
-                <th class="p-3">Data Vinculação</th>
-                <th class="p-3">Nome do Arquivo</th>
-                <th class="p-3">Período / Referência</th>
-                <th class="p-3 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody id="patient-pdfs-table-body" class="divide-y divide-pink-100">
-              <!-- Renderização Dinâmica -->
-            </tbody>
-          </table>
-        </div>
-      </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-emerald-600 uppercase">Recebido (Total)</span>
+                    <div class="my-2">
+                        <span id="dash-val-recebido" class="text-2xl font-bold text-emerald-700">R$ 0,00</span>
+                    </div>
+                    <span id="dash-sub-recebido" class="text-xs text-emerald-600 font-medium">Pagamentos confirmados</span>
+                </div>
 
-      <!-- ABA 3: FINANCEIRO DO PACIENTE -->
-      <div id="tab-content-financial" class="hidden space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="card-pink p-4">
-            <p class="text-xs text-gray-500">Total Contratado</p>
-            <p id="pf-total-contracted" class="text-xl font-bold text-pink-900">R$ 0,00</p>
-          </div>
-          <div class="card-pink p-4">
-            <p class="text-xs text-gray-500">Total Efetivamente Pago</p>
-            <p id="pf-total-paid" class="text-xl font-bold text-green-700">R$ 0,00</p>
-          </div>
-          <div class="card-pink p-4">
-            <p class="text-xs text-gray-500">Total Pendente</p>
-            <p id="pf-total-pending" class="text-xl font-bold text-red-700">R$ 0,00</p>
-          </div>
-        </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-amber-600 uppercase">Pendente (Total)</span>
+                    <div class="my-2">
+                        <span id="dash-val-pendente" class="text-2xl font-bold text-amber-700">R$ 0,00</span>
+                    </div>
+                    <span class="text-xs text-amber-600 font-medium">Aguardando recebimento</span>
+                </div>
+            </div>
 
-        <div class="card-pink overflow-hidden">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-pink-100 text-pink-900">
-              <tr>
-                <th class="p-3">Sessão / Data</th>
-                <th class="p-3">Valor</th>
-                <th class="p-3">Status Pagamento</th>
-                <th class="p-3">Recibo</th>
-                <th class="p-3 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody id="patient-financial-table-body" class="divide-y divide-pink-100">
-              <!-- Renderização Dinâmica -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+            <!-- ALERTAS E PENDÊNCIAS EM VERMELHO -->
+            <div class="bg-white rounded-xl shadow-sm border border-rosa-200 overflow-hidden">
+                <div class="bg-rosa-50 px-6 py-4 border-b border-rosa-100 flex justify-between items-center">
+                    <h3 class="font-bold text-rosa-900 flex items-center gap-2">
+                        🚨 Avisos e Pendências do Consultório
+                    </h3>
+                    <span id="dash-badge-pendencias" class="bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">0 pendências</span>
+                </div>
+                <div id="container-pendencias" class="p-6 divide-y divide-gray-100 max-h-96 overflow-y-auto custom-scroll">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
 
-    <!-- VIEW: TODAS AS SESSÕES GLOBAL -->
-    <section id="view-sessions" class="hidden space-y-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 class="text-2xl font-bold text-pink-900">Registro Geral de Sessões</h2>
-        <button onclick="openSessionModal()" class="btn-pink px-4 py-2 rounded-lg font-medium text-sm shadow">
-          + Agendar / Registrar Sessão
-        </button>
-      </div>
+            <!-- RESUMO FINANCEIRO MENSAL RAPIDO -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-rosa-100">
+                <h3 class="font-bold text-rosa-900 mb-4 flex items-center gap-2">📊 Resumo Financeiro do Mês Atual</h3>
+                <div id="resumo-financeiro-mes" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        </section>
 
-      <div class="card-pink p-4 flex flex-col md:flex-row gap-4">
-        <select id="global-session-filter-status" onchange="renderGlobalSessionsList()" class="px-3 py-2 border border-pink-300 rounded-lg text-sm bg-white">
-          <option value="todos">Todos os Status</option>
-          <option value="Agendada">Agendada</option>
-          <option value="Realizada">Realizada</option>
-          <option value="Falta">Falta</option>
-          <option value="Cancelada">Cancelada</option>
-        </select>
-      </div>
+        <!-- 2. TELA PACIENTES -->
+        <section id="tela-pacientes" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-rosa-900">Gestão de Pacientes</h2>
+                    <p class="text-gray-600 text-sm">Cadastre, localize e acesse os prontuários de forma individual.</p>
+                </div>
+                <button onclick="abrirModalPaciente()" class="bg-rosa-600 hover:bg-rosa-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm flex items-center gap-2">
+                    ➕ Novo Paciente
+                </button>
+            </div>
 
-      <div class="card-pink overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-sm">
-            <thead>
-              <tr class="bg-pink-100 text-pink-900 border-b border-pink-200">
-                <th class="p-3">Data / Hora</th>
-                <th class="p-3">Paciente</th>
-                <th class="p-3">Modalidade</th>
-                <th class="p-3">Status</th>
-                <th class="p-3">Evolução</th>
-                <th class="p-3">Pagamento</th>
-                <th class="p-3 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody id="global-sessions-table-body" class="divide-y divide-pink-100">
-              <!-- Renderização Dinâmica -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+            <!-- FILTROS DE PACIENTES -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Buscar por nome</label>
+                    <input type="text" id="filtro-paciente-nome" oninput="renderizarListaPacientes()" placeholder="Digite o nome..." class="w-full border border-rosa-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rosa-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Status do Cadastro</label>
+                    <select id="filtro-paciente-status" onchange="renderizarListaPacientes()" class="w-full border border-rosa-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rosa-500">
+                        <option value="ATIVO">Somente Pacientes Ativos</option>
+                        <option value="INATIVO">Somente Pacientes Inativos</option>
+                        <option value="TODOS">Todos os Pacientes</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Tipo de Atendimento</label>
+                    <select id="filtro-paciente-tipo" onchange="renderizarListaPacientes()" class="w-full border border-rosa-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rosa-500">
+                        <option value="TODOS">Adulto e Infantil</option>
+                        <option value="Adulto">Adulto</option>
+                        <option value="Infantil">Infantil</option>
+                    </select>
+                </div>
+            </div>
 
-    <!-- VIEW: MÓDULO FINANCEIRO MENSAL -->
-    <section id="view-financial" class="hidden space-y-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 class="text-2xl font-bold text-pink-900">Controle Financeiro Mensal</h2>
-        <div class="flex gap-2">
-          <input type="month" id="financial-month-picker" onchange="renderFinancialModule()" class="px-3 py-2 border border-pink-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-pink-500">
-        </div>
-      </div>
+            <!-- TABELA DE PACIENTES -->
+            <div class="bg-white rounded-xl shadow-sm border border-rosa-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-rosa-100 text-rosa-900 border-b border-rosa-200 uppercase text-xs">
+                            <tr>
+                                <th class="px-6 py-3">Paciente</th>
+                                <th class="px-6 py-3">Tipo</th>
+                                <th class="px-6 py-3">Contatos</th>
+                                <th class="px-6 py-3">Status</th>
+                                <th class="px-6 py-3 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-pacientes-body" class="divide-y divide-rosa-50">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-      <!-- RESUMO DO MÊS SELECIONADO -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="card-pink p-4 border-l-4 border-green-600">
-          <p class="text-xs text-gray-500 font-semibold uppercase">Efetivamente Recebido</p>
-          <p id="fin-summary-received" class="text-2xl font-bold text-green-700 mt-1">R$ 0,00</p>
-          <p class="text-xs text-gray-400 mt-1">Somente pagos</p>
-        </div>
-        <div class="card-pink p-4 border-l-4 border-red-500">
-          <p class="text-xs text-gray-500 font-semibold uppercase">Pendente no Mês</p>
-          <p id="fin-summary-pending" class="text-2xl font-bold text-red-700 mt-1">R$ 0,00</p>
-          <p class="text-xs text-gray-400 mt-1">A receber</p>
-        </div>
-        <div class="card-pink p-4 border-l-4 border-pink-500">
-          <p class="text-xs text-gray-500 font-semibold uppercase">Total Sessões Mês</p>
-          <p id="fin-summary-total-sessions" class="text-2xl font-bold text-pink-900 mt-1">0</p>
-          <p class="text-xs text-gray-400 mt-1"><span id="fin-summary-realized">0</span> realizadas</p>
-        </div>
-        <div class="card-pink p-4 border-l-4 border-purple-500">
-          <p class="text-xs text-gray-500 font-semibold uppercase">Recibos Emitidos</p>
-          <p id="fin-summary-receipts" class="text-2xl font-bold text-purple-900 mt-1">0 / 0</p>
-          <p class="text-xs text-gray-400 mt-1">Com recibo anexado</p>
-        </div>
-      </div>
+        <!-- 3. TELA DETALHES / PRONTUÁRIO DO PACIENTE -->
+        <section id="tela-prontuario" class="hidden space-y-6">
+            <!-- Cabeçalho do Prontuário -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-rosa-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <h2 id="pront-nome-paciente" class="text-2xl font-bold text-rosa-900">---</h2>
+                        <span id="pront-badge-status" class="px-2.5 py-0.5 text-xs font-bold rounded-full">---</span>
+                        <span id="pront-badge-tipo" class="bg-rosa-100 text-rosa-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">---</span>
+                    </div>
+                    <p id="pront-dados-pessoais" class="text-gray-600 text-sm mt-1">---</p>
+                    <div id="pront-dados-responsavel" class="text-xs text-rosa-700 font-medium mt-1 hidden"></div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="abrirModalEditarPacienteAtual()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold">Editar Dados</button>
+                    <button id="btn-inativar-reativar" onclick="alternarStatusPacienteAtual()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-3 py-2 rounded-lg text-xs font-semibold">Inativar/Reativar</button>
+                    <button onclick="gerarResumoAutomaticoProntuario()" class="bg-rosa-100 hover:bg-rosa-200 text-rosa-800 px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1">✨ Gerar Resumo</button>
+                    <button onclick="gerarEBaixarPDFIntegral()" class="bg-rosa-700 hover:bg-rosa-800 text-white px-4 py-2 rounded-lg text-xs font-bold shadow flex items-center gap-1">✨ GERAR PDF SEMANAL</button>
+                </div>
+            </div>
 
-      <!-- LISTA DE LANÇAMENTOS DO MÊS -->
-      <div class="card-pink overflow-hidden">
-        <div class="px-5 py-4 border-b border-pink-100 flex justify-between items-center">
-          <h3 class="font-bold text-pink-900">Detalhamento por Sessão</h3>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-pink-100 text-pink-900">
-              <tr>
-                <th class="p-3">Data</th>
-                <th class="p-3">Paciente</th>
-                <th class="p-3">Valor</th>
-                <th class="p-3">Status Pago</th>
-                <th class="p-3">Data Pagamento</th>
-                <th class="p-3">Recibo</th>
-                <th class="p-3 text-right">Ação</th>
-              </tr>
-            </thead>
-            <tbody id="financial-table-body" class="divide-y divide-pink-100">
-              <!-- Renderização Dinâmica -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+            <!-- Abas do Prontuário -->
+            <div class="border-b border-rosa-200 bg-white rounded-t-xl px-4 pt-3 flex space-x-4 text-sm font-semibold text-gray-600 overflow-x-auto">
+                <button onclick="trocarAbaProntuario('historico')" id="aba-btn-historico" class="py-2 px-3 border-b-2 border-rosa-600 text-rosa-700">📜 Historico de Sessões</button>
+                <button onclick="trocarAbaProntuario('pdf-semanal')" id="aba-btn-pdf-semanal" class="py-2 px-3 border-b-2 border-transparent hover:text-rosa-700">📄 PDFs Semanais Vinc.</button>
+                <button onclick="trocarAbaProntuario('resumo')" id="aba-btn-resumo" class="py-2 px-3 border-b-2 border-transparent hover:text-rosa-700">📊 Resumo Geral do Prontuário</button>
+            </div>
 
-  </main>
+            <!-- ABA 1: HISTÓRICO DE SESSÕES DO PACIENTE -->
+            <div id="aba-conteudo-historico" class="space-y-4">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-rosa-100">
+                    <h3 class="font-bold text-rosa-900 text-sm">Sessões & Evoluções Registradas</h3>
+                    <button onclick="abrirModalSessaoParaPacienteAtual()" class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow">
+                        ➕ Nova Sessão para este Paciente
+                    </button>
+                </div>
 
-  <!-- MODAIS DO SISTEMA -->
+                <div id="lista-sessoes-prontuario" class="space-y-4">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
 
-  <!-- MODAL: CADASTRAR/EDITAR PACIENTE -->
-  <div id="modal-patient" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-pink-100 pb-3">
-        <h3 id="modal-patient-title" class="text-lg font-bold text-pink-900">Cadastrar Novo Paciente</h3>
-        <button onclick="closeModal('modal-patient')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-      </div>
-      <form id="form-patient" onsubmit="handlePatientFormSubmit(event)" class="space-y-3">
-        <input type="hidden" id="patient-form-id">
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Nome Completo *</label>
-          <input type="text" id="patient-form-name" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500">
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Tipo Atendimento *</label>
-            <select id="patient-form-type" required onchange="toggleInfantilFields()" class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm bg-white">
-              <option value="Adulto">Adulto</option>
-              <option value="Infantil">Infantil</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Data Nascimento</label>
-            <input type="date" id="patient-form-birth" class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm">
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Telefone / WhatsApp *</label>
-            <input type="text" id="patient-form-phone" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">E-mail</label>
-            <input type="email" id="patient-form-email" class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm">
-          </div>
-        </div>
+            <!-- ABA 2: PDFS SEMANAIS ANEXADOS / VINCULADOS -->
+            <div id="aba-conteudo-pdf-semanal" class="hidden space-y-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-rosa-200 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-rosa-100 pb-4">
+                        <div>
+                            <h3 class="font-bold text-rosa-900">📄 ADICIONAR PDF DO PRONTUÁRIO SEMANAL</h3>
+                            <p class="text-xs text-gray-500">Anexe PDFs externos ou cópias salvas diretamente no histórico do paciente.</p>
+                        </div>
+                        <label class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow cursor-pointer transition">
+                            ➕ Selecionar PDF → Adicionar/Salvar
+                            <input type="file" id="inputAnexarPDFSemanal" accept="application/pdf" class="hidden" onchange="adicionarPDFSemanalAnexo(event)">
+                        </label>
+                    </div>
 
-        <!-- CAMPOS EXCLUSIVOS ATENDIMENTO INFANTIL -->
-        <div id="container-infantil-fields" class="hidden p-3 bg-pink-50 border border-pink-200 rounded-lg space-y-3">
-          <p class="text-xs font-bold text-pink-800 uppercase">Dados do Responsável (Infantil)</p>
-          <div>
-            <label class="block text-xs font-medium text-gray-700">Nome do Responsável *</label>
-            <input type="text" id="patient-form-guardian-name" class="w-full px-3 py-1.5 border border-pink-300 rounded text-sm bg-white">
-          </div>
-          <div class="grid grid-cols-2 gap-2">
+                    <h4 class="font-bold text-rosa-900 text-sm mt-4">Histórico de PDFs Semanais Armazenados</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-rosa-50 text-rosa-900 text-xs uppercase border-b border-rosa-200">
+                                <tr>
+                                    <th class="p-3">Data Upload</th>
+                                    <th class="p-3">Nome Arquivo</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-pdfs-semanais-body" class="divide-y divide-rosa-50">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 3: RESUMO DO PRONTUÁRIO -->
+            <div id="aba-conteudo-resumo" class="hidden space-y-4">
+                <div id="container-resumo-automatico-texto" class="bg-white p-6 rounded-xl shadow-sm border border-rosa-200 leading-relaxed text-sm text-gray-800 space-y-3">
+                    <p class="text-gray-500 italic">Clique em "✨ Gerar Resumo" acima para processar automaticamente os dados do prontuário.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TELA SESSÕES E AGENDA -->
+        <section id="tela-sessoes" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-rosa-900">Controle de Sessões</h2>
+                    <p class="text-gray-600 text-sm">Agendamentos, evoluções clínicas, pagamentos e emissão de recibos.</p>
+                </div>
+                <button onclick="abrirModalSessao()" class="bg-rosa-600 hover:bg-rosa-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm">
+                    📅 Agendar Nova Sessão
+                </button>
+            </div>
+
+            <!-- FILTRO DE SESSÕES -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 flex flex-wrap gap-4 items-center justify-between">
+                <div class="flex flex-wrap gap-3 items-center w-full md:w-auto">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700">Mês / Ano</label>
+                        <input type="month" id="filtro-sessao-mes" onchange="renderizarListaSessoesGeral()" class="border border-rosa-200 rounded-lg px-3 py-1.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700">Status Sessão</label>
+                        <select id="filtro-sessao-status" onchange="renderizarListaSessoesGeral()" class="border border-rosa-200 rounded-lg px-3 py-1.5 text-sm">
+                            <option value="TODOS">Todos</option>
+                            <option value="Agendada">Agendada</option>
+                            <option value="Realizada">Realizada</option>
+                            <option value="Falta">Falta</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="limparFiltroMesSessao()" class="text-xs text-rosa-700 underline font-semibold">Ver Histórico Completo</button>
+            </div>
+
+            <!-- LISTA DE SESSÕES -->
+            <div id="container-sessoes-geral" class="space-y-4">
+                <!-- Preenchido via JS -->
+            </div>
+        </section>
+
+        <!-- 5. TELA FINANCEIRO -->
+        <section id="tela-financeiro" class="hidden space-y-6">
             <div>
-              <label class="block text-xs font-medium text-gray-700">Parentesco *</label>
-              <input type="text" id="patient-form-guardian-kinship" placeholder="Mãe, Pai, etc." class="w-full px-3 py-1.5 border border-pink-300 rounded text-sm bg-white">
+                <h2 class="text-2xl font-bold text-rosa-900">Gestão Financeira</h2>
+                <p class="text-gray-600 text-sm">Acompanhamento estrito de pagamentos efetivamente recebidos e recibos emitidos.</p>
             </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-700">Telefone Responsável</label>
-              <input type="text" id="patient-form-guardian-phone" class="w-full px-3 py-1.5 border border-pink-300 rounded text-sm bg-white">
+
+            <!-- FILTRO FINANCEIRO -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <label class="text-xs font-bold text-rosa-900 uppercase">Consultar Período:</label>
+                    <input type="month" id="filtro-financeiro-mes" onchange="renderizarPainelFinanceiro()" class="border border-rosa-200 rounded-lg px-3 py-1.5 text-sm">
+                </div>
+                <span class="text-xs text-gray-500">* Somente pagamentos marcados como "RECEBIDO" são somados no faturamento efetivo.</span>
             </div>
-          </div>
-        </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Observações / Anotações Iniciais</label>
-          <textarea id="patient-form-notes" rows="2" class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm"></textarea>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-patient')" class="px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-100">Cancelar</button>
-          <button type="submit" class="btn-pink px-4 py-2 rounded-lg text-sm font-semibold">Salvar Paciente</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: REGISTRAR / EDITAR SESSÃO -->
-  <div id="modal-session" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-pink-100 pb-3">
-        <h3 id="modal-session-title" class="text-lg font-bold text-pink-900">Agendar / Registrar Sessão</h3>
-        <button onclick="closeModal('modal-session')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-      </div>
-      <form id="form-session" onsubmit="handleSessionFormSubmit(event)" class="space-y-3">
-        <input type="hidden" id="session-form-id">
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Paciente *</label>
-          <select id="session-form-patient-id" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm bg-white">
-            <!-- Renderizado dinamicamente -->
-          </select>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Data *</label>
-            <input type="date" id="session-form-date" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Horário *</label>
-            <input type="time" id="session-form-time" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm">
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Modalidade *</label>
-            <select id="session-form-modality" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm bg-white">
-              <option value="Presencial">Presencial</option>
-              <option value="Online">Online</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Status da Sessão *</label>
-            <select id="session-form-status" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm bg-white">
-              <option value="Agendada">Agendada</option>
-              <option value="Realizada">Realizada</option>
-              <option value="Falta">Falta</option>
-              <option value="Cancelada">Cancelada</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Valor da Sessão (R$) *</label>
-            <input type="number" step="0.01" id="session-form-value" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Situação Pagamento</label>
-            <select id="session-form-payment-status" class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm bg-white">
-              <option value="Pendente">Pendente</option>
-              <option value="Pago">Pago / Recebido</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-session')" class="px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-100">Cancelar</button>
-          <button type="submit" class="btn-pink px-4 py-2 rounded-lg text-sm font-semibold">Salvar Sessão</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: REGISTRAR / EDITAR EVOLUÇÃO DO PRONTUÁRIO -->
-  <div id="modal-evolution" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-pink-100 pb-3">
-        <div>
-          <h3 class="text-lg font-bold text-pink-900">Evolução Técnica da Sessão</h3>
-          <p id="modal-evolution-session-info" class="text-xs text-gray-500"></p>
-        </div>
-        <button onclick="closeModal('modal-evolution')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-      </div>
-      <form id="form-evolution" onsubmit="handleEvolutionFormSubmit(event)" class="space-y-4">
-        <input type="hidden" id="evolution-session-id">
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Queixa Principal / Relato do Paciente</label>
-          <textarea id="evo-form-queixa" rows="2" placeholder="Queixa relatada na sessão..." class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"></textarea>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Demanda Trabalhada</label>
-          <textarea id="evo-form-demanda" rows="2" placeholder="Demanda abordada..." class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"></textarea>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Descrição Detalhada da Sessão *</label>
-          <textarea id="evo-form-descricao" required rows="4" placeholder="Descrição minuciosa da sessão..." class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"></textarea>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Análise Técnica</label>
-            <textarea id="evo-form-analise" rows="3" placeholder="Análise psicodinâmica / cognitiva..." class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"></textarea>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase">Evolução / Encaminhamentos</label>
-            <textarea id="evo-form-evolucao" rows="3" placeholder="Progresso observado e tarefas..." class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"></textarea>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-evolution')" class="px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-100">Cancelar</button>
-          <button type="submit" class="btn-pink px-4 py-2 rounded-lg text-sm font-semibold">Salvar Evolução</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: ANEXAR RECIBO -->
-  <div id="modal-receipt" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-pink-100 pb-3">
-        <h3 class="text-lg font-bold text-pink-900">Anexar Recibo de Pagamento</h3>
-        <button onclick="closeModal('modal-receipt')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-      </div>
-      <form id="form-receipt" onsubmit="handleReceiptFormSubmit(event)" class="space-y-4">
-        <input type="hidden" id="receipt-session-id">
-        <p class="text-xs text-gray-600">Selecione a imagem ou PDF do recibo para este pagamento (Formatos: PDF, JPG, PNG).</p>
-        <div>
-          <input type="file" id="receipt-file-input" accept="image/jpeg,image/png,application/pdf" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-100 file:text-pink-800 hover:file:bg-pink-200">
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-receipt')" class="px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-100">Cancelar</button>
-          <button type="submit" class="btn-pink px-4 py-2 rounded-lg text-sm font-semibold">Salvar Anexo</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: VINCULAR PDF SEMANAL EXTERNO -->
-  <div id="modal-upload-pdf" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-pink-100 pb-3">
-        <h3 class="text-lg font-bold text-pink-900">Vincular PDF do Prontuário</h3>
-        <button onclick="closeModal('modal-upload-pdf')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-      </div>
-      <form id="form-upload-pdf" onsubmit="handlePdfUploadSubmit(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Referência / Semana *</label>
-          <input type="text" id="pdf-upload-week" placeholder="Ex: Semana 3 - Outubro/2026" required class="w-full px-3 py-2 border border-pink-300 rounded-lg text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase">Arquivo PDF *</label>
-          <input type="file" id="pdf-upload-file" accept="application/pdf" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-100 file:text-pink-800">
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('modal-upload-pdf')" class="px-4 py-2 border rounded-lg text-sm text-gray-600 hover:bg-gray-100">Cancelar</button>
-          <button type="submit" class="btn-pink px-4 py-2 rounded-lg text-sm font-semibold">Anexar PDF</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: RESUMO SINTÉTICO DO PRONTUÁRIO -->
-  <div id="modal-summary" class="fixed inset-0 modal-backdrop hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-pink-100 pb-3">
-        <h3 class="text-lg font-bold text-purple-900">✨ Resumo do Prontuário Psicológico</h3>
-        <button onclick="closeModal('modal-summary')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-      </div>
-      <div id="summary-content" class="space-y-4 text-sm text-gray-700">
-        <!-- Renderização do Resumo Sintético -->
-      </div>
-      <div class="flex justify-end border-t border-pink-100 pt-3">
-        <button onclick="closeModal('modal-summary')" class="btn-pink px-4 py-2 rounded-lg text-sm font-semibold">Fechar Resumo</button>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- LÓGICA JAVASCRIPT INTEGRADA -->
-  <script>
-    /* ==========================================================================
-       ESTRUTURA DE DADOS & PERSISTÊNCIA EM LOCALSTORAGE
-       ========================================================================== */
-    const STORAGE_KEY_PATIENTS = 'psi_system_patients_v2';
-    const STORAGE_KEY_SESSIONS = 'psi_system_sessions_v2';
-    const STORAGE_KEY_PDFS = 'psi_system_pdfs_v2';
-
-    let patients = JSON.parse(localStorage.getItem(STORAGE_KEY_PATIENTS)) || [];
-    let sessions = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSIONS)) || [];
-    let pdfs = JSON.parse(localStorage.getItem(STORAGE_KEY_PDFS)) || [];
-
-    // Estado da Aplicação e Histórico de Navegação
-    let currentPatientId = null;
-    let navigationHistory = [];
-    let currentView = 'dashboard';
-
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY_PATIENTS, JSON.stringify(patients));
-      localStorage.setItem(STORAGE_KEY_SESSIONS, JSON.stringify(sessions));
-      localStorage.setItem(STORAGE_KEY_PDFS, JSON.stringify(pdfs));
-    }
-
-    /* ==========================================================================
-       NAVEGAÇÃO E HISTÓRICO (BOTÃO VOLTAR)
-       ========================================================================== */
-    function navigateTo(viewId, patientId = null, pushToHistory = true) {
-      if (pushToHistory && currentView !== viewId) {
-        navigationHistory.push({ view: currentView, patientId: currentPatientId });
-      }
-
-      currentView = viewId;
-      if (patientId) currentPatientId = patientId;
-
-      // Ocultar todas as views
-      const views = ['dashboard', 'patients', 'medical-record', 'sessions', 'financial'];
-      views.forEach(v => {
-        const el = document.getElementById(`view-${v}`);
-        if (el) el.classList.add('hidden');
-      });
-
-      // Exibir view atual
-      const activeView = document.getElementById(`view-${viewId}`);
-      if (activeView) activeView.classList.remove('hidden');
-
-      // Atualizar Botão Voltar
-      const backBtn = document.getElementById('btn-back');
-      if (navigationHistory.length > 0) {
-        backBtn.classList.remove('hidden');
-      } else {
-        backBtn.classList.add('hidden');
-      }
-
-      // Renderizar Módulo Correspondente
-      if (viewId === 'dashboard') renderDashboard();
-      if (viewId === 'patients') renderPatientsList();
-      if (viewId === 'medical-record') renderMedicalRecord(currentPatientId);
-      if (viewId === 'sessions') renderGlobalSessionsList();
-      if (viewId === 'financial') renderFinancialModule();
-
-      window.scrollTo(0, 0);
-    }
-
-    function navigateBack() {
-      if (navigationHistory.length > 0) {
-        const lastState = navigationHistory.pop();
-        navigateTo(lastState.view, lastState.patientId, false);
-      }
-    }
-
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.add('hidden');
-    }
-
-    /* ==========================================================================
-       1. DASHBOARD E ALERTAS VERMELHOS
-       ========================================================================== */
-    function renderDashboard() {
-      // Cálculo de Totais
-      const totalPatients = patients.length;
-      const activePatients = patients.filter(p => p.status === 'Ativo').length;
-      const inactivePatients = patients.filter(p => p.status === 'Inativo').length;
-
-      document.getElementById('dash-total-patients').innerText = totalPatients;
-      document.getElementById('dash-active-patients').innerText = activePatients;
-      document.getElementById('dash-inactive-patients').innerText = inactivePatients;
-
-      // Filtrar Sessões do Mês Atual
-      const now = new Date();
-      const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
-      const monthSessions = sessions.filter(s => s.date.startsWith(currentMonthStr));
-      const realizedSessions = monthSessions.filter(s => s.status === 'Realizada');
-      const absentSessions = monthSessions.filter(s => s.status === 'Falta' || s.status === 'Cancelada');
-
-      document.getElementById('dash-month-sessions').innerText = monthSessions.length;
-      document.getElementById('dash-realized-sessions').innerText = realizedSessions.length;
-      document.getElementById('dash-absent-sessions').innerText = absentSessions.length;
-
-      // Cálculo Financeiro do Mês (Apenas pagos no recebido)
-      let receivedAmount = 0;
-      let pendingAmount = 0;
-
-      monthSessions.forEach(s => {
-        const val = parseFloat(s.value) || 0;
-        if (s.paymentStatus === 'Pago') {
-          receivedAmount += val;
-        } else {
-          pendingAmount += val;
-        }
-      });
-
-      document.getElementById('dash-received-amount').innerText = `R$ ${receivedAmount.toFixed(2)}`;
-      document.getElementById('dash-pending-amount').innerText = `R$ ${pendingAmount.toFixed(2)}`;
-
-      // Gerar Alertas em Vermelho Global
-      renderGlobalAlerts();
-
-      // Renderizar Próximas Sessões
-      const todayStr = now.toISOString().split('T')[0];
-      const upcoming = sessions
-        .filter(s => s.date >= todayStr && s.status === 'Agendada')
-        .sort((a,b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
-        .slice(0, 5);
-
-      const upcomingContainer = document.getElementById('dash-upcoming-sessions');
-      if (upcoming.length === 0) {
-        upcomingContainer.innerHTML = `<p class="text-sm text-gray-500 italic">Nenhuma sessão futura agendada.</p>`;
-      } else {
-        upcomingContainer.innerHTML = upcoming.map(s => {
-          const p = patients.find(patient => patient.id === s.patientId);
-          return `
-            <div class="flex justify-between items-center p-2.5 bg-pink-50 rounded-lg border border-pink-100 text-sm">
-              <div>
-                <p class="font-bold text-pink-900">${p ? p.name : 'Paciente Não Encontrado'}</p>
-                <p class="text-xs text-gray-600">${formatDate(s.date)} às ${s.time} (${s.modality})</p>
-              </div>
-              <button onclick="navigateTo('medical-record', '${s.patientId}')" class="text-xs btn-pink-light px-2.5 py-1 rounded font-semibold">
-                Ver Prontuário
-              </button>
+            <!-- CARDS DE CONSOLIDAÇÃO -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                    <span class="text-xs font-bold text-emerald-600 uppercase">Total Efetivamente Recebido</span>
+                    <p id="fin-card-recebido" class="text-3xl font-extrabold text-emerald-700 my-1">R$ 0,00</p>
+                    <span class="text-xs text-gray-500">No período selecionado</span>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-amber-500">
+                    <span class="text-xs font-bold text-amber-600 uppercase">Total Pendente de Recebimento</span>
+                    <p id="fin-card-pendente" class="text-3xl font-extrabold text-amber-700 my-1">R$ 0,00</p>
+                    <span class="text-xs text-gray-500">Sessões a receber</span>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-rosa-500">
+                    <span class="text-xs font-bold text-rosa-600 uppercase">Recibos Emitidos / Anexados</span>
+                    <p id="fin-card-recibos" class="text-3xl font-extrabold text-rosa-900 my-1">0 / 0</p>
+                    <span class="text-xs text-gray-500">Anexados vs Total recebidos</span>
+                </div>
             </div>
-          `;
-        }).join('');
-      }
 
-      // Pacientes Atendidos Recentemente
-      const recent = sessions
-        .filter(s => s.status === 'Realizada')
-        .sort((a,b) => b.date.localeCompare(a.date))
-        .slice(0, 5);
-
-      const recentContainer = document.getElementById('dash-recent-patients');
-      if (recent.length === 0) {
-        recentContainer.innerHTML = `<p class="text-sm text-gray-500 italic">Nenhum atendimento realizado recente.</p>`;
-      } else {
-        recentContainer.innerHTML = recent.map(s => {
-          const p = patients.find(patient => patient.id === s.patientId);
-          return `
-            <div class="flex justify-between items-center p-2.5 bg-white border border-pink-200 rounded-lg text-sm">
-              <div>
-                <p class="font-bold text-pink-900">${p ? p.name : 'Desconhecido'}</p>
-                <p class="text-xs text-gray-500">Atendido em ${formatDate(s.date)}</p>
-              </div>
-              <button onclick="navigateTo('medical-record', '${s.patientId}')" class="text-xs text-pink-700 hover:underline font-medium">
-                Acessar
-              </button>
+            <!-- DETALHAMENTO DE PAGAMENTOS -->
+            <div class="bg-white rounded-xl shadow-sm border border-rosa-200 overflow-hidden">
+                <div class="bg-rosa-50 px-6 py-4 border-b border-rosa-100 font-bold text-rosa-900 text-sm">
+                    Detalhamento de Pacientes e Sessões
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-rosa-100 text-rosa-900 text-xs uppercase border-b border-rosa-200">
+                            <tr>
+                                <th class="p-3">Data Sessão</th>
+                                <th class="p-3">Paciente</th>
+                                <th class="p-3">Valor</th>
+                                <th class="p-3">Status Pagamento</th>
+                                <th class="p-3">Comprovante / Recibo</th>
+                                <th class="p-3 text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-financeiro-body" class="divide-y divide-rosa-50">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          `;
-        }).join('');
-      }
-    }
+        </section>
 
-    function renderGlobalAlerts() {
-      const container = document.getElementById('dashboard-alerts');
-      const alerts = [];
+    </main>
 
-      // 🔴 Sessão realizada sem evolução
-      const noEvolution = sessions.filter(s => s.status === 'Realizada' && (!s.evolution || !s.evolution.description));
-      if (noEvolution.length > 0) {
-        alerts.push({
-          msg: `🔴 ${noEvolution.length} Sessão(ões) realizada(s) sem evolução registrada.`,
-          action: () => navigateTo('sessions')
+    <!-- ==================== MODAIS ==================== -->
+
+    <!-- MODAL CADASTRO / EDIÇÃO DE PACIENTE -->
+    <div id="modal-paciente" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
+                <h3 id="modal-paciente-titulo" class="font-bold text-lg">Cadastrar Paciente</h3>
+                <button onclick="fecharModalPaciente()" class="text-white hover:text-rosa-200 text-xl">✕</button>
+            </div>
+            <form id="form-paciente" onsubmit="salvarPaciente(event)" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm">
+                <input type="hidden" id="paciente-id">
+                
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Nome Completo *</label>
+                    <input type="text" id="paciente-nome" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Tipo de Atendimento *</label>
+                        <select id="paciente-tipo" required onchange="alternarCamposInfantil()" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                            <option value="Adulto">Adulto</option>
+                            <option value="Infantil">Infantil</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Data Nascimento</label>
+                        <input type="date" id="paciente-nascimento" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Telefone / WhatsApp</label>
+                        <input type="text" id="paciente-telefone" placeholder="(00) 00000-0000" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">E-mail</label>
+                        <input type="email" id="paciente-email" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- CAMPOS EXCLUSIVOS ATENDIMENTO INFANTIL -->
+                <div id="secao-infantil" class="hidden bg-rosa-50 p-4 rounded-lg border border-rosa-200 space-y-3">
+                    <h4 class="font-bold text-rosa-900 text-xs uppercase">Dados do Responsável Legal</h4>
+                    <div>
+                        <label class="block font-semibold text-gray-700 text-xs mb-1">Nome do Responsável *</label>
+                        <input type="text" id="paciente-resp-nome" class="w-full border border-rosa-200 rounded-lg p-2 text-sm bg-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-gray-700 text-xs mb-1">Parentesco *</label>
+                            <input type="text" id="paciente-resp-parentesco" placeholder="Ex: Mãe, Pai, Avô" class="w-full border border-rosa-200 rounded-lg p-2 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 text-xs mb-1">Telefone Responsável</label>
+                            <input type="text" id="paciente-resp-telefone" class="w-full border border-rosa-200 rounded-lg p-2 text-sm bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 flex justify-end gap-2">
+                    <button type="button" onclick="fecharModalPaciente()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-rosa-600 hover:bg-rosa-700 text-white rounded-lg font-bold shadow">Salvar Paciente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO DE SESSÃO -->
+    <div id="modal-sessao" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
+                <h3 id="modal-sessao-titulo" class="font-bold text-lg">Agendar / Editar Sessão</h3>
+                <button onclick="fecharModalSessao()" class="text-white hover:text-rosa-200 text-xl">✕</button>
+            </div>
+            <form id="form-sessao" onsubmit="salvarSessao(event)" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm">
+                <input type="hidden" id="sessao-id">
+
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Paciente *</label>
+                    <select id="sessao-paciente-id" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                        <!-- Preenchido via JS -->
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Data *</label>
+                        <input type="date" id="sessao-data" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Horário *</label>
+                        <input type="time" id="sessao-horario" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Modalidade *</label>
+                        <select id="sessao-modalidade" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                            <option value="Presencial">Presencial</option>
+                            <option value="Online">Online</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Status da Sessão *</label>
+                        <select id="sessao-status" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                            <option value="Agendada">Agendada</option>
+                            <option value="Realizada">Realizada</option>
+                            <option value="Falta">Falta</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Valor (R$) *</label>
+                        <input type="number" step="0.01" min="0" id="sessao-valor" required placeholder="0.00" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">Status Pagamento *</label>
+                        <select id="sessao-pagamento" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
+                            <option value="Pendente">Pendente</option>
+                            <option value="Recebido">Recebido</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 flex justify-end gap-2">
+                    <button type="button" onclick="fecharModalSessao()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-rosa-600 hover:bg-rosa-700 text-white rounded-lg font-bold shadow">Salvar Sessão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO DE EVOLUÇÃO CLINICA -->
+    <div id="modal-evolucao" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-lg">Registrar / Editar Evolução Clínica</h3>
+                    <p id="subtitulo-modal-evolucao" class="text-xs text-rosa-200"></p>
+                </div>
+                <button onclick="fecharModalEvolucao()" class="text-white hover:text-rosa-200 text-xl">✕</button>
+            </div>
+            <form id="form-evolucao" onsubmit="salvarEvolucao(event)" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm">
+                <input type="hidden" id="evolucao-sessao-id">
+
+                <div>
+                    <label class="block font-bold text-rosa-900 mb-1">1. Queixa Principal / Relato do Paciente *</label>
+                    <textarea id="ev-queixa" rows="3" required placeholder="Relato do paciente, estado emocional ao chegar, demandas trazidas..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-rosa-900 mb-1">2. Demanda Trabalhada *</label>
+                    <textarea id="ev-demanda" rows="3" required placeholder="Foco da sessão, temas específicos abordados, reestruturações..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-rosa-900 mb-1">3. Descrição Detalhada da Sessão *</label>
+                    <textarea id="ev-descricao" rows="5" required placeholder="Intervenções do psicólogo, técnicas aplicadas, dinâmicas, respostas do paciente (sem limite de tamanho)..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-rosa-900 mb-1">4. Análise Técnica e Evolução *</label>
+                    <textarea id="ev-analise" rows="4" required placeholder="Hipóteses clínicas, progresso do paciente, encaminhamentos e planejamento para próximas sessões..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 flex justify-end gap-2">
+                    <button type="button" onclick="fecharModalEvolucao()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-rosa-600 hover:bg-rosa-700 text-white rounded-lg font-bold shadow">Salvar Evolução</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL VER EVOLUÇÃO COMPLETA -->
+    <div id="modal-ver-evolucao" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
+                <h3 id="ver-ev-titulo" class="font-bold text-lg">Evolução Clínica Completa</h3>
+                <button onclick="fecharModalVerEvolucao()" class="text-white hover:text-rosa-200 text-xl">✕</button>
+            </div>
+            <div id="ver-ev-conteudo" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm leading-relaxed">
+                <!-- Preenchido via JS -->
+            </div>
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-end">
+                <button onclick="fecharModalVerEvolucao()" class="px-4 py-2 bg-rosa-700 text-white rounded-lg font-bold">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE LÓGICA E DADOS REAIS DO SISTEMA -->
+    <script>
+        // ==================== ESTRUTURA DE BANCO DE DADOS (LOCALSTORAGE) ====================
+        const DB_KEY_PACIENTES = 'psigestao_pacientes_db_v1';
+        const DB_KEY_SESSOES = 'psigestao_sessoes_db_v1';
+
+        let pacientes = [];
+        let sessoes = [];
+
+        // Pilha de Navegação para o Botão Voltar
+        let historicoNavegacao = ['dashboard'];
+        let pacienteAtualId = null;
+
+        // Inicialização do Sistema
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarDadosLocais();
+            // Inicializar filtro de mês financeiro e sessões com o mês atual
+            const hoje = new Date();
+            const mesAno = hoje.toISOString().substring(0, 7);
+            document.getElementById('filtro-sessao-mes').value = mesAno;
+            document.getElementById('filtro-financeiro-mes').value = mesAno;
+
+            renderizarTodasAsTelas();
         });
-      }
 
-      // 🔴 Pagamento recebido sem recibo
-      const noReceipt = sessions.filter(s => s.paymentStatus === 'Pago' && !s.receipt);
-      if (noReceipt.length > 0) {
-        alerts.push({
-          msg: `🔴 ${noReceipt.length} Pagamento(s) recebido(s) sem recibo anexado.`,
-          action: () => navigateTo('financial')
-        });
-      }
-
-      // 🔴 PDF Semanal Pendente para Pacientes Ativos com sessões recentes
-      const activePatients = patients.filter(p => p.status === 'Ativo');
-      let pendingPdfCount = 0;
-      activePatients.forEach(p => {
-        const pSessions = sessions.filter(s => s.patientId === p.id && s.status === 'Realizada');
-        const pPdfs = pdfs.filter(pdf => pdf.patientId === p.id);
-        if (pSessions.length > 0 && pPdfs.length === 0) {
-          pendingPdfCount++;
-        }
-      });
-
-      if (pendingPdfCount > 0) {
-        alerts.push({
-          msg: `🔴 ${pendingPdfCount} Paciente(s) ativo(s) com PDF semanal pendente.`,
-          action: () => navigateTo('patients')
-        });
-      }
-
-      if (alerts.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-
-      container.innerHTML = alerts.map((a, idx) => `
-        <div onclick="executeAlertAction(${idx})" class="alert-red p-3 rounded-lg text-sm font-semibold cursor-pointer hover:bg-red-100 flex justify-between items-center shadow-sm">
-          <span>${a.msg}</span>
-          <span class="text-xs bg-red-200 text-red-900 px-2 py-1 rounded">Resolver →</span>
-        </div>
-      `).join('');
-
-      window.currentGlobalAlerts = alerts;
-    }
-
-    function executeAlertAction(idx) {
-      if (window.currentGlobalAlerts && window.currentGlobalAlerts[idx]) {
-        window.currentGlobalAlerts[idx].action();
-      }
-    }
-
-    /* ==========================================================================
-       2. MÓDULO DE PACIENTES (CADASTRO, FILTROS, INATIVAÇÃO)
-       ========================================================================== */
-    function renderPatientsList() {
-      const searchValue = document.getElementById('patient-search-input').value.toLowerCase();
-      const statusFilter = document.getElementById('patient-filter-status').value;
-      const typeFilter = document.getElementById('patient-filter-type').value;
-
-      let filtered = patients.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(searchValue);
-        const matchStatus = (statusFilter === 'todos') ||
-                            (statusFilter === 'ativos' && p.status === 'Ativo') ||
-                            (statusFilter === 'inativos' && p.status === 'Inativo');
-        const matchType = (typeFilter === 'todos') || (p.type === typeFilter);
-
-        return matchSearch && matchStatus && matchType;
-      });
-
-      const tbody = document.getElementById('patients-table-body');
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500 italic">Nenhum paciente encontrado com os filtros aplicados.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(p => `
-        <tr class="hover:bg-pink-50 transition">
-          <td class="p-3 font-bold text-pink-900">${p.name}</td>
-          <td class="p-3">
-            <span class="px-2 py-0.5 rounded text-xs font-semibold ${p.type === 'Infantil' ? 'bg-purple-100 text-purple-800' : 'bg-pink-100 text-pink-800'}">
-              ${p.type}
-            </span>
-          </td>
-          <td class="p-3 text-gray-600">${p.phone || 'S/ Tel'}<br><span class="text-xs text-gray-400">${p.email || ''}</span></td>
-          <td class="p-3">
-            <span class="px-2 py-0.5 rounded-full text-xs font-bold ${p.status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700'}">
-              ${p.status}
-            </span>
-          </td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick="navigateTo('medical-record', '${p.id}')" class="btn-pink px-3 py-1 rounded text-xs font-semibold">
-              Prontuário
-            </button>
-            <button onclick="openPatientModal('${p.id}')" class="btn-pink-light px-2.5 py-1 rounded text-xs font-semibold">
-              Editar
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function openPatientModal(patientId = null) {
-      document.getElementById('form-patient').reset();
-      document.getElementById('patient-form-id').value = '';
-      document.getElementById('modal-patient-title').innerText = 'Cadastrar Novo Paciente';
-
-      if (patientId) {
-        const p = patients.find(item => item.id === patientId);
-        if (p) {
-          document.getElementById('patient-form-id').value = p.id;
-          document.getElementById('patient-form-name').value = p.name;
-          document.getElementById('patient-form-type').value = p.type;
-          document.getElementById('patient-form-birth').value = p.birthDate || '';
-          document.getElementById('patient-form-phone').value = p.phone || '';
-          document.getElementById('patient-form-email').value = p.email || '';
-          document.getElementById('patient-form-notes').value = p.notes || '';
-
-          if (p.type === 'Infantil' && p.guardian) {
-            document.getElementById('patient-form-guardian-name').value = p.guardian.name || '';
-            document.getElementById('patient-form-guardian-kinship').value = p.guardian.kinship || '';
-            document.getElementById('patient-form-guardian-phone').value = p.guardian.phone || '';
-          }
-          document.getElementById('modal-patient-title').innerText = 'Editar Dados do Paciente';
-        }
-      }
-
-      toggleInfantilFields();
-      document.getElementById('modal-patient').classList.remove('hidden');
-    }
-
-    function toggleInfantilFields() {
-      const type = document.getElementById('patient-form-type').value;
-      const container = document.getElementById('container-infantil-fields');
-      if (type === 'Infantil') {
-        container.classList.remove('hidden');
-      } else {
-        container.classList.add('hidden');
-      }
-    }
-
-    function handlePatientFormSubmit(e) {
-      e.preventDefault();
-      const id = document.getElementById('patient-form-id').value;
-      const name = document.getElementById('patient-form-name').value;
-      const type = document.getElementById('patient-form-type').value;
-      const birthDate = document.getElementById('patient-form-birth').value;
-      const phone = document.getElementById('patient-form-phone').value;
-      const email = document.getElementById('patient-form-email').value;
-      const notes = document.getElementById('patient-form-notes').value;
-
-      let guardian = null;
-      if (type === 'Infantil') {
-        guardian = {
-          name: document.getElementById('patient-form-guardian-name').value,
-          kinship: document.getElementById('patient-form-guardian-kinship').value,
-          phone: document.getElementById('patient-form-guardian-phone').value
-        };
-      }
-
-      if (id) {
-        // Atualizar paciente existente sem apagar histórico
-        const idx = patients.findIndex(p => p.id === id);
-        if (idx !== -1) {
-          patients[idx] = { ...patients[idx], name, type, birthDate, phone, email, notes, guardian };
-        }
-      } else {
-        // Criar novo
-        const newPatient = {
-          id: 'pat_' + Date.now(),
-          name,
-          type,
-          birthDate,
-          phone,
-          email,
-          notes,
-          guardian,
-          status: 'Ativo',
-          createdAt: new Date().toISOString()
-        };
-        patients.push(newPatient);
-      }
-
-      saveData();
-      closeModal('modal-patient');
-
-      if (currentView === 'patients') renderPatientsList();
-      if (currentView === 'dashboard') renderDashboard();
-      if (currentView === 'medical-record') renderMedicalRecord(currentPatientId);
-    }
-
-    /* ==========================================================================
-       3. PRONTUÁRIO INDIVIDUAL DO PACIENTE
-       ========================================================================== */
-    function renderMedicalRecord(patientId) {
-      const p = patients.find(item => item.id === patientId);
-      if (!p) {
-        navigateTo('patients');
-        return;
-      }
-
-      currentPatientId = p.id;
-
-      // Renderizar Cabeçalho do Prontuário
-      document.getElementById('mr-patient-name').innerText = p.name;
-      document.getElementById('mr-patient-details').innerText = `Tel: ${p.phone || 'N/A'} | E-mail: ${p.email || 'N/A'} | Nasc: ${formatDate(p.birthDate)}`;
-
-      const typeBadge = document.getElementById('mr-patient-type-badge');
-      typeBadge.innerText = p.type;
-
-      const statusBadge = document.getElementById('mr-patient-status-badge');
-      statusBadge.innerText = p.status;
-      if (p.status === 'Ativo') {
-        statusBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800';
-      } else {
-        statusBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-200 text-gray-700';
-      }
-
-      const toggleBtn = document.getElementById('mr-toggle-status-btn');
-      toggleBtn.innerText = p.status === 'Ativo' ? 'Inativar Paciente' : 'Reativar Paciente';
-
-      const guardianEl = document.getElementById('mr-guardian-details');
-      if (p.type === 'Infantil' && p.guardian) {
-        guardianEl.innerText = `Responsável: ${p.guardian.name} (${p.guardian.kinship || 'N/A'}) - Tel: ${p.guardian.phone || 'N/A'}`;
-        guardianEl.classList.remove('hidden');
-      } else {
-        guardianEl.classList.add('hidden');
-      }
-
-      // Alertas específicos deste paciente
-      renderPatientAlerts(p.id);
-
-      // Renderizar conteúdo das abas
-      renderPatientSessions(p.id);
-      renderPatientPdfs(p.id);
-      renderPatientFinancial(p.id);
-    }
-
-    function renderPatientAlerts(patientId) {
-      const container = document.getElementById('patient-alerts');
-      const pSessions = sessions.filter(s => s.patientId === patientId);
-      const alerts = [];
-
-      const noEvo = pSessions.filter(s => s.status === 'Realizada' && (!s.evolution || !s.evolution.description));
-      if (noEvo.length > 0) {
-        alerts.push(`🔴 Há ${noEvo.length} sessão(ões) realizada(s) sem evolução técnica registrada.`);
-      }
-
-      const noRec = pSessions.filter(s => s.paymentStatus === 'Pago' && !s.receipt);
-      if (noRec.length > 0) {
-        alerts.push(`🔴 Há ${noRec.length} pagamento(s) recebido(s) pendente(s) de anexação de recibo.`);
-      }
-
-      const pPdfs = pdfs.filter(pdf => pdf.patientId === patientId);
-      if (pSessions.some(s => s.status === 'Realizada') && pPdfs.length === 0) {
-        alerts.push(`🔴 Prontuário Semanal Pendente: nenhum PDF consolidado foi gerado para este paciente.`);
-      }
-
-      if (alerts.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-
-      container.innerHTML = alerts.map(a => `
-        <div class="alert-red p-3 rounded-lg text-xs font-bold shadow-sm">${a}</div>
-      `).join('');
-    }
-
-    function toggleCurrentPatientStatus() {
-      const p = patients.find(item => item.id === currentPatientId);
-      if (p) {
-        p.status = p.status === 'Ativo' ? 'Inativo' : 'Ativo';
-        saveData();
-        renderMedicalRecord(p.id);
-      }
-    }
-
-    function editCurrentPatient() {
-      openPatientModal(currentPatientId);
-    }
-
-    function switchProntuarioTab(tabName) {
-      ['sessions', 'pdfs', 'financial'].forEach(tab => {
-        const content = document.getElementById(`tab-content-${tab}`);
-        const btn = document.getElementById(`tab-btn-${tab}`);
-        if (tab === tabName) {
-          content.classList.remove('hidden');
-          btn.className = 'py-2 px-4 border-b-2 border-pink-600 text-pink-800 font-bold text-sm';
-        } else {
-          content.classList.add('hidden');
-          btn.className = 'py-2 px-4 border-b-2 border-transparent text-gray-500 hover:text-pink-700 text-sm font-medium';
-        }
-      });
-    }
-
-    /* RENDERIZAR SESSÕES & EVOLUÇÕES DO PRONTUÁRIO */
-    function renderPatientSessions(patientId) {
-      const container = document.getElementById('patient-sessions-list');
-      const pSessions = sessions
-        .filter(s => s.patientId === patientId)
-        .sort((a,b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
-
-      if (pSessions.length === 0) {
-        container.innerHTML = `<div class="card-pink p-6 text-center text-gray-500 italic">Nenhuma sessão registrada para este paciente.</div>`;
-        return;
-      }
-
-      container.innerHTML = pSessions.map(s => {
-        const hasEvo = s.evolution && s.evolution.description;
-        return `
-          <div class="card-pink p-5 space-y-3">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-pink-100 pb-3 gap-2">
-              <div>
-                <span class="font-bold text-pink-900 text-base">${formatDate(s.date)} às ${s.time}</span>
-                <span class="ml-2 text-xs text-gray-500">(${s.modality})</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="px-2.5 py-0.5 rounded text-xs font-bold ${getStatusClass(s.status)}">${s.status}</span>
-                <span class="px-2.5 py-0.5 rounded text-xs font-semibold ${s.paymentStatus === 'Pago' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                  ${s.paymentStatus === 'Pago' ? 'Pago' : 'Pendente'}
-                </span>
-                <button onclick="openSessionModal('${s.id}')" class="text-xs text-pink-700 hover:underline font-semibold ml-2">Editar Sessão</button>
-              </div>
-            </div>
-
-            <!-- DETALHES DA EVOLUÇÃO -->
-            ${s.status === 'Realizada' ? `
-              <div class="space-y-2 bg-pink-50/50 p-4 rounded-lg border border-pink-100 text-sm">
-                ${hasEvo ? `
-                  ${s.evolution.queixa ? `<p><strong class="text-pink-900">Queixa:</strong> ${escapeHtml(s.evolution.queixa)}</p>` : ''}
-                  ${s.evolution.demanda ? `<p><strong class="text-pink-900">Demanda:</strong> ${escapeHtml(s.evolution.demanda)}</p>` : ''}
-                  <p><strong class="text-pink-900">Descrição Detalhada:</strong> ${escapeHtml(s.evolution.description)}</p>
-                  ${s.evolution.analise ? `<p><strong class="text-pink-900">Análise Técnica:</strong> ${escapeHtml(s.evolution.analise)}</p>` : ''}
-                  ${s.evolution.evolucao ? `<p><strong class="text-pink-900">Evolução:</strong> ${escapeHtml(s.evolution.evolucao)}</p>` : ''}
-                  <div class="pt-2">
-                    <button onclick="openEvolutionModal('${s.id}')" class="btn-pink-light px-3 py-1 rounded text-xs font-semibold">Editar Evolução</button>
-                  </div>
-                ` : `
-                  <div class="flex justify-between items-center text-red-800">
-                    <span class="font-bold text-xs">🔴 EVOLUÇÃO PENDENTE</span>
-                    <button onclick="openEvolutionModal('${s.id}')" class="btn-pink px-3 py-1 rounded text-xs font-semibold">Registrar Evolução</button>
-                  </div>
-                `}
-              </div>
-            ` : `
-              <p class="text-xs text-gray-500 italic">Sessão marcada como ${s.status}. Evolução clínica não aplicável.</p>
-            `}
-          </div>
-        `;
-      }).join('');
-    }
-
-    /* RENDERIZAR TABELA DE PDFS */
-    function renderPatientPdfs(patientId) {
-      const tbody = document.getElementById('patient-pdfs-table-body');
-      const pPdfs = pdfs
-        .filter(pdf => pdf.patientId === patientId)
-        .sort((a,b) => b.createdAt.localeCompare(a.createdAt));
-
-      if (pPdfs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500 italic">Nenhum PDF do prontuário anexado ou gerado.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = pPdfs.map(pdf => `
-        <tr class="hover:bg-pink-50">
-          <td class="p-3">${formatDate(pdf.createdAt.split('T')[0])}</td>
-          <td class="p-3 font-semibold text-pink-900">${pdf.fileName}</td>
-          <td class="p-3">${pdf.weekReference || 'Prontuário Integral'}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick="viewPdf('${pdf.id}')" class="btn-pink-light px-2.5 py-1 rounded text-xs font-semibold">Visualizar</button>
-            <button onclick="downloadPdf('${pdf.id}')" class="btn-pink px-2.5 py-1 rounded text-xs font-semibold">Baixar</button>
-            <button onclick="deletePdf('${pdf.id}')" class="text-xs text-red-600 hover:underline">Remover</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    /* RENDERIZAR FINANCEIRO DO PACIENTE */
-    function renderPatientFinancial(patientId) {
-      const pSessions = sessions.filter(s => s.patientId === patientId);
-      let totalContracted = 0;
-      let totalPaid = 0;
-      let totalPending = 0;
-
-      pSessions.forEach(s => {
-        const val = parseFloat(s.value) || 0;
-        totalContracted += val;
-        if (s.paymentStatus === 'Pago') {
-          totalPaid += val;
-        } else {
-          totalPending += val;
-        }
-      });
-
-      document.getElementById('pf-total-contracted').innerText = `R$ ${totalContracted.toFixed(2)}`;
-      document.getElementById('pf-total-paid').innerText = `R$ ${totalPaid.toFixed(2)}`;
-      document.getElementById('pf-total-pending').innerText = `R$ ${totalPending.toFixed(2)}`;
-
-      const tbody = document.getElementById('patient-financial-table-body');
-      if (pSessions.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500 italic">Nenhum lançamento financeiro.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = pSessions.map(s => `
-        <tr class="hover:bg-pink-50">
-          <td class="p-3">${formatDate(s.date)} (${s.status})</td>
-          <td class="p-3 font-bold">R$ ${parseFloat(s.value).toFixed(2)}</td>
-          <td class="p-3">
-            <span class="px-2 py-0.5 rounded text-xs font-bold ${s.paymentStatus === 'Pago' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-              ${s.paymentStatus === 'Pago' ? '🟢 Pago' : '🔴 Pendente'}
-            </span>
-          </td>
-          <td class="p-3">
-            ${s.receipt ? `
-              <span class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-semibold">🟢 Recibo Anexado</span>
-            ` : `
-              <span class="text-xs text-red-600 font-semibold">🔴 Sem Recibo</span>
-            `}
-          </td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick="openReceiptModal('${s.id}')" class="btn-pink-light px-2.5 py-1 rounded text-xs font-semibold">
-              ${s.receipt ? 'Substituir Recibo' : 'Anexar Recibo'}
-            </button>
-            ${s.receipt ? `<button onclick="viewReceipt('${s.id}')" class="text-xs text-pink-700 hover:underline">Ver</button>` : ''}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    /* ==========================================================================
-       4. GERAÇÃO DE PDF SEMANAL INTEGRAL (MULTÍPAGINAS SEM CORTE DE TEXTO)
-       ========================================================================== */
-    function generateWeeklyPDF() {
-      const p = patients.find(item => item.id === currentPatientId);
-      if (!p) return;
-
-      const pSessions = sessions
-        .filter(s => s.patientId === p.id && s.status === 'Realizada')
-        .sort((a,b) => a.date.localeCompare(b.date));
-
-      if (pSessions.length === 0) {
-        alert('Este paciente não possui sessões realizadas para gerar o prontuário em PDF.');
-        return;
-      }
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const pageHeight = doc.internal.pageSize.getHeight();
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const margin = 15;
-      let y = 20;
-
-      function checkPageBreak(neededSpace) {
-        if (y + neededSpace > pageHeight - margin) {
-          doc.addPage();
-          y = 20;
-          renderHeader();
-        }
-      }
-
-      function renderHeader() {
-        doc.setFontSize(8);
-        doc.setTextColor(150, 150, 150);
-        doc.text(`PRONTUÁRIO PSICOLÓGICO INTEGRAL - ${p.name.toUpperCase()}`, margin, 10);
-        doc.setLineWidth(0.2);
-        doc.setDrawColor(200, 200, 200);
-        doc.line(margin, 12, pageWidth - margin, 12);
-      }
-
-      // Cabeçalho da Primeira Página
-      renderHeader();
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.setTextColor(157, 23, 77); // Rosa Escuro
-      doc.text('DOCUMENTO INTEGRAL DO PRONTUÁRIO', margin, y);
-      y += 8;
-
-      doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(40, 40, 40);
-      doc.text(`Paciente: ${p.name}`, margin, y); y += 5;
-      doc.text(`Tipo: ${p.type} | Contato: ${p.phone || 'N/A'}`, margin, y); y += 5;
-      if (p.type === 'Infantil' && p.guardian) {
-        doc.text(`Responsável: ${p.guardian.name} (${p.guardian.kinship})`, margin, y); y += 5;
-      }
-      doc.text(`Data de Emissão: ${new Date().toLocaleDateString('pt-BR')}`, margin, y); y += 10;
-
-      doc.setLineWidth(0.5);
-      doc.setDrawColor(236, 72, 153);
-      doc.line(margin, y, pageWidth - margin, y);
-      y += 8;
-
-      // Iterar por todas as sessões e escrever INTEGRALMENTE
-      pSessions.forEach((s, idx) => {
-        checkPageBreak(35);
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.setTextColor(131, 24, 67);
-        doc.text(`Sessão #${idx + 1} - Data: ${formatDate(s.date)} (${s.time}) - Mod.: ${s.modality}`, margin, y);
-        y += 6;
-
-        if (s.evolution) {
-          const fields = [
-            { label: 'Queixa Principal / Relato:', text: s.evolution.queixa },
-            { label: 'Demanda Trabalhada:', text: s.evolution.demanda },
-            { label: 'Descrição Detalhada:', text: s.evolution.description },
-            { label: 'Análise Técnica:', text: s.evolution.analise },
-            { label: 'Evolução / Encaminhamentos:', text: s.evolution.evolucao }
-          ];
-
-          fields.forEach(f => {
-            if (f.text) {
-              checkPageBreak(12);
-              doc.setFont('helvetica', 'bold');
-              doc.setFontSize(9);
-              doc.setTextColor(100, 100, 100);
-              doc.text(f.label, margin, y);
-              y += 4.5;
-
-              doc.setFont('helvetica', 'normal');
-              doc.setFontSize(9.5);
-              doc.setTextColor(30, 30, 30);
-
-              // Quebrar texto longo em linhas sem cortar
-              const lines = doc.splitTextToSize(f.text, pageWidth - (margin * 2));
-              lines.forEach(line => {
-                checkPageBreak(5);
-                doc.text(line, margin, y);
-                y += 4.5;
-              });
-              y += 2;
+        function carregarDadosLocais() {
+            try {
+                const pacLocal = localStorage.getItem(DB_KEY_PACIENTES);
+                const sesLocal = localStorage.getItem(DB_KEY_SESSOES);
+                
+                pacientes = pacLocal ? JSON.parse(pacLocal) : [];
+                sessoes = sesLocal ? JSON.parse(sesLocal) : [];
+            } catch (e) {
+                console.error("Erro ao carregar dados do LocalStorage:", e);
+                pacientes = [];
+                sessoes = [];
             }
-          });
-        } else {
-          doc.setFont('helvetica', 'italic');
-          doc.setFontSize(9);
-          doc.setTextColor(180, 0, 0);
-          doc.text('Evolução técnica pendente de registro.', margin, y);
-          y += 6;
         }
 
-        y += 4;
-        doc.setLineWidth(0.1);
-        doc.setDrawColor(220, 220, 220);
-        doc.line(margin, y, pageWidth - margin, y);
-        y += 6;
-      });
-
-      // Salvar em DataURL para persistência no banco
-      const pdfDataUri = doc.output('datauristring');
-      const fileName = `Prontuario_Integral_${p.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
-
-      // Vincular ao Prontuário do Paciente
-      const newPdfRecord = {
-        id: 'pdf_' + Date.now(),
-        patientId: p.id,
-        fileName: fileName,
-        weekReference: `Integral (${pSessions.length} sessões)`,
-        fileData: pdfDataUri,
-        createdAt: new Date().toISOString()
-      };
-
-      pdfs.push(newPdfRecord);
-      saveData();
-
-      renderMedicalRecord(p.id);
-      alert('PDF Integral do Prontuário gerado e vinculado com sucesso!');
-    }
-
-    /* ==========================================================================
-       5. SESSÕES & EVOLUÇÕES (SISTEMA INTEGRADO)
-       ========================================================================== */
-    function renderGlobalSessionsList() {
-      const filterStatus = document.getElementById('global-session-filter-status').value;
-      const tbody = document.getElementById('global-sessions-table-body');
-
-      let filtered = sessions.filter(s => filterStatus === 'todos' || s.status === filterStatus);
-      filtered.sort((a,b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-500 italic">Nenhuma sessão encontrada.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(s => {
-        const p = patients.find(patient => patient.id === s.patientId);
-        const hasEvo = s.evolution && s.evolution.description;
-
-        return `
-          <tr class="hover:bg-pink-50">
-            <td class="p-3 font-semibold text-pink-900">${formatDate(s.date)} - ${s.time}</td>
-            <td class="p-3">${p ? p.name : 'Desconhecido'}</td>
-            <td class="p-3">${s.modality}</td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-bold ${getStatusClass(s.status)}">${s.status}</span></td>
-            <td class="p-3">
-              ${s.status === 'Realizada' ? (
-                hasEvo ? '<span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-semibold">🟢 Registrada</span>' : '<span class="text-xs text-red-600 font-bold">🔴 Pendente</span>'
-              ) : '<span class="text-xs text-gray-400">N/A</span>'}
-            </td>
-            <td class="p-3">
-              <span class="px-2 py-0.5 rounded text-xs font-semibold ${s.paymentStatus === 'Pago' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                R$ ${parseFloat(s.value).toFixed(2)} (${s.paymentStatus})
-              </span>
-            </td>
-            <td class="p-3 text-right space-x-1">
-              <button onclick="openSessionModal('${s.id}')" class="btn-pink-light px-2 py-1 rounded text-xs font-semibold">Editar</button>
-              ${s.status === 'Realizada' ? `<button onclick="openEvolutionModal('${s.id}')" class="btn-pink px-2 py-1 rounded text-xs font-semibold">Evolução</button>` : ''}
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function openSessionModal(sessionId = null) {
-      document.getElementById('form-session').reset();
-      document.getElementById('session-form-id').value = '';
-
-      // Popular combo de pacientes
-      const select = document.getElementById('session-form-patient-id');
-      const activeP = patients.filter(p => p.status === 'Ativo');
-
-      if (activeP.length === 0) {
-        alert('Por favor, cadastre ao menos um paciente ativo primeiro.');
-        return;
-      }
-
-      select.innerHTML = activeP.map(p => `<option value="${p.id}">${p.name} (${p.type})</option>`).join('');
-
-      if (currentPatientId) {
-        select.value = currentPatientId;
-      }
-
-      if (sessionId) {
-        const s = sessions.find(item => item.id === sessionId);
-        if (s) {
-          document.getElementById('session-form-id').value = s.id;
-          select.value = s.patientId;
-          document.getElementById('session-form-date').value = s.date;
-          document.getElementById('session-form-time').value = s.time;
-          document.getElementById('session-form-modality').value = s.modality;
-          document.getElementById('session-form-status').value = s.status;
-          document.getElementById('session-form-value').value = s.value;
-          document.getElementById('session-form-payment-status').value = s.paymentStatus || 'Pendente';
+        function salvarDadosLocais() {
+            localStorage.setItem(DB_KEY_PACIENTES, JSON.stringify(pacientes));
+            localStorage.setItem(DB_KEY_SESSOES, JSON.stringify(sessoes));
+            renderizarTodasAsTelas();
         }
-      } else {
-        document.getElementById('session-form-date').value = new Date().toISOString().split('T')[0];
-        document.getElementById('session-form-time').value = '14:00';
-        document.getElementById('session-form-value').value = '150.00';
-      }
 
-      document.getElementById('modal-session').classList.remove('hidden');
-    }
-
-    function openSessionModalForCurrentPatient() {
-      openSessionModal();
-    }
-
-    function handleSessionFormSubmit(e) {
-      e.preventDefault();
-      const id = document.getElementById('session-form-id').value;
-      const patientId = document.getElementById('session-form-patient-id').value;
-      const date = document.getElementById('session-form-date').value;
-      const time = document.getElementById('session-form-time').value;
-      const modality = document.getElementById('session-form-modality').value;
-      const status = document.getElementById('session-form-status').value;
-      const value = parseFloat(document.getElementById('session-form-value').value) || 0;
-      const paymentStatus = document.getElementById('session-form-payment-status').value;
-
-      if (id) {
-        const idx = sessions.findIndex(s => s.id === id);
-        if (idx !== -1) {
-          sessions[idx] = {
-            ...sessions[idx],
-            patientId, date, time, modality, status, value, paymentStatus
-          };
+        // Exportação / Importação de Segurança (Backup)
+        function exportarBackup() {
+            const dados = {
+                pacientes: pacientes,
+                sessoes: sessoes,
+                dataBackup: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_psigestao_${new Date().toISOString().substring(0,10)}.json`;
+            a.click();
         }
-      } else {
-        const newSession = {
-          id: 'sess_' + Date.now(),
-          patientId,
-          date,
-          time,
-          modality,
-          status,
-          value,
-          paymentStatus,
-          evolution: null,
-          receipt: null,
-          createdAt: new Date().toISOString()
-        };
-        sessions.push(newSession);
-      }
 
-      saveData();
-      closeModal('modal-session');
+        function importarBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-      if (currentView === 'medical-record') renderMedicalRecord(currentPatientId);
-      if (currentView === 'sessions') renderGlobalSessionsList();
-      if (currentView === 'dashboard') renderDashboard();
-      if (currentView === 'financial') renderFinancialModule();
-    }
-
-    function openEvolutionModal(sessionId) {
-      const s = sessions.find(item => item.id === sessionId);
-      if (!s) return;
-
-      const p = patients.find(item => item.id === s.patientId);
-
-      document.getElementById('evolution-session-id').value = s.id;
-      document.getElementById('modal-evolution-session-info').innerText = `Paciente: ${p ? p.name : ''} - Sessão de ${formatDate(s.date)} às ${s.time}`;
-
-      if (s.evolution) {
-        document.getElementById('evo-form-queixa').value = s.evolution.queixa || '';
-        document.getElementById('evo-form-demanda').value = s.evolution.demanda || '';
-        document.getElementById('evo-form-descricao').value = s.evolution.description || '';
-        document.getElementById('evo-form-analise').value = s.evolution.analise || '';
-        document.getElementById('evo-form-evolucao').value = s.evolution.evolucao || '';
-      } else {
-        document.getElementById('form-evolution').reset();
-        document.getElementById('evolution-session-id').value = s.id;
-      }
-
-      document.getElementById('modal-evolution').classList.remove('hidden');
-    }
-
-    function handleEvolutionFormSubmit(e) {
-      e.preventDefault();
-      const sessionId = document.getElementById('evolution-session-id').value;
-      const idx = sessions.findIndex(s => s.id === sessionId);
-
-      if (idx !== -1) {
-        sessions[idx].evolution = {
-          queixa: document.getElementById('evo-form-queixa').value,
-          demanda: document.getElementById('evo-form-demanda').value,
-          description: document.getElementById('evo-form-descricao').value,
-          analise: document.getElementById('evo-form-analise').value,
-          evolucao: document.getElementById('evo-form-evolucao').value,
-          updatedAt: new Date().toISOString()
-        };
-
-        saveData();
-        closeModal('modal-evolution');
-
-        if (currentView === 'medical-record') renderMedicalRecord(currentPatientId);
-        if (currentView === 'sessions') renderGlobalSessionsList();
-        if (currentView === 'dashboard') renderDashboard();
-      }
-    }
-
-    /* ==========================================================================
-       6. MÓDULO FINANCEIRO MENSAL E RECIBOS
-       ========================================================================== */
-    function renderFinancialModule() {
-      const picker = document.getElementById('financial-month-picker');
-      if (!picker.value) {
-        const now = new Date();
-        picker.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      }
-
-      const selectedMonth = picker.value; // formato YYYY-MM
-      const monthSessions = sessions.filter(s => s.date.startsWith(selectedMonth));
-
-      let totalReceived = 0;
-      let totalPending = 0;
-      let realizedCount = 0;
-      let receiptsCount = 0;
-
-      monthSessions.forEach(s => {
-        const val = parseFloat(s.value) || 0;
-        if (s.status === 'Realizada') realizedCount++;
-
-        if (s.paymentStatus === 'Pago') {
-          totalReceived += val;
-          if (s.receipt) receiptsCount++;
-        } else {
-          totalPending += val;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dados = JSON.parse(e.target.result);
+                    if (dados.pacientes && dados.sessoes) {
+                        if (confirm("ATENÇÃO: A importação irá consolidar e atualizar seu banco de dados atual. Deseja prosseguir?")) {
+                            pacientes = dados.pacientes;
+                            sessoes = dados.sessoes;
+                            salvarDadosLocais();
+                            alert("Backup importado com sucesso!");
+                        }
+                    } else {
+                        alert("Formato de arquivo de backup inválido.");
+                    }
+                } catch (err) {
+                    alert("Erro ao ler o arquivo JSON.");
+                }
+            };
+            reader.readAsText(file);
         }
-      });
 
-      document.getElementById('fin-summary-received').innerText = `R$ ${totalReceived.toFixed(2)}`;
-      document.getElementById('fin-summary-pending').innerText = `R$ ${totalPending.toFixed(2)}`;
-      document.getElementById('fin-summary-total-sessions').innerText = monthSessions.length;
-      document.getElementById('fin-summary-realized').innerText = realizedCount;
-      document.getElementById('fin-summary-receipts').innerText = `${receiptsCount} / ${monthSessions.filter(s => s.paymentStatus === 'Pago').length}`;
+        // ==================== NAVEGAÇÃO E BOTÃO VOLTAR ====================
+        function navegarPara(telaId, paramId = null) {
+            const telaAtual = historicoNavegacao[historicoNavegacao.length - 1];
+            if (telaAtual !== telaId || (telaId === 'prontuario' && pacienteAtualId !== paramId)) {
+                historicoNavegacao.push(telaId);
+            }
 
-      const tbody = document.getElementById('financial-table-body');
-      if (monthSessions.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-500 italic">Nenhum lançamento no mês selecionado.</td></tr>`;
-        return;
-      }
+            if (telaId === 'prontuario' && paramId) {
+                pacienteAtualId = paramId;
+            }
 
-      tbody.innerHTML = monthSessions.map(s => {
-        const p = patients.find(item => item.id === s.patientId);
-        return `
-          <tr class="hover:bg-pink-50">
-            <td class="p-3">${formatDate(s.date)}</td>
-            <td class="p-3 font-semibold text-pink-900">${p ? p.name : 'Desconhecido'}</td>
-            <td class="p-3 font-bold">R$ ${parseFloat(s.value).toFixed(2)}</td>
-            <td class="p-3">
-              <span class="px-2 py-0.5 rounded text-xs font-bold ${s.paymentStatus === 'Pago' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                ${s.paymentStatus === 'Pago' ? '🟢 Pago' : '🔴 Pendente'}
-              </span>
-            </td>
-            <td class="p-3 text-xs text-gray-500">${s.paymentStatus === 'Pago' ? formatDate(s.date) : '-'}</td>
-            <td class="p-3">
-              ${s.receipt ? `
-                <span class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-semibold">🟢 Recibo Anexado</span>
-              ` : (s.paymentStatus === 'Pago' ? '<span class="text-xs text-red-600 font-bold">🔴 Recibo Pendente</span>' : '<span class="text-xs text-gray-400">N/A</span>')}
-            </td>
-            <td class="p-3 text-right space-x-2">
-              <button onclick="openReceiptModal('${s.id}')" class="btn-pink-light px-2.5 py-1 rounded text-xs font-semibold">Recibo</button>
-              ${s.receipt ? `<button onclick="viewReceipt('${s.id}')" class="text-xs text-pink-700 hover:underline">Ver</button>` : ''}
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function openReceiptModal(sessionId) {
-      document.getElementById('form-receipt').reset();
-      document.getElementById('receipt-session-id').value = sessionId;
-      document.getElementById('modal-receipt').classList.remove('hidden');
-    }
-
-    function handleReceiptFormSubmit(e) {
-      e.preventDefault();
-      const sessionId = document.getElementById('receipt-session-id').value;
-      const fileInput = document.getElementById('receipt-file-input');
-
-      if (fileInput.files.length === 0) return;
-
-      const file = fileInput.files[0];
-      const reader = new FileReader();
-
-      reader.onload = function(evt) {
-        const base64Data = evt.target.result;
-        const idx = sessions.findIndex(s => s.id === sessionId);
-        if (idx !== -1) {
-          sessions[idx].receipt = {
-            fileName: file.name,
-            fileType: file.type,
-            fileData: base64Data,
-            uploadedAt: new Date().toISOString()
-          };
-          saveData();
-          closeModal('modal-receipt');
-
-          if (currentView === 'financial') renderFinancialModule();
-          if (currentView === 'medical-record') renderMedicalRecord(currentPatientId);
-          if (currentView === 'dashboard') renderDashboard();
+            atualizarExibicaoTelas();
         }
-      };
 
-      reader.readAsDataURL(file);
-    }
+        function voltarPagina() {
+            if (historicoNavegacao.length > 1) {
+                historicoNavegacao.pop();
+                atualizarExibicaoTelas();
+            }
+        }
 
-    function viewReceipt(sessionId) {
-      const s = sessions.find(item => item.id === sessionId);
-      if (s && s.receipt) {
-        const win = window.open();
-        win.document.write(`<iframe src="${s.receipt.fileData}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
-      }
-    }
+        function atualizarExibicaoTelas() {
+            const telaAtual = historicoNavegacao[historicoNavegacao.length - 1];
 
-    /* ==========================================================================
-       7. RESUMO AUTOMÁTICO SINTÉTICO E PDFS EXTERNOS
-       ========================================================================== */
-    function openSummaryModal() {
-      const p = patients.find(item => item.id === currentPatientId);
-      if (!p) return;
+            // Esconder todas as telas
+            ['dashboard', 'pacientes', 'prontuario', 'sessoes', 'financeiro'].forEach(id => {
+                document.getElementById(`tela-${id}`).classList.add('hidden');
+            });
 
-      const pSessions = sessions.filter(s => s.patientId === p.id);
-      const realized = pSessions.filter(s => s.status === 'Realizada');
-      const absents = pSessions.filter(s => s.status === 'Falta' || s.status === 'Cancelada');
+            // Exibir a tela ativa
+            document.getElementById(`tela-${telaAtual}`).classList.remove('hidden');
 
-      const container = document.getElementById('summary-content');
-      container.innerHTML = `
-        <div class="p-4 bg-pink-50 rounded-lg space-y-2 border border-pink-200">
-          <p><strong>Paciente:</strong> ${p.name} (${p.type})</p>
-          <p><strong>Status de Acompanhamento:</strong> ${p.status}</p>
-          <p><strong>Total de Sessões Agendadas/Registradas:</strong> ${pSessions.length}</p>
-          <p><strong>Sessões Efectivamente Realizadas:</strong> ${realized.length}</p>
-          <p><strong>Faltas / Cancelamentos:</strong> ${absents.length}</p>
-        </div>
+            // Gerenciar Visibilidade do Botão Voltar
+            const barraVoltar = document.getElementById('barraVoltar');
+            if (historicoNavegacao.length > 1) {
+                barraVoltar.classList.remove('hidden');
+                document.getElementById('labelCaminho').innerText = `Navegação > ${telaAtual.toUpperCase()}`;
+            } else {
+                barraVoltar.classList.add('hidden');
+            }
 
-        <div class="space-y-2">
-          <h4 class="font-bold text-pink-900 text-sm">Resumo Clínico das Demandas</h4>
-          <ul class="list-disc pl-5 space-y-1 text-xs text-gray-700">
-            ${realized.map(s => `
-              <li><strong>${formatDate(s.date)}:</strong> ${s.evolution && s.evolution.demanda ? escapeHtml(s.evolution.demanda) : 'Sem demanda resumida registrada.'}</li>
-            `).join('')}
-          </ul>
-        </div>
-      `;
+            // Atualizar conteúdos dinâmicos da tela atual
+            if (telaAtual === 'prontuario' && pacienteAtualId) {
+                renderizarProntuarioPaciente(pacienteAtualId);
+            }
 
-      document.getElementById('modal-summary').classList.remove('hidden');
-    }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-    function openWeeklyPdfUploadModal() {
-      document.getElementById('form-upload-pdf').reset();
-      document.getElementById('modal-upload-pdf').classList.remove('hidden');
-    }
+        function renderizarTodasAsTelas() {
+            renderizarDashboard();
+            renderizarListaPacientes();
+            renderizarListaSessoesGeral();
+            renderizarPainelFinanceiro();
+            if (pacienteAtualId) {
+                renderizarProntuarioPaciente(pacienteAtualId);
+            }
+        }
 
-    function handlePdfUploadSubmit(e) {
-      e.preventDefault();
-      const weekRef = document.getElementById('pdf-upload-week').value;
-      const fileInput = document.getElementById('pdf-upload-file');
+        // ==================== LÓGICA DO DASHBOARD ====================
+        function renderizarDashboard() {
+            const totalPacientes = pacientes.length;
+            const ativos = pacientes.filter(p => p.status === 'ATIVO').length;
+            const inativos = pacientes.filter(p => p.status === 'INATIVO').length;
 
-      if (fileInput.files.length === 0) return;
+            const totalSessoes = sessoes.length;
+            const realizadas = sessoes.filter(s => s.status === 'Realizada').length;
+            const faltasCanceladas = sessoes.filter(s => s.status === 'Falta' || s.status === 'Cancelada').length;
 
-      const file = fileInput.files[0];
-      const reader = new FileReader();
+            // Financeiro Geral
+            const valorRecebidoTotal = sessoes
+                .filter(s => s.pagamento === 'Recebido')
+                .reduce((acc, s) => acc + (parseFloat(s.valor) || 0), 0);
 
-      reader.onload = function(evt) {
-        const base64Data = evt.target.result;
-        const newPdf = {
-          id: 'pdf_' + Date.now(),
-          patientId: currentPatientId,
-          fileName: file.name,
-          weekReference: weekRef,
-          fileData: base64Data,
-          createdAt: new Date().toISOString()
-        };
+            const valorPendenteTotal = sessoes
+                .filter(s => s.pagamento === 'Pendente')
+                .reduce((acc, s) => acc + (parseFloat(s.valor) || 0), 0);
 
-        pdfs.push(newPdf);
-        saveData();
-        closeModal('modal-upload-pdf');
+            document.getElementById('dash-tot-pacientes').innerText = totalPacientes;
+            document.getElementById('dash-sub-pacientes').innerText = `${ativos} ativos | ${inativos} inativos`;
 
-        if (currentView === 'medical-record') renderMedicalRecord(currentPatientId);
-      };
+            document.getElementById('dash-tot-sessoes').innerText = totalSessoes;
+            document.getElementById('dash-sub-sessoes').innerText = `${realizadas} realizadas | ${faltasCanceladas} faltas/cancel.`;
 
-      reader.readAsDataURL(file);
-    }
+            document.getElementById('dash-val-recebido').innerText = formatarMoeda(valorRecebidoTotal);
+            document.getElementById('dash-val-pendente').innerText = formatarMoeda(valorPendenteTotal);
 
-    function viewPdf(pdfId) {
-      const pdf = pdfs.find(item => item.id === pdfId);
-      if (pdf) {
-        const win = window.open();
-        win.document.write(`<iframe src="${pdf.fileData}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
-      }
-    }
+            // Resumo do Mês Atual no Dashboard
+            const hoje = new Date();
+            const mesAnoAtual = hoje.toISOString().substring(0, 7);
+            const sessoesMesAtual = sessoes.filter(s => s.data && s.data.substring(0, 7) === mesAnoAtual);
+            
+            const recMes = sessoesMesAtual.filter(s => s.pagamento === 'Recebido').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
+            const pendMes = sessoesMesAtual.filter(s => s.pagamento === 'Pendente').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
 
-    function downloadPdf(pdfId) {
-      const pdf = pdfs.find(item => item.id === pdfId);
-      if (pdf) {
-        const link = document.createElement('a');
-        link.href = pdf.fileData;
-        link.download = pdf.fileName;
-        link.click();
-      }
-    }
+            document.getElementById('resumo-financeiro-mes').innerHTML = `
+                <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
+                    <span class="text-xs text-gray-500 font-medium">Sessões no Mês</span>
+                    <p class="text-lg font-bold text-rosa-900">${sessoesMesAtual.length}</p>
+                </div>
+                <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                    <span class="text-xs text-emerald-700 font-medium">Recebido no Mês</span>
+                    <p class="text-lg font-bold text-emerald-800">${formatarMoeda(recMes)}</p>
+                </div>
+                <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                    <span class="text-xs text-amber-700 font-medium">Pendente no Mês</span>
+                    <p class="text-lg font-bold text-amber-800">${formatarMoeda(pendMes)}</p>
+                </div>
+            `;
 
-    function deletePdf(pdfId) {
-      if (confirm('Tem certeza que deseja remover este arquivo PDF do prontuário?')) {
-        pdfs = pdfs.filter(item => item.id !== pdfId);
-        saveData();
-        if (currentView === 'medical-record') renderMedicalRecord(currentPatientId);
-      }
-    }
+            // GERADOR DE ALERTAS E PENDÊNCIAS VERMELHAS 🔴
+            const containerPendencias = document.getElementById('container-pendencias');
+            containerPendencias.innerHTML = '';
+            let contadorPendencias = 0;
 
-    /* ==========================================================================
-       UTILITÁRIOS E HELPERS DE FORMATAÇÃO
-       ========================================================================== */
-    function formatDate(dateString) {
-      if (!dateString) return 'N/A';
-      const parts = dateString.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-      return dateString;
-    }
+            // Loop por Pacientes Ativos para checar pendências
+            pacientes.filter(p => p.status === 'ATIVO').forEach(p => {
+                const sessoesPac = sessoes.filter(s => s.pacienteId === p.id);
 
-    function getStatusClass(status) {
-      switch (status) {
-        case 'Realizada': return 'bg-green-100 text-green-800';
-        case 'Agendada': return 'bg-blue-100 text-blue-800';
-        case 'Falta': return 'bg-red-100 text-red-800';
-        case 'Cancelada': return 'bg-gray-200 text-gray-700';
-        default: return 'bg-gray-100 text-gray-800';
-      }
-    }
+                // 🔴 1. Informação obrigatória faltando no cadastro
+                if (!p.telefone || !p.email || (p.tipo === 'Infantil' && (!p.responsavel || !p.responsavel.nome))) {
+                    contadorPendencias++;
+                    containerPendencias.innerHTML += criarItemPendencia(
+                        `Informação obrigatória faltando no cadastro de ${p.nome}`,
+                        `Acesse o cadastro do paciente para preencher telefone, e-mail ou responsável.`,
+                        () => navegarPara('prontuario', p.id)
+                    );
+                }
 
-    function escapeHtml(text) {
-      if (!text) return '';
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
+                sessoesPac.forEach(s => {
+                    // 🔴 2. Sessão realizada sem evolução
+                    if (s.status === 'Realizada' && (!s.evolucao || !s.evolucao.queixa)) {
+                        contadorPendencias++;
+                        containerPendencias.innerHTML += criarItemPendencia(
+                            `Sessão realizada sem evolução (${p.nome} - ${formatarDataBR(s.data)})`,
+                            `A sessão do dia ${formatarDataBR(s.data)} foi concluída mas não possui evolução clínica registrada.`,
+                            () => abrirModalEvolucao(s.id)
+                        );
+                    }
 
-    // Inicialização do Sistema ao Carregar
-    window.onload = function() {
-      navigateTo('dashboard');
-    };
-  </script>
+                    // 🔴 3. Pagamento recebido sem recibo anexado
+                    if (s.pagamento === 'Recebido' && !s.reciboAnexo) {
+                        contadorPendencias++;
+                        containerPendencias.innerHTML += criarItemPendencia(
+                            `Recibo não anexado (${p.nome} - ${formatarDataBR(s.data)})`,
+                            `O pagamento de ${formatarMoeda(s.valor)} foi marcado como recebido mas não possui recibo anexado.`,
+                            () => navegarPara('financeiro')
+                        );
+                    }
+
+                    // 🔴 4. Pagamento pendente
+                    if (s.pagamento === 'Pendente') {
+                        contadorPendencias++;
+                        containerPendencias.innerHTML += criarItemPendencia(
+                            `Pagamento pendente (${p.nome} - ${formatarDataBR(s.data)})`,
+                            `Valor de ${formatarMoeda(s.valor)} aguardando liquidação.`,
+                            () => navegarPara('financeiro')
+                        );
+                    }
+                });
+
+                // 🔴 5. PDF Semanal Pendente / Controle Semanal
+                const temAtendimentoRecente = sessoesPac.some(s => s.status === 'Realizada');
+                const temPDFAnexo = p.pdfsSemanais && p.pdfsSemanais.length > 0;
+                if (temAtendimentoRecente && !temPDFAnexo) {
+                    contadorPendencias++;
+                    containerPendencias.innerHTML += criarItemPendencia(
+                        `PDF semanal pendente (${p.nome})`,
+                        `O paciente possui atendimentos registrados mas nenhum PDF integral de prontuário foi vinculado ainda.`,
+                        () => navegarPara('prontuario', p.id)
+                    );
+                }
+            });
+
+            document.getElementById('dash-badge-pendencias').innerText = `${contadorPendencias} pendência(s)`;
+            if (contadorPendencias === 0) {
+                containerPendencias.innerHTML = `<div class="text-center py-6 text-gray-500 text-sm">🟢 Nenhuma pendência encontrada! Tudo atualizado no consultório.</div>`;
+            }
+        }
+
+        function criarItemPendencia(titulo, descricao, acaoOnClick) {
+            const idBtn = 'btn-pend-' + Math.random().toString(36).substr(2, 9);
+            window[idBtn] = acaoOnClick;
+            return `
+                <div class="py-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:bg-rosa-50/50 transition px-2 rounded-lg">
+                    <div class="flex items-start gap-2">
+                        <span class="text-red-600 text-base">🔴</span>
+                        <div>
+                            <h4 class="font-bold text-red-900 text-xs sm:text-sm">${titulo}</h4>
+                            <p class="text-xs text-gray-600">${descricao}</p>
+                        </div>
+                    </div>
+                    <button onclick="window['${idBtn}']()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded font-semibold whitespace-nowrap self-end sm:self-center">
+                        Resolver Agora
+                    </button>
+                </div>
+            `;
+        }
+
+        // ==================== LÓGICA DE PACIENTES ====================
+        function renderizarListaPacientes() {
+            const tbody = document.getElementById('tabela-pacientes-body');
+            tbody.innerHTML = '';
+
+            const busca = document.getElementById('filtro-paciente-nome').value.toLowerCase();
+            const statusFiltro = document.getElementById('filtro-paciente-status').value;
+            const tipoFiltro = document.getElementById('filtro-paciente-tipo').value;
+
+            const listaFiltrada = pacientes.filter(p => {
+                const bateNome = p.nome.toLowerCase().includes(busca);
+                const bateStatus = (statusFiltro === 'TODOS') || (p.status === statusFiltro);
+                const bateTipo = (tipoFiltro === 'TODOS') || (p.tipo === tipoFiltro);
+                return bateNome && bateStatus && bateTipo;
+            });
+
+            if (listaFiltrada.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-500">Nenhum paciente encontrado com os filtros aplicados.</td></tr>`;
+                return;
+            }
+
+            listaFiltrada.forEach(p => {
+                const badgeStatus = p.status === 'ATIVO' 
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full">ATIVO</span>`
+                    : `<span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-0.5 rounded-full">INATIVO</span>`;
+
+                const infoResp = (p.tipo === 'Infantil' && p.responsavel && p.responsavel.nome)
+                    ? `<div class="text-xs text-rosa-700 font-medium">Resp: ${p.responsavel.nome} (${p.responsavel.parentesco || 'Resp'})</div>`
+                    : '';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-rosa-50/50 transition">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-rosa-900">${p.nome}</div>
+                            ${infoResp}
+                        </td>
+                        <td class="px-6 py-4 font-medium text-xs text-gray-600">${p.tipo}</td>
+                        <td class="px-6 py-4 text-xs">
+                            <div>📞 ${p.telefone || 'Não informado'}</div>
+                            <div class="text-gray-500">✉️ ${p.email || 'Não informado'}</div>
+                        </td>
+                        <td class="px-6 py-4">${badgeStatus}</td>
+                        <td class="px-6 py-4 text-right space-x-2">
+                            <button onclick="navegarPara('prontuario', '${p.id}')" class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                                Abrir Prontuário
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function abrirModalPaciente(paciente = null) {
+            document.getElementById('form-paciente').reset();
+            if (paciente) {
+                document.getElementById('modal-paciente-titulo').innerText = 'Editar Paciente';
+                document.getElementById('paciente-id').value = paciente.id;
+                document.getElementById('paciente-nome').value = paciente.nome;
+                document.getElementById('paciente-tipo').value = paciente.tipo;
+                document.getElementById('paciente-nascimento').value = paciente.nascimento || '';
+                document.getElementById('paciente-telefone').value = paciente.telefone || '';
+                document.getElementById('paciente-email').value = paciente.email || '';
+
+                if (paciente.tipo === 'Infantil' && paciente.responsavel) {
+                    document.getElementById('paciente-resp-nome').value = paciente.responsavel.nome || '';
+                    document.getElementById('paciente-resp-parentesco').value = paciente.responsavel.parentesco || '';
+                    document.getElementById('paciente-resp-telefone').value = paciente.responsavel.telefone || '';
+                }
+            } else {
+                document.getElementById('modal-paciente-titulo').innerText = 'Cadastrar Novo Paciente';
+                document.getElementById('paciente-id').value = '';
+            }
+            alternarCamposInfantil();
+            document.getElementById('modal-paciente').classList.remove('hidden');
+        }
+
+        function fecharModalPaciente() {
+            document.getElementById('modal-paciente').classList.add('hidden');
+        }
+
+        function alternarCamposInfantil() {
+            const tipo = document.getElementById('paciente-tipo').value;
+            const secaoInfantil = document.getElementById('secao-infantil');
+            if (tipo === 'Infantil') {
+                secaoInfantil.classList.remove('hidden');
+            } else {
+                secaoInfantil.classList.add('hidden');
+            }
+        }
+
+        function salvarPaciente(e) {
+            e.preventDefault();
+            const id = document.getElementById('paciente-id').value;
+            const nome = document.getElementById('paciente-nome').value.trim();
+            const tipo = document.getElementById('paciente-tipo').value;
+            const nascimento = document.getElementById('paciente-nascimento').value;
+            const telefone = document.getElementById('paciente-telefone').value.trim();
+            const email = document.getElementById('paciente-email').value.trim();
+
+            let responsavel = null;
+            if (tipo === 'Infantil') {
+                responsavel = {
+                    nome: document.getElementById('paciente-resp-nome').value.trim(),
+                    parentesco: document.getElementById('paciente-resp-parentesco').value.trim(),
+                    telefone: document.getElementById('paciente-resp-telefone').value.trim()
+                };
+            }
+
+            if (id) {
+                // Editar existente sem apagar dados históricos
+                const p = pacientes.find(x => x.id === id);
+                if (p) {
+                    p.nome = nome;
+                    p.tipo = tipo;
+                    p.nascimento = nascimento;
+                    p.telefone = telefone;
+                    p.email = email;
+                    p.responsavel = responsavel;
+                }
+            } else {
+                // Novo paciente
+                const novoPaciente = {
+                    id: 'pac_' + Date.now(),
+                    nome: nome,
+                    tipo: tipo,
+                    nascimento: nascimento,
+                    telefone: telefone,
+                    email: email,
+                    responsavel: responsavel,
+                    status: 'ATIVO',
+                    pdfsSemanais: [],
+                    dataCadastro: new Date().toISOString()
+                };
+                pacientes.push(novoPaciente);
+            }
+
+            salvarDadosLocais();
+            fecharModalPaciente();
+        }
+
+        function alternarStatusPacienteAtual() {
+            if (!pacienteAtualId) return;
+            const p = pacientes.find(x => x.id === pacienteAtualId);
+            if (!p) return;
+
+            const novoStatus = p.status === 'ATIVO' ? 'INATIVO' : 'ATIVO';
+            if (confirm(`Deseja alterar o status de ${p.nome} para ${novoStatus}? Os dados históricos de prontuário, sessões e recebimentos permanecerão intactos.`)) {
+                p.status = novoStatus;
+                salvarDadosLocais();
+            }
+        }
+
+        function abrirModalEditarPacienteAtual() {
+            const p = pacientes.find(x => x.id === pacienteAtualId);
+            if (p) abrirModalPaciente(p);
+        }
+
+        // ==================== LÓGICA DO PRONTUÁRIO INDIVIDUAL ====================
+        function renderizarProntuarioPaciente(id) {
+            const p = pacientes.find(x => x.id === id);
+            if (!p) return;
+
+            document.getElementById('pront-nome-paciente').innerText = p.nome;
+            
+            const badgeStatus = document.getElementById('pront-badge-status');
+            if (p.status === 'ATIVO') {
+                badgeStatus.innerText = 'ATIVO';
+                badgeStatus.className = 'px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800';
+            } else {
+                badgeStatus.innerText = 'INATIVO';
+                badgeStatus.className = 'px-2.5 py-0.5 text-xs font-bold rounded-full bg-gray-200 text-gray-700';
+            }
+
+            document.getElementById('pront-badge-tipo').innerText = p.tipo;
+            document.getElementById('pront-dados-pessoais').innerText = `📞 ${p.telefone || 'Sem Tel'} | ✉️ ${p.email || 'Sem Email'} | 🎂 ${formatarDataBR(p.nascimento)}`;
+
+            const divResp = document.getElementById('pront-dados-responsavel');
+            if (p.tipo === 'Infantil' && p.responsavel && p.responsavel.nome) {
+                divResp.classList.remove('hidden');
+                divResp.innerText = `👨‍👩‍👧 Responsável Legal: ${p.responsavel.nome} (${p.responsavel.parentesco}) - Tel: ${p.responsavel.telefone || 'N/A'}`;
+            } else {
+                divResp.classList.add('hidden');
+            }
+
+            const btnInativar = document.getElementById('btn-inativar-reativar');
+            btnInativar.innerText = p.status === 'ATIVO' ? 'Inativar Paciente' : 'Reativar Paciente';
+
+            // Renderizar Sessões do Paciente
+            renderizarSessoesDoPaciente(p.id);
+            // Renderizar PDFs Semanais Vinc.
+            renderizarPDFsSemanaisTabela(p);
+        }
+
+        function trocarAbaProntuario(aba) {
+            ['historico', 'pdf-semanal', 'resumo'].forEach(a => {
+                document.getElementById(`aba-conteudo-${a}`).classList.add('hidden');
+                document.getElementById(`aba-btn-${a}`).className = 'py-2 px-3 border-b-2 border-transparent hover:text-rosa-700';
+            });
+
+            document.getElementById(`aba-conteudo-${aba}`).classList.remove('hidden');
+            document.getElementById(`aba-btn-${aba}`).className = 'py-2 px-3 border-b-2 border-rosa-600 text-rosa-700 font-bold';
+        }
+
+        function renderizarSessoesDoPaciente(pacienteId) {
+            const container = document.getElementById('lista-sessoes-prontuario');
+            container.innerHTML = '';
+
+            const sessoesPac = sessoes.filter(s => s.pacienteId === pacienteId)
+                .sort((a,b) => new Date(b.data + 'T' + b.horario) - new Date(a.data + 'T' + a.horario));
+
+            if (sessoesPac.length === 0) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-xl text-center text-gray-500 text-sm">Nenhuma sessão registrada para este paciente.</div>`;
+                return;
+            }
+
+            sessoesPac.forEach(s => {
+                const temEvolucao = s.evolucao && s.evolucao.queixa;
+                const alertaEvolucao = (s.status === 'Realizada' && !temEvolucao)
+                    ? `<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">🔴 EVOLUÇÃO PENDENTE</span>`
+                    : '';
+
+                const alertaRecibo = (s.pagamento === 'Recebido' && !s.reciboAnexo)
+                    ? `<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">🔴 RECIBO PENDENTE</span>`
+                    : (s.reciboAnexo ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">🟢 Recibo Anexado</span>` : '');
+
+                container.innerHTML += `
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-rosa-200 space-y-3">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-rosa-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-rosa-900 text-base">📅 ${formatarDataBR(s.data)} às ${s.horario}</span>
+                                <span class="text-xs bg-rosa-100 text-rosa-800 px-2 py-0.5 rounded font-medium">${s.modalidade}</span>
+                                <span class="text-xs font-bold px-2 py-0.5 rounded ${s.status==='Realizada'?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'}">${s.status}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${albertaEvolucao || ''}
+                                ${alertaRecibo || ''}
+                                <span class="font-bold text-gray-700 text-sm">${formatarMoeda(s.valor)} (${s.pagamento})</span>
+                            </div>
+                        </div>
+
+                        <!-- CONTEÚDO DA EVOLUÇÃO CLÍNICA -->
+                        ${temEvolucao ? `
+                            <div class="bg-rosa-50/60 p-4 rounded-lg space-y-2 text-xs">
+                                <div><strong class="text-rosa-900">Queixa / Relato:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.queixa}</p></div>
+                                <div><strong class="text-rosa-900">Demanda Trabalhada:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.demanda}</p></div>
+                                <div><strong class="text-rosa-900">Descrição Detalhada:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.descricao}</p></div>
+                                <div><strong class="text-rosa-900">Análise Técnica & Evolução:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.analise}</p></div>
+                            </div>
+                        ` : `
+                            <div class="text-xs text-gray-500 italic">Nenhuma evolução clínica registrada até o momento.</div>
+                        `}
+
+                        <!-- AÇÕES DA SESSÃO -->
+                        <div class="flex flex-wrap justify-between items-center gap-2 pt-2 text-xs">
+                            <div class="flex gap-2">
+                                <button onclick="abrirModalEvolucao('${s.id}')" class="bg-rosa-600 hover:bg-rosa-700 text-white font-bold px-3 py-1.5 rounded shadow">
+                                    ${temEvolucao ? 'Editar Evolução' : '➕ Salvar Evolução'}
+                                </button>
+                                ${temEvolucao ? `
+                                    <button onclick="verEvolucaoCompleta('${s.id}')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold px-3 py-1.5 rounded">
+                                        Ver Evolução Completa
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="bg-rosa-100 hover:bg-rosa-200 text-rosa-800 font-semibold px-3 py-1.5 rounded cursor-pointer">
+                                    ${s.reciboAnexo ? 'Substituir Recibo' : 'Anexar Recibo'}
+                                    <input type="file" accept="image/*,application/pdf" class="hidden" onchange="anexarReciboSessao(event, '${s.id}')">
+                                </label>
+                                ${s.reciboAnexo ? `
+                                    <button onclick="visualizarRecibo('${s.id}')" class="bg-emerald-600 text-white px-2.5 py-1.5 rounded font-bold">Ver</button>
+                                    <button onclick="removerRecibo('${s.id}')" class="bg-red-100 text-red-700 px-2 py-1.5 rounded font-bold">🗑️</button>
+                                ` : ''}
+                                <button onclick="abrirModalSessao(sessoes.find(x=>x.id==='${s.id}'))" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1.5 rounded">✏️ Editar Sessão</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ==================== LÓGICA DE EVOLUÇÕES CLINICAS ====================
+        function abrirModalEvolucao(sessaoId) {
+            const s = sessoes.find(x => x.id === sessaoId);
+            if (!s) return;
+
+            const p = pacientes.find(x => x.id === s.pacienteId);
+
+            document.getElementById('evolucao-sessao-id').value = s.id;
+            document.getElementById('subtitulo-modal-evolucao').innerText = `Paciente: ${p ? p.nome : 'N/A'} - Data: ${formatarDataBR(s.data)}`;
+
+            if (s.evolucao) {
+                document.getElementById('ev-queixa').value = s.evolucao.queixa || '';
+                document.getElementById('ev-demanda').value = s.evolucao.demanda || '';
+                document.getElementById('ev-descricao').value = s.evolucao.descricao || '';
+                document.getElementById('ev-analise').value = s.evolucao.analise || '';
+            } else {
+                document.getElementById('form-evolucao').reset();
+                document.getElementById('evolucao-sessao-id').value = s.id;
+            }
+
+            document.getElementById('modal-evolucao').classList.remove('hidden');
+        }
+
+        function fecharModalEvolucao() {
+            document.getElementById('modal-evolucao').classList.add('hidden');
+        }
+
+        function salvarEvolucao(e) {
+            e.preventDefault();
+            const sessaoId = document.getElementById('evolucao-sessao-id').value;
+            const s = sessoes.find(x => x.id === sessaoId);
+            if (!s) return;
+
+            s.evolucao = {
+                queixa: document.getElementById('ev-queixa').value.trim(),
+                demanda: document.getElementById('ev-demanda').value.trim(),
+                descricao: document.getElementById('ev-descricao').value.trim(),
+                analise: document.getElementById('ev-analise').value.trim(),
+                dataRegistro: new Date().toISOString()
+            };
+
+            salvarDadosLocais();
+            fecharModalEvolucao();
+        }
+
+        function verEvolucaoCompleta(sessaoId) {
+            const s = sessoes.find(x => x.id === sessaoId);
+            if (!s || !s.evolucao) return;
+
+            const p = pacientes.find(x => x.id === s.pacienteId);
+
+            document.getElementById('ver-ev-titulo').innerText = `Evolução Clínica - ${p ? p.nome : ''} (${formatarDataBR(s.data)})`;
+            document.getElementById('ver-ev-conteudo').innerHTML = `
+                <div class="space-y-4">
+                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
+                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Queixa Principal / Relato</h4>
+                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.queixa}</p>
+                    </div>
+                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
+                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Demanda Trabalhada</h4>
+                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.demanda}</p>
+                    </div>
+                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
+                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Descrição Detalhada da Sessão</h4>
+                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.descricao}</p>
+                    </div>
+                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
+                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Análise Técnica e Evolução</h4>
+                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.analise}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-ver-evolucao').classList.remove('hidden');
+        }
+
+        function fecharModalVerEvolucao() {
+            document.getElementById('modal-ver-evolucao').classList.add('hidden');
+        }
+
+        // ==================== LÓGICA DE SESSÕES & AGENDA ====================
+        function renderizarListaSessoesGeral() {
+            const container = document.getElementById('container-sessoes-geral');
+            container.innerHTML = '';
+
+            const mesFiltro = document.getElementById('filtro-sessao-mes').value;
+            const statusFiltro = document.getElementById('filtro-sessao-status').value;
+
+            let lista = [...sessoes];
+
+            if (mesFiltro) {
+                lista = lista.filter(s => s.data && s.data.substring(0, 7) === mesFiltro);
+            }
+            if (statusFiltro !== 'TODOS') {
+                lista = lista.filter(s => s.status === statusFiltro);
+            }
+
+            lista.sort((a,b) => new Date(b.data + 'T' + b.horario) - new Date(a.data + 'T' + a.horario));
+
+            if (lista.length === 0) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-xl text-center text-gray-500 text-sm">Nenhuma sessão encontrada com os filtros selecionados.</div>`;
+                return;
+            }
+
+            lista.forEach(s => {
+                const p = pacientes.find(x => x.id === s.pacienteId);
+                const nomePaciente = p ? p.nome : 'Paciente Não Encontrado';
+
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-rosa-900 text-base">${nomePaciente}</span>
+                                <span class="text-xs bg-rosa-100 text-rosa-800 px-2 py-0.5 rounded font-medium">${s.modalidade}</span>
+                            </div>
+                            <div class="text-xs text-gray-600 mt-1">
+                                📅 ${formatarDataBR(s.data)} às ${s.horario} | Valor: <strong>${formatarMoeda(s.valor)}</strong> (${s.pagamento})
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded ${s.status==='Realizada'?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'}">${s.status}</span>
+                            <button onclick="abrirModalSessao(sessoes.find(x=>x.id==='${s.id}'))" class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                                Gerenciar / Editar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function limparFiltroMesSessao() {
+            document.getElementById('filtro-sessao-mes').value = '';
+            document.getElementById('filtro-sessao-status').value = 'TODOS';
+            renderizarListaSessoesGeral();
+        }
+
+        function abrirModalSessao(sessao = null) {
+            const selectPac = document.getElementById('sessao-paciente-id');
+            selectPac.innerHTML = '';
+
+            pacientes.forEach(p => {
+                selectPac.innerHTML += `<option value="${p.id}">${p.nome} (${p.status})</option>`;
+            });
+
+            if (sessao) {
+                document.getElementById('modal-sessao-titulo').innerText = 'Editar Sessão';
+                document.getElementById('sessao-id').value = sessao.id;
+                selectPac.value = sessao.pacienteId;
+                document.getElementById('sessao-data').value = sessao.data;
+                document.getElementById('sessao-horario').value = sessao.horario;
+                document.getElementById('sessao-modalidade').value = sessao.modalidade;
+                document.getElementById('sessao-status').value = sessao.status;
+                document.getElementById('sessao-valor').value = sessao.valor;
+                document.getElementById('sessao-pagamento').value = sessao.pagamento;
+            } else {
+                document.getElementById('modal-sessao-titulo').innerText = 'Agendar Nova Sessão';
+                document.getElementById('form-sessao').reset();
+                document.getElementById('sessao-id').value = '';
+                document.getElementById('sessao-data').value = new Date().toISOString().substring(0,10);
+                if (pacienteAtualId) selectPac.value = pacienteAtualId;
+            }
+
+            document.getElementById('modal-sessao').classList.remove('hidden');
+        }
+
+        function abrirModalSessaoParaPacienteAtual() {
+            abrirModalSessao();
+        }
+
+        function fecharModalSessao() {
+            document.getElementById('modal-sessao').classList.add('hidden');
+        }
+
+        function salvarSessao(e) {
+            e.preventDefault();
+            const id = document.getElementById('sessao-id').value;
+            const pacienteId = document.getElementById('sessao-paciente-id').value;
+            const data = document.getElementById('sessao-data').value;
+            const horario = document.getElementById('sessao-horario').value;
+            const modalidade = document.getElementById('sessao-modalidade').value;
+            const status = document.getElementById('sessao-status').value;
+            const valor = parseFloat(document.getElementById('sessao-valor').value) || 0;
+            const pagamento = document.getElementById('sessao-pagamento').value;
+
+            if (id) {
+                const s = sessoes.find(x => x.id === id);
+                if (s) {
+                    s.pacienteId = pacienteId;
+                    s.data = data;
+                    s.horario = horario;
+                    s.modalidade = modalidade;
+                    s.status = status;
+                    s.valor = valor;
+                    s.pagamento = pagamento;
+                }
+            } else {
+                const novaSessao = {
+                    id: 'ses_' + Date.now(),
+                    pacienteId: pacienteId,
+                    data: data,
+                    horario: horario,
+                    modalidade: modalidade,
+                    status: status,
+                    valor: valor,
+                    pagamento: pagamento,
+                    reciboAnexo: null,
+                    evolucao: null
+                };
+                sessoes.push(novaSessao);
+            }
+
+            salvarDadosLocais();
+            fecharModalSessao();
+        }
+
+        // ==================== LÓGICA DE RECIBOS ANEXADOS ====================
+        function anexarReciboSessao(event, sessaoId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const s = sessoes.find(x => x.id === sessaoId);
+                if (s) {
+                    s.reciboAnexo = {
+                        nome: file.name,
+                        tipo: file.type,
+                        base64: e.target.result,
+                        dataUpload: new Date().toISOString()
+                    };
+                    salvarDadosLocais();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function visualizarRecibo(sessaoId) {
+            const s = sessoes.find(x => x.id === sessaoId);
+            if (s && s.reciboAnexo) {
+                const win = window.open();
+                win.document.write(`<iframe src="${s.reciboAnexo.base64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+            }
+        }
+
+        function removerRecibo(sessaoId) {
+            const s = sessoes.find(x => x.id === sessaoId);
+            if (s && confirm("Deseja remover o recibo anexado desta sessão?")) {
+                s.reciboAnexo = null;
+                salvarDadosLocais();
+            }
+        }
+
+        // ==================== LÓGICA DE FINANÇAS ====================
+        function renderizarPainelFinanceiro() {
+            const mesFiltro = document.getElementById('filtro-financeiro-mes').value;
+            const tbody = document.getElementById('tabela-financeiro-body');
+            tbody.innerHTML = '';
+
+            let sessoesFiltradas = sessoes.filter(s => s.data && s.data.substring(0, 7) === mesFiltro);
+
+            let recTotal = 0;
+            let pendTotal = 0;
+            let recibosAnexados = 0;
+            let totalRecebidos = 0;
+
+            sessoesFiltradas.forEach(s => {
+                const p = pacientes.find(x => x.id === s.pacienteId);
+                const nomePac = p ? p.nome : 'Paciente Não Encontrado';
+
+                if (s.pagamento === 'Recebido') {
+                    recTotal += (parseFloat(s.valor) || 0);
+                    totalRecebidos++;
+                    if (s.reciboAnexo) recibosAnexados++;
+                } else {
+                    pendTotal += (parseFloat(s.valor) || 0);
+                }
+
+                const statusPagBadge = s.pagamento === 'Recebido'
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">RECEBIDO</span>`
+                    : `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded">PENDENTE</span>`;
+
+                const reciboBadge = s.reciboAnexo
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">🟢 Recibo Anexado</span>`
+                    : (s.pagamento === 'Recebido' ? `<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-0.5 rounded">🔴 RECIBO PENDENTE</span>` : `<span class="text-xs text-gray-400">---</span>`);
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-rosa-50/50 transition">
+                        <td class="p-3 font-semibold text-xs">${formatarDataBR(s.data)}</td>
+                        <td class="p-3 font-bold text-rosa-900">${nomePac}</td>
+                        <td class="p-3 font-bold">${formatarMoeda(s.valor)}</td>
+                        <td class="p-3">${statusPagBadge}</td>
+                        <td class="p-3">${reciboBadge}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="alternarPagamentoSessao('${s.id}')" class="bg-rosa-100 hover:bg-rosa-200 text-rosa-800 text-xs font-bold px-2.5 py-1 rounded">
+                                Alterar Status Pag.
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('fin-card-recebido').innerText = formatarMoeda(recTotal);
+            document.getElementById('fin-card-pendente').innerText = formatarMoeda(pendTotal);
+            document.getElementById('fin-card-recibos').innerText = `${recibosAnexados} / ${totalRecebidos}`;
+
+            if (sessoesFiltradas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-500">Nenhum registro financeiro encontrado para o período.</td></tr>`;
+            }
+        }
+
+        function alternarPagamentoSessao(sessaoId) {
+            const s = sessoes.find(x => x.id === sessaoId);
+            if (s) {
+                s.pagamento = s.pagamento === 'Recebido' ? 'Pendente' : 'Recebido';
+                salvarDadosLocais();
+            }
+        }
+
+        // ==================== LÓGICA DE PDFS SEMANAIS & ANEXOS ====================
+        function adicionarPDFSemanalAnexo(event) {
+            const file = event.target.files[0];
+            if (!file || !pacienteAtualId) return;
+
+            const p = pacientes.find(x => x.id === pacienteAtualId);
+            if (!p) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (!p.pdfsSemanais) p.pdfsSemanais = [];
+                p.pdfsSemanais.push({
+                    id: 'pdf_' + Date.now(),
+                    nomeArquivo: file.name,
+                    base64: e.target.result,
+                    dataUpload: new Date().toISOString()
+                });
+                salvarDadosLocais();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderizarPDFsSemanaisTabela(paciente) {
+            const tbody = document.getElementById('tabela-pdfs-semanais-body');
+            tbody.innerHTML = '';
+
+            const lista = paciente.pdfsSemanais || [];
+            if (lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-500">Nenhum PDF do prontuário vinculado a este paciente.</td></tr>`;
+                return;
+            }
+
+            lista.sort((a,b) => new Date(b.dataUpload) - new Date(a.dataUpload)).forEach(pdf => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-rosa-50/50 transition">
+                        <td class="p-3 text-xs font-semibold">${formatarDataHoraBR(pdf.dataUpload)}</td>
+                        <td class="p-3 font-bold text-rosa-900">${pdf.nomeArquivo}</td>
+                        <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">Vinculado</span></td>
+                        <td class="p-3 text-right space-x-2">
+                            <button onclick="visualizarPDFSemanal('${paciente.id}', '${pdf.id}')" class="bg-rosa-600 text-white text-xs px-2.5 py-1 rounded font-bold">Visualizar</button>
+                            <button onclick="removerPDFSemanal('${paciente.id}', '${pdf.id}')" class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold">Remover</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function visualizarPDFSemanal(pacienteId, pdfId) {
+            const p = pacientes.find(x => x.id === pacienteId);
+            if (p && p.pdfsSemanais) {
+                const item = p.pdfsSemanais.find(x => x.id === pdfId);
+                if (item) {
+                    const win = window.open();
+                    win.document.write(`<iframe src="${item.base64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+                }
+            }
+        }
+
+        function removerPDFSemanal(pacienteId, pdfId) {
+            const p = pacientes.find(x => x.id === pacienteId);
+            if (p && p.pdfsSemanais && confirm("Deseja remover este PDF vinculado do paciente?")) {
+                p.pdfsSemanais = p.pdfsSemanais.filter(x => x.id !== pdfId);
+                salvarDadosLocais();
+            }
+        }
+
+        // ==================== GERADOR DE RESUMO AUTOMÁTICO DO PRONTUÁRIO ====================
+        function gerarResumoAutomaticoProntuario() {
+            if (!pacienteAtualId) return;
+            const p = pacientes.find(x => x.id === pacienteAtualId);
+            if (!p) return;
+
+            const sessoesPac = sessoes.filter(s => s.pacienteId === p.id);
+            const totalSessoes = sessoesPac.length;
+            const realizadas = sessoesPac.filter(s => s.status === 'Realizada').length;
+            const faltas = sessoesPac.filter(s => s.status === 'Falta').length;
+            const canceladas = sessoesPac.filter(s => s.status === 'Cancelada').length;
+
+            const pagoTotal = sessoesPac.filter(s => s.pagamento === 'Recebido').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
+            const pendTotal = sessoesPac.filter(s => s.pagamento === 'Pendente').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
+
+            // Principais demandas compiladas
+            const demandas = sessoesPac
+                .filter(s => s.evolucao && s.evolucao.demanda)
+                .map(s => `• ${formatarDataBR(s.data)}: ${s.evolucao.demanda}`)
+                .join('<br>');
+
+            const div = document.getElementById('container-resumo-automatico-texto');
+            div.innerHTML = `
+                <div class="border-b border-rosa-200 pb-3">
+                    <h3 class="text-base font-bold text-rosa-900">✨ Resumo Automático do Prontuário Psicológico</h3>
+                    <p class="text-xs text-gray-500">Paciente: <strong>${p.nome}</strong> | Gerado em: ${formatarDataHoraBR(new Date().toISOString())}</p>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center my-3">
+                    <div class="bg-rosa-50 p-2 rounded">
+                        <span class="text-xs text-gray-500 block">Total Sessões</span>
+                        <span class="font-bold text-rosa-900 text-base">${totalSessoes}</span>
+                    </div>
+                    <div class="bg-emerald-50 p-2 rounded">
+                        <span class="text-xs text-emerald-700 block">Realizadas</span>
+                        <span class="font-bold text-emerald-900 text-base">${realizadas}</span>
+                    </div>
+                    <div class="bg-amber-50 p-2 rounded">
+                        <span class="text-xs text-amber-700 block">Faltas / Cancel.</span>
+                        <span class="font-bold text-amber-900 text-base">${faltas} / ${canceladas}</span>
+                    </div>
+                    <div class="bg-blue-50 p-2 rounded">
+                        <span class="text-xs text-blue-700 block">Total Pago</span>
+                        <span class="font-bold text-blue-900 text-base">${formatarMoeda(pagoTotal)}</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-bold text-rosa-900 text-xs uppercase">Síntese do Período de Acompanhamento</h4>
+                    <p class="text-xs text-gray-700">
+                        O paciente encontra-se cadastrado como <strong>${p.tipo}</strong> com status <strong>${p.status}</strong>. Possui um faturamento liquidado de ${formatarMoeda(pagoTotal)} e pendência financeira acumulada de ${formatarMoeda(pendTotal)}.
+                    </p>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                    <h4 class="font-bold text-rosa-900 text-xs uppercase">Principais Demandas Trabalhadas no Prontuário</h4>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-100 text-xs text-gray-800 leading-relaxed">
+                        ${demandas || 'Nenhuma demanda clínica registrada nas evoluções até o momento.'}
+                    </div>
+                </div>
+            `;
+
+            trocarAbaProntuario('resumo');
+        }
+
+        // ==================== EMISSÃO DE PDF INTEGRAL SEM LIMITE DE PÁGINAS (jsPDF) ====================
+        function gerarEBaixarPDFIntegral() {
+            if (!pacienteAtualId) return;
+            const p = pacientes.find(x => x.id === pacienteAtualId);
+            if (!p) return;
+
+            const sessoesPac = sessoes.filter(s => s.pacienteId === p.id)
+                .sort((a,b) => new Date(a.data + 'T' + a.horario) - new Date(b.data + 'T' + b.horario));
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 40;
+            const maxLineWidth = pageWidth - (margin * 2);
+            let y = margin;
+
+            // Função Auxiliar de Quebra Automática de Página Se Necessário
+            function checarEspacoEPaginar(alturaNecessaria) {
+                if (y + alturaNecessaria > pageHeight - margin) {
+                    doc.addPage();
+                    y = margin;
+                }
+            }
+
+            // CABEÇALHO DO PDF INTEGRAL
+            doc.setFillColor(190, 24, 93); // Rosa-700
+            doc.rect(0, 0, pageWidth, 50, 'F');
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('PRONTUÁRIO PSICOLÓGICO INTEGRAL - DOCUMENTO OFICIAL', margin, 32);
+
+            y = 70;
+
+            // DADOS DO PACIENTE
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.setFont('Helvetica', 'bold');
+            doc.text(`PACIENTE: ${p.nome.toUpperCase()}`, margin, y); y += 15;
+
+            doc.setFont('Helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text(`Tipo de Atendimento: ${p.tipo} | Status: ${p.status} | Data Nasc: ${formatarDataBR(p.nascimento)}`, margin, y); y += 12;
+            doc.text(`Contatos: ${p.telefone || 'N/A'} - ${p.email || 'N/A'}`, margin, y); y += 12;
+
+            if (p.tipo === 'Infantil' && p.responsavel) {
+                doc.text(`Responsável Legal: ${p.responsavel.nome} (${p.responsavel.parentesco}) - Tel: ${p.responsavel.telefone || 'N/A'}`, margin, y); y += 12;
+            }
+
+            y += 10;
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 20;
+
+            // REGISTROS INTEGRAIS DAS SESSÕES
+            if (sessoesPac.length === 0) {
+                doc.text('Nenhuma sessão ou evolução clínica registrada no prontuário.', margin, y);
+            } else {
+                sessoesPac.forEach((s, idx) => {
+                    checarEspacoEPaginar(60);
+
+                    // Faixa da Sessão
+                    doc.setFillColor(253, 242, 248); // Rosa-50
+                    doc.rect(margin, y, maxLineWidth, 20, 'F');
+                    doc.setFont('Helvetica', 'bold');
+                    doc.setFontSize(10);
+                    doc.setTextColor(157, 23, 77); // Rosa-800
+                    doc.text(`Sessão #${idx+1} - Data: ${formatarDataBR(s.data)} às ${s.horario} | Modalidade: ${s.modalidade} | Status: ${s.status}`, margin + 5, y + 14);
+                    y += 30;
+
+                    if (s.evolucao && s.evolucao.queixa) {
+                        const camposEvolucao = [
+                            { titulo: 'QUEIXA PRINCIPAL / RELATO:', texto: s.evolucao.queixa },
+                            { titulo: 'DEMANDA TRABALHADA:', texto: s.evolucao.demanda },
+                            { titulo: 'DESCRIÇÃO DETALHADA DA SESSÃO:', texto: s.evolucao.descricao },
+                            { titulo: 'ANÁLISE TÉCNICA E EVOLUÇÃO:', texto: s.evolucao.analise }
+                        ];
+
+                        camposEvolucao.forEach(campo => {
+                            checarEspacoEPaginar(30);
+
+                            doc.setFont('Helvetica', 'bold');
+                            doc.setFontSize(8.5);
+                            doc.setTextColor(0, 0, 0);
+                            doc.text(campo.titulo, margin, y); y += 12;
+
+                            doc.setFont('Helvetica', 'normal');
+                            doc.setFontSize(8.5);
+                            doc.setTextColor(50, 50, 50);
+
+                            const linhasTexto = doc.splitTextToSize(campo.texto, maxLineWidth);
+                            linhasTexto.forEach(linha => {
+                                checarEspacoEPaginar(12);
+                                doc.text(linha, margin, y);
+                                y += 11;
+                            });
+
+                            y += 6;
+                        });
+                    } else {
+                        doc.setFont('Helvetica', 'italic');
+                        doc.setFontSize(8.5);
+                        doc.setTextColor(120, 120, 120);
+                        doc.text('Sessão registrada sem evolução clínica inserida.', margin, y);
+                        y += 15;
+                    }
+
+                    y += 15; // Espaçamento entre sessões
+                });
+            }
+
+            // Rodapé com número de páginas
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(150, 150, 150);
+                doc.text(`Prontuário Psicológico Integral - Paciente: ${p.nome} - Página ${i} de ${pageCount}`, margin, pageHeight - 20);
+            }
+
+            // Salvar PDF no Navegador
+            const nomeArquivoPDF = `Prontuario_Integral_${p.nome.replace(/\s+/g, '_')}.pdf`;
+            doc.save(nomeArquivoPDF);
+
+            // AUTO-VINCULAR O PDF GERADO AO HISTÓRICO DO PACIENTE
+            try {
+                const pdfBase64 = doc.output('datauristring');
+                if (!p.pdfsSemanais) p.pdfsSemanais = [];
+                p.pdfsSemanais.push({
+                    id: 'pdf_gen_' + Date.now(),
+                    nomeArquivo: nomeArquivoPDF,
+                    base64: pdfBase64,
+                    dataUpload: new Date().toISOString()
+                });
+                salvarDadosLocais();
+            } catch (err) {
+                console.log("PDF gerado e baixado. Armazenamento em string mantido.", err);
+            }
+        }
+
+        // ==================== FUNÇÕES UTILITÁRIAS DE FORMATAÇÃO ====================
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
+        }
+
+        function formatarDataBR(dataISO) {
+            if (!dataISO) return 'N/A';
+            const partes = dataISO.split('-');
+            if (partes.length === 3) {
+                return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
+            return dataISO;
+        }
+
+        function formatarDataHoraBR(isoStr) {
+            if (!isoStr) return 'N/A';
+            const d = new Date(isoStr);
+            return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+    </script>
 </body>
 </html>
