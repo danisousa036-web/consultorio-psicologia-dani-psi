@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prontuário Psicológico | Daniele Sousa Santos</title>
-    <!-- Tailwind CSS para Design Responsivo em Tons de Rosa -->
+    <title>Sistema de Gestão de Prontuário Psicológico</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- html2pdf.js para Geração de PDF Integral em Múltiplas Páginas -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        rosebrand: {
-                            50: '#fff1f2',
-                            100: '#ffe4e6',
-                            200: '#fecdd3',
-                            300: '#fda4af',
-                            400: '#fb7185',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                            700: '#be123c',
-                            800: '#9f1239',
-                            900: '#881337',
+                        brand: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d',
+                            900: '#831843',
                         }
                     }
                 }
@@ -31,985 +31,580 @@
         }
     </script>
     <style>
-        .pdf-page-break { page-break-after: always; break-after: page; }
-        .pdf-avoid-break { page-break-inside: avoid; break-inside: avoid; }
+        .print-pdf-container {
+            font-family: Arial, sans-serif;
+            color: #1a1a1a;
+            line-height: 1.5;
+            background: #ffffff;
+            padding: 20px;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        @media print {
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
-<body class="bg-rosebrand-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
-    <!-- BARRA DE NAVEGAÇÃO SUPERIOR COM IDENTIFICAÇÃO PROFISSIONAL -->
-    <header class="bg-rosebrand-700 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
-            <div class="flex items-center space-x-3">
-                <button id="btn-back" onclick="app.goBack()" class="hidden bg-rosebrand-800 hover:bg-rosebrand-900 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition">
-                    ← VOLTAR
-                </button>
-                <div>
-                    <h1 class="text-lg font-bold leading-tight">DANIELE SOUSA SANTOS</h1>
-                    <p class="text-xs text-rosebrand-200">Psicóloga — CRP 22/07398</p>
+    <header class="bg-white border-b border-brand-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('dashboard')">
+                    <div class="bg-brand-500 text-white p-2 rounded-xl">
+                        <i data-lucide="brain"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-brand-900 leading-tight">Gestão Psicológica</h1>
+                        <p class="text-xs text-brand-600 font-medium">Daniele Sousa Santos | CRP: 22/07398</p>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex items-center gap-1">
+                    <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 hover:bg-brand-50 text-brand-700">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+                    </button>
+                    <button onclick="navigateTo('patients')" id="nav-patients" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 text-slate-600 hover:bg-brand-50 hover:text-brand-700">
+                        <i data-lucide="users" class="w-4 h-4"></i> Pacientes
+                    </button>
+                    <button onclick="navigateTo('financial')" id="nav-financial" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 text-slate-600 hover:bg-brand-50 hover:text-brand-700">
+                        <i data-lucide="dollar-sign" class="w-4 h-4"></i> Financeiro
+                    </button>
+                </nav>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="openPatientModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors shadow-sm">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i> Novo Paciente
+                    </button>
                 </div>
             </div>
-            <nav id="main-nav" class="hidden flex items-center space-x-2">
-                <button onclick="app.navigate('dashboard')" class="hover:bg-rosebrand-800 px-3 py-1.5 rounded-lg text-sm font-medium transition">Dashboard</button>
-                <button onclick="app.navigate('pacientes')" class="hover:bg-rosebrand-800 px-3 py-1.5 rounded-lg text-sm font-medium transition">Pacientes</button>
-                <button onclick="app.navigate('financeiro')" class="hover:bg-rosebrand-800 px-3 py-1.5 rounded-lg text-sm font-medium transition">Financeiro</button>
-                <button onclick="app.logout()" class="bg-rosebrand-900 hover:bg-black px-3 py-1.5 rounded-lg text-sm font-medium transition">Sair</button>
-            </nav>
+        </div>
+        <div class="md:hidden flex justify-around border-t border-slate-100 bg-brand-50 py-2">
+            <button onclick="navigateTo('dashboard')" class="text-xs flex flex-col items-center gap-1 text-brand-700 font-semibold">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+            </button>
+            <button onclick="navigateTo('patients')" class="text-xs flex flex-col items-center gap-1 text-slate-600">
+                <i data-lucide="users" class="w-4 h-4"></i> Pacientes
+            </button>
+            <button onclick="navigateTo('financial')" class="text-xs flex flex-col items-center gap-1 text-slate-600">
+                <i data-lucide="dollar-sign" class="w-4 h-4"></i> Financeiro
+            </button>
         </div>
     </header>
 
-    <!-- NOTIFICAÇÃO / TOAST GLOBAL -->
-    <div id="toast" class="hidden fixed top-16 right-4 z-50 p-4 rounded-xl shadow-2xl text-white font-semibold transition-all duration-300"></div>
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- CONTEÚDO DINÂMICO PRINCIPAL -->
-    <main id="app-content" class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
-        <!-- Renderizado dinamicamente pelo JavaScript -->
+        <section id="view-dashboard" class="space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Visão Geral do Consultório</h2>
+                    <p class="text-sm text-slate-500">Acompanhamento e alertas de pendências em tempo real.</p>
+                </div>
+                <div class="bg-white border border-brand-200 px-4 py-2 rounded-lg shadow-sm">
+                    <span class="text-xs text-slate-500 block">Profissional Responsável</span>
+                    <span class="font-bold text-brand-900 text-sm">Daniele Sousa Santos (CRP: 22/07398)</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Pacientes Ativos</span>
+                    <div class="text-2xl font-bold text-brand-700 mt-1" id="dash-active-patients">0</div>
+                    <span class="text-xs text-slate-400" id="dash-inactive-patients">0 inativos</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Sessões Realizadas</span>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1" id="dash-completed-sessions">0</div>
+                    <span class="text-xs text-slate-400" id="dash-scheduled-sessions">0 agendadas</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Ganhos do Mês</span>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1" id="dash-received-amount">R$ 0,00</div>
+                    <span class="text-xs text-amber-600 font-medium" id="dash-pending-amount">R$ 0,00 pendente</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Alertas Ativos</span>
+                    <div class="text-2xl font-bold text-red-600 mt-1" id="dash-alerts-count">0</div>
+                    <span class="text-xs text-red-500">Ações prioritárias</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden">
+                <div class="bg-red-50 px-4 py-3 border-b border-red-200 flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-red-600"></i>
+                    <h3 class="font-bold text-red-900">Central de Alertas e Pendências</h3>
+                </div>
+                <div class="p-4">
+                    <ul id="dash-alerts-list" class="divide-y divide-slate-100 text-sm space-y-2">
+                        <li class="text-slate-500 py-2 text-center">Nenhuma pendência encontrada. Tudo em dia!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-patients" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Gestão de Pacientes</h2>
+                    <p class="text-sm text-slate-500">Busque, filtre e acesse os prontuários individuais.</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4">
+                <div class="flex-1 relative">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                    <input type="text" id="patient-search-input" oninput="renderPatientsList()" placeholder="Buscar por nome do paciente..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <select id="patient-filter-status" onchange="renderPatientsList()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="ACTIVE">Apenas Ativos</option>
+                        <option value="INACTIVE">Apenas Inativos</option>
+                        <option value="ALL">Todos os Status</option>
+                    </select>
+                    <select id="patient-filter-type" onchange="renderPatientsList()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-brand-500">
+                        <option value="ALL">Todos os Tipos</option>
+                        <option value="ADULT">Adultos</option>
+                        <option value="MINOR">Crianças / Adolescentes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase font-semibold">
+                                <th class="p-4">Paciente</th>
+                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Contato</th>
+                                <th class="p-4">Início</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patients-table-body" class="divide-y divide-slate-100 text-sm">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-patient-detail" class="space-y-6 hidden">
+            <div class="flex items-center gap-2">
+                <button onclick="navigateTo('patients')" class="text-slate-600 hover:text-brand-600 flex items-center gap-1 font-medium text-sm bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar para Lista
+                </button>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-brand-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-2xl font-bold text-slate-900" id="detail-patient-name">Nome do Paciente</h2>
+                        <span id="detail-patient-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold">Ativo</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1" id="detail-patient-meta">Adulto | CPF: 000.000.000-00 | Início: 01/01/2026</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button id="btn-toggle-status" onclick="togglePatientStatus()" class="px-3 py-2 border rounded-lg text-sm font-semibold transition-colors">
+                        Inativar Paciente
+                    </button>
+                    <button onclick="openGeneratePDFModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Exportar Prontuário PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="border-b border-slate-200 flex gap-4 overflow-x-auto">
+                <button onclick="switchPatientTab('info')" id="tab-btn-info" class="pb-3 border-b-2 font-bold text-sm border-brand-600 text-brand-600">Dados Cadastrais</button>
+                <button onclick="switchPatientTab('sessions')" id="tab-btn-sessions" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Sessões & Evoluções</button>
+                <button onclick="switchPatientTab('financial')" id="tab-btn-financial" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Financeiro & Recibos</button>
+                <button onclick="switchPatientTab('pdfs')" id="tab-btn-pdfs" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Histórico de PDFs & Anexos</button>
+            </div>
+
+            <div id="tab-content-info" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-900 border-b pb-2">Informações Detalhadas</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm" id="detail-info-grid">
+                    </div>
+            </div>
+
+            <div id="tab-content-sessions" class="space-y-6 hidden">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-slate-900">Histórico de Sessões</h3>
+                    <button onclick="openSessionModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Agendar / Registrar Sessão
+                    </button>
+                </div>
+                <div id="sessions-list" class="space-y-4">
+                    </div>
+            </div>
+
+            <div id="tab-content-financial" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 hidden">
+                <h3 class="font-bold text-slate-900 border-b pb-2">Histórico Financeiro do Paciente</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase border-b">
+                                <th class="p-3">Data</th>
+                                <th class="p-3">Valor</th>
+                                <th class="p-3">Status Pagamento</th>
+                                <th class="p-3">Recibo Anexado</th>
+                                <th class="p-3 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patient-financial-table" class="divide-y divide-slate-100">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-content-pdfs" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 hidden">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h3 class="font-bold text-slate-900">PDFs Gerados e Documentos Anexados</h3>
+                    <label class="bg-brand-50 border border-brand-200 text-brand-700 hover:bg-brand-100 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer flex items-center gap-1">
+                        <i data-lucide="upload" class="w-4 h-4"></i> Anexar PDF Semanal/Documento
+                        <input type="file" accept="application/pdf" class="hidden" onchange="uploadPatientDocument(event)">
+                    </label>
+                </div>
+                <ul id="patient-docs-list" class="divide-y divide-slate-100 text-sm">
+                    </ul>
+            </div>
+        </section>
+
+        <section id="view-financial" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Financeiro Geral</h2>
+                    <p class="text-sm text-slate-500">Controle de receitas recebidas e pendentes.</p>
+                </div>
+                <div class="flex gap-2">
+                    <input type="month" id="financial-month-filter" onchange="renderFinancialView()" class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl">
+                    <span class="text-xs font-bold text-emerald-800 uppercase">Total Efetivamente Recebido</span>
+                    <div class="text-2xl font-extrabold text-emerald-600 mt-1" id="fin-total-received">R$ 0,00</div>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                    <span class="text-xs font-bold text-amber-800 uppercase">Total Pendente</span>
+                    <div class="text-2xl font-extrabold text-amber-600 mt-1" id="fin-total-pending">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase font-semibold">
+                                <th class="p-4">Data</th>
+                                <th class="p-4">Paciente</th>
+                                <th class="p-4">Valor</th>
+                                <th class="p-4">Status Pagamento</th>
+                                <th class="p-4">Recibo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="general-financial-table" class="divide-y divide-slate-100">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- CONTAINER OCULTO PARA MONTAGEM E IMPRESSÃO DO PDF -->
-    <div id="pdf-render-area" class="hidden bg-white p-8 text-black"></div>
+    <div id="modal-patient" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
+                <h3 class="font-bold text-brand-900" id="modal-patient-title">Cadastrar Novo Paciente</h3>
+                <button onclick="closeModal('modal-patient')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="form-patient" onsubmit="savePatient(event)" class="p-6 space-y-4">
+                <input type="hidden" id="patient-id">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nome Completo *</label>
+                        <input type="text" id="p-name" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tipo de Paciente *</label>
+                        <select id="p-type" onchange="toggleMinorFields()" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                            <option value="ADULT">Adulto</option>
+                            <option value="MINOR">Criança / Adolescente</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Data de Nascimento *</label>
+                        <input type="date" id="p-dob" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">CPF</label>
+                        <input type="text" id="p-cpf" placeholder="000.000.000-00" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Telefone *</label>
+                        <input type="tel" id="p-phone" required placeholder="(00) 00000-0000" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">E-mail</label>
+                        <input type="email" id="p-email" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Data de Início *</label>
+                        <input type="date" id="p-start-date" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tipo de Atendimento</label>
+                        <select id="p-service-type" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                            <option value="Individual Presencial">Individual Presencial</option>
+                            <option value="Individual Online">Individual Online</option>
+                            <option value="Terapia de Casal">Terapia de Casal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="minor-fields" class="hidden p-4 bg-brand-50 border border-brand-200 rounded-lg space-y-3">
+                    <h4 class="font-bold text-xs uppercase text-brand-900">Informações do Responsável Legal</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600">Nome do Responsável *</label>
+                            <input type="text" id="p-guardian-name" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600">Grau de Parentesco *</label>
+                            <input type="text" id="p-guardian-relation" placeholder="Ex: Mãe, Pai, Tutor" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600">Telefone do Responsável *</label>
+                            <input type="tel" id="p-guardian-phone" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600">E-mail do Responsável</label>
+                            <input type="email" id="p-guardian-email" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Endereço Completo</label>
+                    <input type="text" id="p-address" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Observações Iniciais</label>
+                    <textarea id="p-notes" rows="2" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeModal('modal-patient')" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold">Salvar Paciente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-session" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
+                <h3 class="font-bold text-brand-900">Registrar / Agendar Sessão</h3>
+                <button onclick="closeModal('modal-session')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="form-session" onsubmit="saveSession(event)" class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Data *</label>
+                        <input type="date" id="s-date" required class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Horário *</label>
+                        <input type="time" id="s-time" required class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Modalidade</label>
+                        <select id="s-modality" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                            <option value="Presencial">Presencial</option>
+                            <option value="Online">Online</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status da Sessão *</label>
+                        <select id="s-status" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                            <option value="AGENDADA">Agendada</option>
+                            <option value="REALIZADA">Realizada</option>
+                            <option value="CANCELADA">Cancelada</option>
+                            <option value="FALTA">Falta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Valor (R$) *</label>
+                        <input type="number" step="0.01" id="s-value" required placeholder="150.00" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Status Pagamento *</label>
+                        <select id="s-pay-status" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                            <option value="PENDENTE">Pendente</option>
+                            <option value="PAGO">Pago</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeModal('modal-session')" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold">Salvar Sessão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-evolution" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
+                <div>
+                    <h3 class="font-bold text-brand-900" id="evo-modal-title">Evolução do Prontuário</h3>
+                    <p class="text-xs text-brand-700" id="evo-modal-subtitle">Profissional: Daniele Sousa Santos (CRP: 22/07398)</p>
+                </div>
+                <button onclick="closeModal('modal-evolution')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <form id="form-evolution" onsubmit="saveEvolution(event)" class="p-6 space-y-4 overflow-y-auto flex-1">
+                <input type="hidden" id="evo-session-id">
+                
+                <div id="evo-feedback" class="hidden p-3 rounded-lg text-xs font-semibold"></div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">1. Queixa Principal / Relato *</label>
+                    <textarea id="evo-q1" required rows="3" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500" placeholder="Descreva os relados trazidos pelo paciente..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">2. Demanda Trabalhada *</label>
+                    <textarea id="evo-q2" required rows="3" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500" placeholder="Especifique os temas e intervenções abordadas na sessão..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">3. Descrição Detalhada da Sessão *</label>
+                    <textarea id="evo-q3" required rows="4" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500" placeholder="Detalhamento técnico do decorrer da sessão..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">4. Análise Técnica e Evolução *</label>
+                    <textarea id="evo-q4" required rows="4" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500" placeholder="Apreciação comportamental, hipóteses e direcionamentos futuros..."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeModal('modal-evolution')" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm flex items-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i> SALVAR EVOLUÇÃO
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-pdf" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
+                <h3 class="font-bold text-brand-900">Exportar Prontuário em PDF</h3>
+                <button onclick="closeModal('modal-pdf')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tipo de Exportação</label>
+                    <select id="pdf-export-type" onchange="togglePDFPeriodInputs()" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm">
+                        <option value="COMPLETE">Prontuário Completo (Sem Limites)</option>
+                        <option value="PERIOD">Filtrar Por Período</option>
+                    </select>
+                </div>
+
+                <div id="pdf-period-inputs" class="hidden space-y-3 p-3 bg-slate-50 border rounded-lg">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600">Data Inicial</label>
+                        <input type="date" id="pdf-start-date" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600">Data Final</label>
+                        <input type="date" id="pdf-end-date" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-800">
+                    <strong>Garantia de Integridade:</strong> O documento gerado incluirá integralmente o histórico cadastral, todas as sessões e textos de evolução sem resumos, sem limites artificiais de páginas e identificando a profissional responsável.
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-pdf')" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600">Cancelar</button>
+                    <button onclick="generatePDF()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> Gerar Documento PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-template-container" class="hidden"></div>
 
     <script>
-        /**
-         * BANCO DE DADOS PERSISTENTE INDEXEDDB
-         * Garante que evoluções e pacientes fiquem salvos localmente antes de gerar qualquer PDF.
-         */
-        class LocalDatabase {
-            constructor() {
-                this.dbName = 'ProntuarioPsico_DanieleSousa';
-                this.version = 1;
-                this.db = null;
-            }
+        // CORE APP STATE
+        const APP = {
+            professional: {
+                name: "Daniele Sousa Santos",
+                title: "Psicóloga",
+                crp: "22/07398"
+            },
+            currentView: 'dashboard',
+            currentPatientId: null,
+            patients: [],
+            sessions: [],
+            evolutions: [],
+            receipts: [],
+            documents: [],
+            generatedPdfs: []
+        };
 
-            async init() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(this.dbName, this.version);
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            lucide.createIcons();
+            navigateTo('dashboard');
+        });
 
-                    request.onupgradeneeded = (e) => {
-                        const db = e.target.result;
-                        if (!db.objectStoreNames.contains('pacientes')) {
-                            db.createObjectStore('pacientes', { keyPath: 'id' });
-                        }
-                        if (!db.objectStoreNames.contains('sessoes')) {
-                            const store = db.createObjectStore('sessoes', { keyPath: 'id' });
-                            store.createIndex('pacienteId', 'pacienteId', { unique: false });
-                        }
-                        if (!db.objectStoreNames.contains('evolucoes')) {
-                            const store = db.createObjectStore('evolucoes', { keyPath: 'id' });
-                            store.createIndex('sessaoId', 'sessaoId', { unique: true });
-                            store.createIndex('pacienteId', 'pacienteId', { unique: false });
-                        }
-                        if (!db.objectStoreNames.contains('pdfs')) {
-                            const store = db.createObjectStore('pdfs', { keyPath: 'id' });
-                            store.createIndex('pacienteId', 'pacienteId', { unique: false });
-                        }
-                    };
-
-                    request.onsuccess = (e) => {
-                        this.db = e.target.result;
-                        resolve();
-                    };
-                    request.onerror = () => reject('Erro ao inicializar o banco de dados local.');
-                });
-            }
-
-            async getAll(storeName) {
-                return new Promise((resolve) => {
-                    const tx = this.db.transaction(storeName, 'readonly');
-                    const store = tx.objectStore(storeName);
-                    const req = store.getAll();
-                    req.onsuccess = () => resolve(req.result || []);
-                });
-            }
-
-            async getById(storeName, id) {
-                return new Promise((resolve) => {
-                    const tx = this.db.transaction(storeName, 'readonly');
-                    const store = tx.objectStore(storeName);
-                    const req = store.get(id);
-                    req.onsuccess = () => resolve(req.result);
-                });
-            }
-
-            async getByIndex(storeName, indexName, value) {
-                return new Promise((resolve) => {
-                    const tx = this.db.transaction(storeName, 'readonly');
-                    const store = tx.objectStore(storeName);
-                    const index = store.index(indexName);
-                    const req = index.getAll(value);
-                    req.onsuccess = () => resolve(req.result || []);
-                });
-            }
-
-            async put(storeName, data) {
-                return new Promise((resolve, reject) => {
-                    const tx = this.db.transaction(storeName, 'readwrite');
-                    const store = tx.objectStore(storeName);
-                    const req = store.put(data);
-                    req.onsuccess = () => resolve(data);
-                    req.onerror = () => reject('Falha ao gravar no banco de dados.');
-                });
-            }
-
-            async delete(storeName, id) {
-                return new Promise((resolve) => {
-                    const tx = this.db.transaction(storeName, 'readwrite');
-                    const store = tx.objectStore(storeName);
-                    store.delete(id);
-                    tx.oncomplete = () => resolve();
-                });
-            }
+        // LOCAL STORAGE MANAGEMENT
+        function saveToStorage() {
+            localStorage.setItem('psy_patients', JSON.stringify(APP.patients));
+            localStorage.setItem('psy_sessions', JSON.stringify(APP.sessions));
+            localStorage.setItem('psy_evolutions', JSON.stringify(APP.evolutions));
+            localStorage.setItem('psy_receipts', JSON.stringify(APP.receipts));
+            localStorage.setItem('psy_documents', JSON.stringify(APP.documents));
+            localStorage.setItem('psy_generated_pdfs', JSON.stringify(APP.generatedPdfs));
         }
 
-        /**
-         * LÓGICA PRINCIPAL DO SISTEMA
-         */
-        class ProntuarioApp {
-            constructor() {
-                this.db = new LocalDatabase();
-                this.historyStack = [];
-                this.currentView = 'login';
-                this.currentParams = null;
-                this.authenticated = false;
-                this.hasUnsavedChanges = false;
-            }
-
-            async init() {
-                await this.db.init();
-                this.render();
-            }
-
-            showToast(msg, isError = false) {
-                const toast = document.getElementById('toast');
-                toast.innerHTML = msg;
-                toast.className = `fixed top-16 right-4 z-50 p-4 rounded-xl shadow-2xl text-white font-bold transition-all duration-300 ${
-                    isError ? 'bg-red-600 border-2 border-red-800' : 'bg-green-600 border-2 border-green-800'
-                }`;
-                toast.classList.remove('hidden');
-                setTimeout(() => toast.classList.add('hidden'), 4500);
-            }
-
-            navigate(view, params = null, pushHistory = true) {
-                if (this.hasUnsavedChanges) {
-                    if (!confirm("⚠️ Você possui alterações não salvas na evolução! Deseja realmente sair sem salvar?")) {
-                        return;
-                    }
-                    this.hasUnsavedChanges = false;
-                }
-
-                if (pushHistory && this.currentView && this.currentView !== 'login') {
-                    this.historyStack.push({ view: this.currentView, params: this.currentParams });
-                }
-                this.currentView = view;
-                this.currentParams = params;
-
-                const btnBack = document.getElementById('btn-back');
-                if (this.historyStack.length > 0 && this.authenticated) {
-                    btnBack.classList.remove('hidden');
-                } else {
-                    btnBack.classList.add('hidden');
-                }
-
-                this.render();
-            }
-
-            goBack() {
-                if (this.hasUnsavedChanges) {
-                    if (!confirm("⚠️ Você possui alterações não salvas na evolução! Deseja realmente voltar sem salvar?")) {
-                        return;
-                    }
-                    this.hasUnsavedChanges = false;
-                }
-
-                if (this.historyStack.length > 0) {
-                    const last = this.historyStack.pop();
-                    this.currentView = last.view;
-                    this.currentParams = last.params;
-                    if (this.historyStack.length === 0) {
-                        document.getElementById('btn-back').classList.add('hidden');
-                    }
-                    this.render();
-                }
-            }
-
-            logout() {
-                this.authenticated = false;
-                this.historyStack = [];
-                document.getElementById('main-nav').classList.add('hidden');
-                document.getElementById('btn-back').classList.add('hidden');
-                this.navigate('login', null, false);
-            }
-
-            async render() {
-                const container = document.getElementById('app-content');
-                container.innerHTML = '';
-
-                if (!this.authenticated && this.currentView !== 'login') {
-                    this.currentView = 'login';
-                }
-
-                switch (this.currentView) {
-                    case 'login':
-                        this.renderLogin(container);
-                        break;
-                    case 'dashboard':
-                        await this.renderDashboard(container);
-                        break;
-                    case 'pacientes':
-                        await this.renderPacientes(container);
-                        break;
-                    case 'cadastro-paciente':
-                        await this.renderCadastroPaciente(container, this.currentParams);
-                        break;
-                    case 'prontuario':
-                        await this.renderProntuario(container, this.currentParams);
-                        break;
-                    case 'evolucao-form':
-                        await this.renderEvolucaoForm(container, this.currentParams);
-                        break;
-                    case 'financeiro':
-                        await this.renderFinanceiro(container);
-                        break;
-                    default:
-                        this.renderLogin(container);
-                }
-            }
-
-            // -----------------------------------------------------------------
-            // LOGIN E AUTENTICAÇÃO
-            // -----------------------------------------------------------------
-            renderLogin(container) {
-                container.innerHTML = `
-                    <div class="max-w-md mx-auto mt-12 bg-white p-8 rounded-2xl shadow-xl border-t-8 border-rosebrand-600 space-y-6">
-                        <div class="text-center">
-                            <h2 class="text-2xl font-bold text-rosebrand-900">Acesso ao Prontuário</h2>
-                            <p class="text-sm text-gray-500 mt-1"> Daniele Sousa Santos | CRP 22/07398</p>
-                        </div>
-                        <form onsubmit="app.handleLogin(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700">Usuário / E-mail</label>
-                                <input type="text" id="login-user" required value="daniele.psico" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700">Senha</label>
-                                <input type="password" id="login-pass" required value="123456" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                            </div>
-                            <button type="submit" class="w-full bg-rosebrand-600 hover:bg-rosebrand-700 text-white font-bold py-3 rounded-xl transition shadow-md">
-                                Entrar no Sistema
-                            </button>
-                        </form>
-                    </div>
-                `;
-            }
-
-            handleLogin(e) {
-                e.preventDefault();
-                this.authenticated = true;
-                document.getElementById('main-nav').classList.remove('hidden');
-                this.showToast('🟢 Login realizado com sucesso!');
-                this.navigate('dashboard', null, false);
-            }
-
-            // -----------------------------------------------------------------
-            // DASHBOARD COM ALERTAS VERMELHOS CLICÁVEIS
-            // -----------------------------------------------------------------
-            async renderDashboard(container) {
-                const pacientes = await this.db.getAll('pacientes');
-                const sessoes = await this.db.getAll('sessoes');
-                const evolucoes = await this.db.getAll('evolucoes');
-
-                const ativos = pacientes.filter(p => p.status === 'Ativo').length;
-                const inativos = pacientes.filter(p => p.status === 'Inativo').length;
-
-                const realizadas = sessoes.filter(s => s.status === 'Realizada').length;
-                const agendadas = sessoes.filter(s => s.status === 'Agendada').length;
-                const faltas = sessoes.filter(s => s.status === 'Falta' || s.status === 'Cancelada').length;
-
-                let recebido = 0;
-                let pendente = 0;
-                sessoes.forEach(s => {
-                    const val = parseFloat(s.valor || 0);
-                    if (s.pago) recebido += val;
-                    else pendente += val;
-                });
-
-                // Mapeamento de Pendências Locais
-                const pendencias = [];
-                for (let s of sessoes) {
-                    const pac = pacientes.find(p => p.id === s.pacienteId);
-                    const pacNome = pac ? pac.nome : 'Paciente Desconhecido';
-
-                    if (s.status === 'Realizada') {
-                        const evo = evolucoes.find(e => e.sessaoId === s.id);
-                        if (!evo) {
-                            pendencias.push({
-                                msg: `🔴 Sessão realizada sem evolução salva: ${pacNome} (${s.data})`,
-                                action: () => this.navigate('evolucao-form', { pacienteId: s.pacienteId, sessaoId: s.id })
-                            });
-                        }
-                        if (s.pago && !s.reciboAnexado) {
-                            pendencias.push({
-                                msg: `🔴 Pagamento recebido sem recibo: ${pacNome} (${s.data})`,
-                                action: () => this.navigate('prontuario', s.pacienteId)
-                            });
-                        }
-                    }
-                }
-
-                container.innerHTML = `
-                    <div class="space-y-6">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                            <div>
-                                <h2 class="text-2xl font-bold text-rosebrand-900">Painel Geral (Dashboard)</h2>
-                                <p class="text-xs text-gray-500">Acompanhamento e alertas do consultório</p>
-                            </div>
-                            <button onclick="app.navigate('cadastro-paciente')" class="bg-rosebrand-600 hover:bg-rosebrand-700 text-white font-bold px-4 py-2 rounded-xl shadow transition">
-                                + Cadastrar Novo Paciente
-                            </button>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-rosebrand-600">
-                                <p class="text-xs font-bold text-gray-500 uppercase">Pacientes</p>
-                                <p class="text-2xl font-extrabold text-gray-800 mt-1">${pacientes.length}</p>
-                                <p class="text-xs text-gray-400 mt-1">${ativos} Ativos | ${inativos} Inativos</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-rosebrand-600">
-                                <p class="text-xs font-bold text-gray-500 uppercase">Sessões</p>
-                                <p class="text-2xl font-extrabold text-gray-800 mt-1">${realizadas}</p>
-                                <p class="text-xs text-gray-400 mt-1">${agendadas} Agendadas | ${faltas} Faltas/Canc.</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-green-500">
-                                <p class="text-xs font-bold text-gray-500 uppercase">Recebido</p>
-                                <p class="text-2xl font-extrabold text-green-600 mt-1">R$ ${recebido.toFixed(2)}</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-red-500">
-                                <p class="text-xs font-bold text-gray-500 uppercase">Pendente</p>
-                                <p class="text-2xl font-extrabold text-red-600 mt-1">R$ ${pendente.toFixed(2)}</p>
-                            </div>
-                        </div>
-
-                        <!-- AVISOS E PENDÊNCIAS VERMELHAS -->
-                        <div class="bg-white p-6 rounded-xl shadow space-y-3">
-                            <h3 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                                Avisos e Pendências do Consultório
-                            </h3>
-                            ${pendencias.length === 0 ? `
-                                <p class="text-sm text-green-700 font-semibold bg-green-50 p-3 rounded-lg border border-green-200">
-                                    🟢 Todas as evoluções e documentos estão em dia no sistema!
-                                </p>
-                            ` : `
-                                <div class="space-y-2">
-                                    ${pendencias.map((p, idx) => `
-                                        <div class="bg-red-50 border border-red-200 p-3 rounded-lg flex justify-between items-center text-sm font-semibold text-red-900">
-                                            <span>${p.msg}</span>
-                                            <button onclick="app.executependencia(${idx})" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg transition">
-                                                Resolver
-                                            </button>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            `}
-                        </div>
-                    </div>
-                `;
-
-                this._tempPendencias = pendencias;
-            }
-
-            executependencia(idx) {
-                if (this._tempPendencias && this._tempPendencias[idx]) {
-                    this._tempPendencias[idx].action();
-                }
-            }
-
-            // -----------------------------------------------------------------
-            // LISTA E FILTRO DE PACIENTES
-            // -----------------------------------------------------------------
-            async renderPacientes(container) {
-                const pacientes = await this.db.getAll('pacientes');
-
-                container.innerHTML = `
-                    <div class="space-y-6">
-                        <div class="flex justify-between items-center">
-                            <h2 class="text-2xl font-bold text-rosebrand-900">Gestão de Pacientes</h2>
-                            <button onclick="app.navigate('cadastro-paciente')" class="bg-rosebrand-600 hover:bg-rosebrand-700 text-white font-bold px-4 py-2 rounded-xl shadow transition">
-                                + Novo Paciente
-                            </button>
-                        </div>
-
-                        <div class="bg-white p-4 rounded-xl shadow flex flex-col md:flex-row gap-4">
-                            <input type="text" id="filter-search" oninput="app.filterPacientes()" placeholder="Pesquisar por nome do paciente..." class="flex-1 border border-rosebrand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                            <select id="filter-status" onchange="app.filterPacientes()" class="border border-rosebrand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                                <option value="TODOS">Todos os Status</option>
-                                <option value="Ativo" selected>Ativos</option>
-                                <option value="Inativo">Inativos</option>
-                            </select>
-                            <select id="filter-tipo" onchange="app.filterPacientes()" class="border border-rosebrand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                                <option value="TODOS">Todos os Tipos</option>
-                                <option value="Adulto">Adulto</option>
-                                <option value="Infantil">Infantil</option>
-                            </select>
-                        </div>
-
-                        <div class="bg-white rounded-xl shadow overflow-hidden border border-rosebrand-100">
-                            <table class="w-full text-left border-collapse">
-                                <thead class="bg-rosebrand-100 text-rosebrand-900 text-xs font-bold uppercase">
-                                    <tr>
-                                        <th class="p-4">Paciente</th>
-                                        <th class="p-4">Tipo</th>
-                                        <th class="p-4">Contato</th>
-                                        <th class="p-4">Status</th>
-                                        <th class="p-4 text-right">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="pacientes-table-body" class="divide-y divide-rosebrand-50 text-sm">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-
-                this._cachedPacientes = pacientes;
-                this.filterPacientes();
-            }
-
-            filterPacientes() {
-                const search = (document.getElementById('filter-search')?.value || '').toLowerCase();
-                const status = document.getElementById('filter-status')?.value || 'TODOS';
-                const tipo = document.getElementById('filter-tipo')?.value || 'TODOS';
-
-                const list = this._cachedPacientes.filter(p => {
-                    const mSearch = p.nome.toLowerCase().includes(search);
-                    const mStatus = status === 'TODOS' || p.status === status;
-                    const mTipo = tipo === 'TODOS' || p.tipoAtendimento === tipo;
-                    return mSearch && mStatus && mTipo;
-                });
-
-                const tbody = document.getElementById('pacientes-table-body');
-                if (!tbody) return;
-
-                if (list.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-gray-500">Nenhum paciente encontrado.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = list.map(p => `
-                    <tr class="hover:bg-rosebrand-50/50 transition">
-                        <td class="p-4 font-bold text-gray-900">${p.nome}</td>
-                        <td class="p-4">
-                            <span class="px-2 py-1 rounded-full text-xs font-bold ${p.tipoAtendimento === 'Infantil' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
-                                ${p.tipoAtendimento}
-                            </span>
-                        </td>
-                        <td class="p-4 text-gray-600">${p.telefone || '-'}</td>
-                        <td class="p-4">
-                            <span class="px-2 py-1 rounded-full text-xs font-bold ${p.status === 'Ativo' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}">
-                                ${p.status}
-                            </span>
-                        </td>
-                        <td class="p-4 text-right space-x-2">
-                            <button onclick="app.navigate('prontuario', '${p.id}')" class="bg-rosebrand-600 hover:bg-rosebrand-700 text-white text-xs px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
-                                Abrir Prontuário
-                            </button>
-                            <button onclick="app.navigate('cadastro-paciente', '${p.id}')" class="text-xs text-rosebrand-700 hover:underline font-semibold">Editar</button>
-                            <button onclick="app.togglePacienteStatus('${p.id}')" class="text-xs text-gray-500 hover:underline">
-                                ${p.status === 'Ativo' ? 'Inativar' : 'Reativar'}
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            async togglePacienteStatus(id) {
-                const pac = await this.db.getById('pacientes', id);
-                if (pac) {
-                    pac.status = pac.status === 'Ativo' ? 'Inativo' : 'Ativo';
-                    await this.db.put('pacientes', pac);
-                    this.showToast(`Status do paciente alterado para ${pac.status}.`);
-                    this.renderPacientes(document.getElementById('app-content'));
-                }
-            }
-
-            // -----------------------------------------------------------------
-            // CADASTRO DE PACIENTES (SEMPRE PERSISTIDO)
-            // -----------------------------------------------------------------
-            async renderCadastroPaciente(container, pacienteId = null) {
-                let pac = null;
-                if (pacienteId) {
-                    pac = await this.db.getById('pacientes', pacienteId);
-                }
-
-                container.innerHTML = `
-                    <div class="max-w-2xl mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 border-t-4 border-rosebrand-600">
-                        <h2 class="text-xl font-bold text-rosebrand-900">${pac ? 'Editar Paciente' : 'Cadastrar Novo Paciente'}</h2>
-                        
-                        <form onsubmit="app.savePaciente(event, '${pacienteId || ''}')" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700">Nome Completo do Paciente *</label>
-                                <input type="text" id="p-nome" required value="${pac?.nome || ''}" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700">Tipo de Atendimento *</label>
-                                    <select id="p-tipo" onchange="app.toggleInfantilFields(this.value)" required class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                                        <option value="Adulto" ${pac?.tipoAtendimento === 'Adulto' ? 'selected' : ''}>Adulto</option>
-                                        <option value="Infantil" ${pac?.tipoAtendimento === 'Infantil' ? 'selected' : ''}>Infantil</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700">Telefone / WhatsApp</label>
-                                    <input type="text" id="p-telefone" value="${pac?.telefone || ''}" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700">E-mail</label>
-                                <input type="email" id="p-email" value="${pac?.email || ''}" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                            </div>
-
-                            <div id="infantil-fields" class="${pac?.tipoAtendimento === 'Infantil' ? '' : 'hidden'} border-t border-rosebrand-100 pt-4 space-y-3">
-                                <h3 class="text-sm font-bold text-rosebrand-800">Dados do Responsável Legal (Atendimento Infantil)</h3>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700">Nome do Responsável</label>
-                                    <input type="text" id="p-resp-nome" value="${pac?.responsavel?.nome || ''}" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700">Parentesco</label>
-                                        <input type="text" id="p-resp-parentesco" value="${pac?.responsavel?.parentesco || ''}" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700">Telefone do Responsável</label>
-                                        <input type="text" id="p-resp-tel" value="${pac?.responsavel?.telefone || ''}" class="w-full border border-rosebrand-200 rounded-lg p-2.5 mt-1 focus:ring-2 focus:ring-rosebrand-500 outline-none">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-end space-x-3 pt-4">
-                                <button type="button" onclick="app.goBack()" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100">Cancelar</button>
-                                <button type="submit" class="px-6 py-2.5 bg-rosebrand-600 hover:bg-rosebrand-700 text-white font-bold text-sm rounded-lg shadow transition">
-                                    Salvar Cadastro
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                `;
-            }
-
-            toggleInfantilFields(val) {
-                const fields = document.getElementById('infantil-fields');
-                if (val === 'Infantil') fields.classList.remove('hidden');
-                else fields.classList.add('hidden');
-            }
-
-            async savePaciente(e, pacienteId) {
-                e.preventDefault();
-                const pacienteData = {
-                    id: pacienteId || 'pac_' + Date.now(),
-                    nome: document.getElementById('p-nome').value.trim(),
-                    tipoAtendimento: document.getElementById('p-tipo').value,
-                    telefone: document.getElementById('p-telefone').value.trim(),
-                    email: document.getElementById('p-email').value.trim(),
-                    status: 'Ativo',
-                    responsavel: {
-                        nome: document.getElementById('p-resp-nome')?.value.trim() || '',
-                        parentesco: document.getElementById('p-resp-parentesco')?.value.trim() || '',
-                        telefone: document.getElementById('p-resp-tel')?.value.trim() || ''
-                    },
-                    dataRegistro: new Date().toISOString()
-                };
-
-                await this.db.put('pacientes', pacienteData);
-                this.showToast('🟢 Paciente salvo com sucesso no banco de dados!');
-                this.navigate('prontuario', pacienteData.id);
-            }
-
-            // -----------------------------------------------------------------
-            // PRONTUÁRIO INDIVIDUAL DO PACIENTE
-            // -----------------------------------------------------------------
-            async renderProntuario(container, pacienteId) {
-                const pac = await this.db.getById('pacientes', pacienteId);
-                if (!pac) {
-                    container.innerHTML = `<p class="text-red-600 font-bold">Paciente não encontrado.</p>`;
-                    return;
-                }
-
-                const sessoes = await this.db.getByIndex('sessoes', 'pacienteId', pacienteId);
-                const evolucoes = await this.db.getByIndex('evolucoes', 'pacienteId', pacienteId);
-                const pdfs = await this.db.getByIndex('pdfs', 'pacienteId', pacienteId);
-
-                sessoes.sort((a, b) => new Date(b.data) - new Date(a.data));
-
-                container.innerHTML = `
-                    <div class="space-y-6">
-                        <!-- BANNER DO PACIENTE COM CRP -->
-                        <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-rosebrand-600 space-y-2">
-                            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-                                <div>
-                                    <h2 class="text-2xl font-bold text-gray-900">${pac.nome}</h2>
-                                    <p class="text-sm text-gray-600 mt-1">
-                                        Atendimento: <strong>${pac.tipoAtendimento}</strong> | 
-                                        Contato: ${pac.telefone || 'N/A'} | 
-                                        Status: <span class="font-bold ${pac.status === 'Ativo' ? 'text-green-600' : 'text-gray-500'}">${pac.status}</span>
-                                    </p>
-                                    ${pac.tipoAtendimento === 'Infantil' ? `
-                                        <p class="text-xs text-purple-700 font-semibold mt-1">
-                                            Responsável: ${pac.responsavel?.nome} (${pac.responsavel?.parentesco}) - Tel: ${pac.responsavel?.telefone}
-                                        </p>
-                                    ` : ''}
-                                </div>
-                                <div class="flex flex-wrap gap-2">
-                                    <button onclick="app.criarSessaoRapida('${pac.id}')" class="bg-rosebrand-600 hover:bg-rosebrand-700 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow">
-                                        + Nova Sessão
-                                    </button>
-                                    <button onclick="app.gerarPDFIntegralDoProntuario('${pac.id}')" class="bg-purple-700 hover:bg-purple-800 text-white font-bold text-sm px-4 py-2 rounded-xl transition shadow">
-                                        📄 GERAR PDF INTEGRAL
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SEÇÃO DE SESSÕES E EVOLUÇÕES -->
-                        <div class="bg-white p-6 rounded-2xl shadow-md space-y-4">
-                            <h3 class="text-lg font-bold text-rosebrand-900 border-b border-rosebrand-100 pb-2">
-                                Histórico de Sessões e Evoluções Registradas
-                            </h3>
-
-                            ${sessoes.length === 0 ? `
-                                <p class="text-sm text-gray-500 py-4">Nenhuma sessão registrada para este paciente.</p>
-                            ` : `
-                                <div class="space-y-4">
-                                    ${sessoes.map(s => {
-                                        const evo = evolucoes.find(e => e.sessaoId === s.id);
-                                        return `
-                                            <div class="border border-rosebrand-100 rounded-xl p-4 bg-rosebrand-50/20 space-y-3">
-                                                <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-rosebrand-100 pb-2">
-                                                    <div>
-                                                        <span class="font-bold text-gray-900 text-base">Sessão: ${s.data} (${s.horario})</span>
-                                                        <span class="ml-2 text-xs px-2 py-0.5 rounded font-bold ${
-                                                            s.status === 'Realizada' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                                                        }">${s.status}</span>
-                                                    </div>
-                                                    <div class="flex items-center space-x-2 text-sm">
-                                                        <span class="font-bold text-gray-700">R$ ${parseFloat(s.valor || 0).toFixed(2)}</span>
-                                                        <button onclick="app.togglePagamento('${s.id}')" class="text-xs px-2 py-1 rounded font-bold ${s.pago ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}">
-                                                            ${s.pago ? 'Pago' : 'Pendente'}
-                                                        </button>
-                                                        <button onclick="app.toggleRecibo('${s.id}')" class="text-xs px-2 py-1 rounded border border-gray-300 font-semibold ${s.reciboAnexado ? 'bg-green-50 text-green-700 border-green-300' : 'bg-red-50 text-red-600 border-red-300'}">
-                                                            ${s.reciboAnexado ? '🟢 Recibo Anexado' : '🔴 Sem Recibo'}
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                <!-- EXIBIÇÃO DA EVOLUÇÃO -->
-                                                <div>
-                                                    ${evo ? `
-                                                        <div class="bg-white p-4 rounded-xl border border-rosebrand-200 space-y-2">
-                                                            <div class="flex justify-between items-center">
-                                                                <span class="text-xs font-bold text-green-700 uppercase">🟢 EVOLUÇÃO SALVA NO PRONTUÁRIO</span>
-                                                                <button onclick="app.navigate('evolucao-form', { pacienteId: '${pac.id}', sessaoId: '${s.id}' })" class="text-xs bg-rosebrand-100 hover:bg-rosebrand-200 text-rosebrand-800 font-bold px-3 py-1 rounded">
-                                                                    ✏️ Editar Evolução
-                                                                </button>
-                                                            </div>
-                                                            <div class="text-xs text-gray-700 space-y-1.5">
-                                                                <p><strong>1. Queixa Principal / Relato:</strong> ${evo.queixa}</p>
-                                                                <p><strong>2. Demanda Trabalhada:</strong> ${evo.demanda}</p>
-                                                                <p><strong>3. Descrição Detalhada da Sessão:</strong> ${evo.descricao}</p>
-                                                                <p><strong>4. Análise Técnica e Evolução:</strong> ${evo.analise}</p>
-                                                            </div>
-                                                        </div>
-                                                    ` : `
-                                                        <div class="flex justify-between items-center bg-red-50 p-3 rounded-xl border border-red-200">
-                                                            <span class="text-xs font-bold text-red-700">🔴 SESSÃO REALIZADA SEM EVOLUÇÃO SALVA</span>
-                                                            <button onclick="app.navigate('evolucao-form', { pacienteId: '${pac.id}', sessaoId: '${s.id}' })" class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg shadow">
-                                                                Preencher e Salvar Evolução
-                                                            </button>
-                                                        </div>
-                                                    `}
-                                                </div>
-                                            </div>
-                                        `;
-                                    }).join('')}
-                                </div>
-                            `}
-                        </div>
-                    </div>
-                `;
-            }
-
-            async criarSessaoRapida(pacienteId) {
-                const dataStr = prompt("Data da sessão (AAAA-MM-DD):", new Date().toISOString().split('T')[0]);
-                if (!dataStr) return;
-
-                const novaSessao = {
-                    id: 'ses_' + Date.now(),
-                    pacienteId: pacienteId,
-                    data: dataStr,
-                    horario: '14:00',
-                    status: 'Realizada',
-                    valor: 150.00,
-                    pago: false,
-                    reciboAnexado: false
-                };
-
-                await this.db.put('sessoes', novaSessao);
-                this.showToast('Sessão registrada com sucesso!');
-                this.render();
-            }
-
-            async togglePagamento(sessaoId) {
-                const s = await this.db.getById('sessoes', sessaoId);
-                if (s) {
-                    s.pago = !s.pago;
-                    await this.db.put('sessoes', s);
-                    this.showToast('Status financeiro atualizado!');
-                    this.render();
-                }
-            }
-
-            async toggleRecibo(sessaoId) {
-                const s = await this.db.getById('sessoes', sessaoId);
-                if (s) {
-                    s.reciboAnexado = !s.reciboAnexado;
-                    await this.db.put('sessoes', s);
-                    this.showToast('Status do recibo atualizado!');
-                    this.render();
-                }
-            }
-
-            // -----------------------------------------------------------------
-            // FORMULÁRIO DE EVOLUÇÃO (REGRA DA PERSISTÊNCIA COMPLETA)
-            // -----------------------------------------------------------------
-            async renderEvolucaoForm(container, params) {
-                const { pacienteId, sessaoId } = params;
-                const pac = await this.db.getById('pacientes', pacienteId);
-                const sessao = await this.db.getById('sessoes', sessaoId);
-                const evolucoes = await this.db.getByIndex('evolucoes', 'sessaoId', sessaoId);
-                const evo = evolucoes.length > 0 ? evolucoes[0] : null;
-
-                container.innerHTML = `
-                    <div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 border-t-4 border-rosebrand-600">
-                        <div>
-                            <h2 class="text-xl font-bold text-rosebrand-900">Evolução do Prontuário Psicológico</h2>
-                            <p class="text-xs text-gray-600 mt-1">
-                                Paciente: <strong class="text-gray-900">${pac.nome}</strong> | Sessão: <strong class="text-gray-900">${sessao.data} (${sessao.horario})</strong>
-                            </p>
-                        </div>
-
-                        <form id="form-evolucao" onsubmit="app.salvarEvolucaoComConfirmacao(event, '${pacienteId}', '${sessaoId}')" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">1. Queixa Principal / Relato</label>
-                                <textarea id="evo-queixa" rows="3" required oninput="app.hasUnsavedChanges = true" class="w-full border border-rosebrand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-rosebrand-500 outline-none">${evo?.queixa || ''}</textarea>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">2. Demanda Trabalhada</label>
-                                <textarea id="evo-demanda" rows="3" required oninput="app.hasUnsavedChanges = true" class="w-full border border-rosebrand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-rosebrand-500 outline-none">${evo?.demanda || ''}</textarea>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">3. Descrição Detalhada da Sessão</label>
-                                <textarea id="evo-descricao" rows="5" required oninput="app.hasUnsavedChanges = true" class="w-full border border-rosebrand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-rosebrand-500 outline-none">${evo?.descricao || ''}</textarea>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">4. Análise Técnica e Evolução</label>
-                                <textarea id="evo-analise" rows="5" required oninput="app.hasUnsavedChanges = true" class="w-full border border-rosebrand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-rosebrand-500 outline-none">${evo?.analise || ''}</textarea>
-                            </div>
-
-                            <div class="p-4 bg-rosebrand-50 rounded-xl border border-rosebrand-200 flex flex-col md:flex-row justify-between items-center gap-3">
-                                <span class="text-xs font-semibold text-rosebrand-900">
-                                    ⚠️ REGRA: A evolução é persistida no banco de dados do sistema ANTES de qualquer geração de PDF.
-                                </span>
-                                <div class="flex space-x-2">
-                                    <button type="button" onclick="app.goBack()" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100">Cancelar</button>
-                                    <button type="submit" class="px-6 py-2.5 bg-rosebrand-600 hover:bg-rosebrand-700 text-white font-bold text-sm rounded-lg shadow transition">
-                                        💾 SALVAR EVOLUÇÃO
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                `;
-            }
-
-            async salvarEvolucaoComConfirmacao(e, pacienteId, sessaoId) {
-                e.preventDefault();
-                try {
-                    const evolucoes = await this.db.getByIndex('evolucoes', 'sessaoId', sessaoId);
-                    const evoExistente = evolucoes.length > 0 ? evolucoes[0] : null;
-
-                    const novaEvolucao = {
-                        id: evoExistente ? evoExistente.id : 'evo_' + Date.now(),
-                        pacienteId: pacienteId,
-                        sessaoId: sessaoId,
-                        queixa: document.getElementById('evo-queixa').value.trim(),
-                        demanda: document.getElementById('evo-demanda').value.trim(),
-                        descricao: document.getElementById('evo-descricao').value.trim(),
-                        analise: document.getElementById('evo-analise').value.trim(),
-                        dataModificacao: new Date().toISOString()
-                    };
-
-                    await this.db.put('evolucoes', novaEvolucao);
-                    this.hasUnsavedChanges = false;
-
-                    this.showToast('🟢 EVOLUÇÃO SALVA COM SUCESSO');
-                    this.navigate('prontuario', pacienteId);
-                } catch (err) {
-                    this.showToast('🔴 ERRO AO SALVAR EVOLUÇÃO NO BANCO DE DADOS.', true);
-                }
-            }
-
-            // -----------------------------------------------------------------
-            // GERAÇÃO DE PDF INTEGRAL COM CABEÇALHO OFICIAL (CRP 22/07398)
-            // -----------------------------------------------------------------
-            async gerarPDFIntegralDoProntuario(pacienteId) {
-                const pac = await this.db.getById('pacientes', pacienteId);
-                const sessoes = await this.db.getByIndex('sessoes', 'pacienteId', pacienteId);
-                const evolucoes = await this.db.getByIndex('evolucoes', 'pacienteId', pacienteId);
-
-                if (sessoes.length === 0) {
-                    this.showToast('Não há sessões no prontuário para gerar o PDF.', true);
-                    return;
-                }
-
-                this.showToast('Buscando dados salvos no prontuário para montar o PDF Integral...');
-
-                const renderArea = document.getElementById('pdf-render-area');
-                renderArea.classList.remove('hidden');
-
-                renderArea.innerHTML = `
-                    <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.4;">
-                        <!-- CABEÇALHO OFICIAL EM TODAS AS PÁGINAS DO DOCUMENTO -->
-                        <div style="border-bottom: 2px solid #be123c; padding-bottom: 8px; margin-bottom: 16px; text-align: center;">
-                            <h1 style="color: #be123c; font-size: 18px; font-weight: bold; margin: 0; text-transform: uppercase;">DANIELE SOUSA SANTOS</h1>
-                            <p style="font-size: 12px; font-weight: bold; color: #444; margin: 2px 0 0 0;">Psicóloga — CRP 22/07398</p>
-                            <p style="font-size: 10px; color: #666; margin: 2px 0 0 0;">Documento Oficial do Prontuário Eletrônico Psicológico</p>
-                        </div>
-
-                        <!-- IDENTIFICAÇÃO COMPLETA DO PACIENTE -->
-                        <div style="background-color: #fff1f2; border: 1px solid #fecdd3; padding: 10px; border-radius: 6px; margin-bottom: 16px; font-size: 11px;">
-                            <p style="margin: 2px 0;"><strong>PACIENTE:</strong> ${pac.nome}</p>
-                            <p style="margin: 2px 0;"><strong>MODALIDADE DE ATENDIMENTO:</strong> ${pac.tipoAtendimento}</p>
-                            <p style="margin: 2px 0;"><strong>CONTATO:</strong> ${pac.telefone || 'Não informado'}</p>
-                            ${pac.tipoAtendimento === 'Infantil' ? `<p style="margin: 2px 0;"><strong>RESPONSÁVEL LEGAL:</strong> ${pac.responsavel?.nome} (${pac.responsavel?.parentesco}) - Tel: ${pac.responsavel?.telefone}</p>` : ''}
-                            <p style="margin: 2px 0;"><strong>DATA DE EMISSÃO DO DOCUMENTO:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
-                        </div>
-
-                        <h3 style="font-size: 13px; color: #be123c; border-bottom: 1px solid #ddd; padding-bottom: 4px; font-weight: bold;">EVOLUÇÕES CLÍNICAS REGISTRADAS</h3>
-
-                        ${sessoes.map(s => {
-                            const evo = evolucoes.find(e => e.sessaoId === s.id);
-                            return `
-                                <div class="pdf-avoid-break" style="margin-top: 12px; border: 1px solid #e5e7eb; padding: 10px; border-radius: 6px; font-size: 10.5px;">
-                                    <p style="background-color: #f9fafb; padding: 4px 6px; font-weight: bold; color: #111; margin-top: 0; border-bottom: 1px solid #eee;">
-                                        SESSÃO REALIZADA EM: ${s.data} (${s.horario}) — STATUS: ${s.status}
-                                    </p>
-                                    ${evo ? `
-                                        <div style="margin-top: 6px;">
-                                            <p style="margin: 4px 0;"><strong>1. Queixa Principal / Relato:</strong><br>${evo.queixa.replace(/\n/g, '<br>')}</p>
-                                            <p style="margin: 4px 0;"><strong>2. Demanda Trabalhada:</strong><br>${evo.demanda.replace(/\n/g, '<br>')}</p>
-                                            <p style="margin: 4px 0;"><strong>3. Descrição Detalhada da Sessão:</strong><br>${evo.descricao.replace(/\n/g, '<br>')}</p>
-                                            <p style="margin: 4px 0;"><strong>4. Análise Técnica e Evolução:</strong><br>${evo.analise.replace(/\n/g, '<br>')}</p>
-                                        </div>
-                                    ` : `
-                                        <p style="color: #dc2626; font-style: italic;">[Evolução pendente no sistema local]</p>
-                                    `}
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-
-                const opt = {
-                    margin:       10,
-                    filename:     `Prontuario_${pac.nome.replace(/\s+/g, '_')}_CRP2207398.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2 },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-
-                html2pdf().set(opt).from(renderArea).save().then(() => {
-                    renderArea.classList.add('hidden');
-                    renderArea.innerHTML = '';
-                    this.showToast('🟢 PDF Integral gerado com sucesso!');
-                });
-            }
-
-            // -----------------------------------------------------------------
-            // FINANCEIRO
-            // -----------------------------------------------------------------
-            async renderFinanceiro(container) {
-                const sessoes = await this.db.getAll('sessoes');
-                const pacientes = await this.db.getAll('pacientes');
-
-                let totalRecebido = 0;
-                let totalPendente = 0;
-
-                sessoes.forEach(s => {
-                    const val = parseFloat(s.valor || 0);
-                    if (s.pago) totalRecebido += val;
-                    else totalPendente += val;
-                });
-
-                container.innerHTML = `
-                    <div class="space-y-6">
-                        <h2 class="text-2xl font-bold text-rosebrand-900">Resumo e Controle Financeiro</h2>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-green-500">
-                                <p class="text-sm font-bold text-gray-500">Total Recebido</p>
-                                <p class="text-3xl font-extrabold text-green-600 mt-1">R$ ${totalRecebido.toFixed(2)}</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-red-500">
-                                <p class="text-sm font-bold text-gray-500">Total Pendente</p>
-                                <p class="text-3xl font-extrabold text-red-600 mt-1">R$ ${totalPendente.toFixed(2)}</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-rosebrand-100">
-                            <table class="w-full text-left border-collapse">
-                                <thead class="bg-rosebrand-100 text-rosebrand-900 text-xs font-bold uppercase">
-                                    <tr>
-                                        <th class="p-4">Data</th>
-                                        <th class="p-4">Paciente</th>
-                                        <th class="p-4">Valor</th>
-                                        <th class="p-4">Pagamento</th>
-                                        <th class="p-4">Recibo</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-rosebrand-50 text-sm">
-                                    ${sessoes.map(s => {
-                                        const pac = pacientes.find(p => p.id === s.pacienteId);
-                                        return `
-                                            <tr class="hover:bg-rosebrand-50/50">
-                                                <td class="p-4">${s.data}</td>
-                                                <td class="p-4 font-bold text-gray-900">${pac ? pac.nome : 'N/A'}</td>
-                                                <td class="p-4 font-semibold">R$ ${parseFloat(s.valor || 0).toFixed(2)}</td>
-                                                <td class="p-4">
-                                                    <span class="px-2 py-1 rounded text-xs font-bold ${s.pago ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
-                                                        ${s.pago ? 'Pago' : 'Pendente'}
-                                                    </span>
-                                                </td>
-                                                <td class="p-4 font-bold text-xs ${s.reciboAnexado ? 'text-green-600' : 'text-red-600'}">
-                                                    ${s.reciboAnexado ? '🟢 Anexado' : '🔴 Sem Recibo'}
-                                                </td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            }
+        function loadFromStorage() {
+            APP.patients = JSON.parse(localStorage.getItem('psy_patients')) || [];
+            APP.sessions = JSON.parse(localStorage.getItem('psy_sessions')) || [];
+            APP.evolutions = JSON.parse(localStorage.getItem('psy_evolutions')) || [];
+            APP.receipts = JSON.parse(localStorage.getItem('psy_receipts')) || [];
+            APP.documents = JSON.parse(localStorage.getItem('psy_documents')) || [];
+            APP.generatedPdfs = JSON.parse(localStorage.getItem('psy_generated_pdfs')) || [];
         }
 
-        // Instanciação da Aplicação
-        const app = new ProntuarioApp();
-        window.addEventListener('DOMContentLoaded', () => app.init());
-    </script>
-</body>
-</html>
+        // NAVIGATION CONTROL
+        function navigateTo(viewName, patientId = null) {
+            APP.currentView = viewName;
+            
+            // Hide all views
+            document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+            
+            // Reset nav button styling
+            ['dashboard', 'patients', 'financial'].forEach(nav => {
+                const btn = document.getElementById(`nav-${nav}`);
+                if (btn) {
+                    btn.classList.remove('bg-brand-50', 'text-brand-700');
+                    btn.classList.add('text-slate-60
