@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestão de Prontuário Psicológico</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
@@ -38,16 +41,11 @@
             background: #ffffff;
             padding: 20px;
         }
-        .page-break {
-            page-break-after: always;
-        }
-        @media print {
-            .no-print { display: none !important; }
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
+    <!-- HEADER / NAVIGATION -->
     <header class="bg-white border-b border-brand-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -62,39 +60,42 @@
                 </div>
 
                 <nav class="hidden md:flex items-center gap-1">
-                    <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 hover:bg-brand-50 text-brand-700">
+                    <button type="button" onclick="navigateTo('dashboard')" id="nav-dashboard" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 hover:bg-brand-50 text-brand-700">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
                     </button>
-                    <button onclick="navigateTo('patients')" id="nav-patients" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 text-slate-600 hover:bg-brand-50 hover:text-brand-700">
+                    <button type="button" onclick="navigateTo('patients')" id="nav-patients" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 text-slate-600 hover:bg-brand-50 hover:text-brand-700">
                         <i data-lucide="users" class="w-4 h-4"></i> Pacientes
                     </button>
-                    <button onclick="navigateTo('financial')" id="nav-financial" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 text-slate-600 hover:bg-brand-50 hover:text-brand-700">
+                    <button type="button" onclick="navigateTo('financial')" id="nav-financial" class="px-3 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 text-slate-600 hover:bg-brand-50 hover:text-brand-700">
                         <i data-lucide="dollar-sign" class="w-4 h-4"></i> Financeiro
                     </button>
                 </nav>
 
                 <div class="flex items-center gap-2">
-                    <button onclick="openPatientModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors shadow-sm">
+                    <button type="button" onclick="openPatientModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors shadow-sm">
                         <i data-lucide="user-plus" class="w-4 h-4"></i> Novo Paciente
                     </button>
                 </div>
             </div>
         </div>
+        <!-- Mobile Navigation Bar -->
         <div class="md:hidden flex justify-around border-t border-slate-100 bg-brand-50 py-2">
-            <button onclick="navigateTo('dashboard')" class="text-xs flex flex-col items-center gap-1 text-brand-700 font-semibold">
+            <button type="button" onclick="navigateTo('dashboard')" class="text-xs flex flex-col items-center gap-1 text-brand-700 font-semibold">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
             </button>
-            <button onclick="navigateTo('patients')" class="text-xs flex flex-col items-center gap-1 text-slate-600">
+            <button type="button" onclick="navigateTo('patients')" class="text-xs flex flex-col items-center gap-1 text-slate-600">
                 <i data-lucide="users" class="w-4 h-4"></i> Pacientes
             </button>
-            <button onclick="navigateTo('financial')" class="text-xs flex flex-col items-center gap-1 text-slate-600">
+            <button type="button" onclick="navigateTo('financial')" class="text-xs flex flex-col items-center gap-1 text-slate-600">
                 <i data-lucide="dollar-sign" class="w-4 h-4"></i> Financeiro
             </button>
         </div>
     </header>
 
+    <!-- MAIN CONTAINER -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
+        <!-- VIEW: DASHBOARD -->
         <section id="view-dashboard" class="space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
                 <div>
@@ -107,6 +108,7 @@
                 </div>
             </div>
 
+            <!-- METRIC CARDS -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                     <span class="text-xs font-semibold text-slate-500 uppercase">Pacientes Ativos</span>
@@ -130,6 +132,7 @@
                 </div>
             </div>
 
+            <!-- ALERT SECTION (PENDENCIES) -->
             <div class="bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden">
                 <div class="bg-red-50 px-4 py-3 border-b border-red-200 flex items-center gap-2">
                     <i data-lucide="alert-circle" class="w-5 h-5 text-red-600"></i>
@@ -143,6 +146,7 @@
             </div>
         </section>
 
+        <!-- VIEW: PATIENTS LIST -->
         <section id="view-patients" class="space-y-6 hidden">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
                 <div>
@@ -151,6 +155,7 @@
                 </div>
             </div>
 
+            <!-- FILTERS & SEARCH -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4">
                 <div class="flex-1 relative">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
@@ -170,6 +175,7 @@
                 </div>
             </div>
 
+            <!-- PATIENT CARDS / TABLE -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -184,19 +190,22 @@
                             </tr>
                         </thead>
                         <tbody id="patients-table-body" class="divide-y divide-slate-100 text-sm">
-                            </tbody>
+                            <!-- Injected via JS -->
+                        </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
+        <!-- VIEW: INDIVIDUAL PATIENT DETAILS / MEDICAL RECORD -->
         <section id="view-patient-detail" class="space-y-6 hidden">
             <div class="flex items-center gap-2">
-                <button onclick="navigateTo('patients')" class="text-slate-600 hover:text-brand-600 flex items-center gap-1 font-medium text-sm bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+                <button type="button" onclick="navigateTo('patients')" class="text-slate-600 hover:text-brand-600 flex items-center gap-1 font-medium text-sm bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i> Voltar para Lista
                 </button>
             </div>
 
+            <!-- PATIENT HEADER CARD -->
             <div class="bg-white p-6 rounded-xl border border-brand-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <div class="flex items-center gap-3">
@@ -206,39 +215,45 @@
                     <p class="text-xs text-slate-500 mt-1" id="detail-patient-meta">Adulto | CPF: 000.000.000-00 | Início: 01/01/2026</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button id="btn-toggle-status" onclick="togglePatientStatus()" class="px-3 py-2 border rounded-lg text-sm font-semibold transition-colors">
+                    <button type="button" id="btn-toggle-status" onclick="togglePatientStatus()" class="px-3 py-2 border rounded-lg text-sm font-semibold transition-colors">
                         Inativar Paciente
                     </button>
-                    <button onclick="openGeneratePDFModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm">
+                    <button type="button" onclick="openGeneratePDFModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm">
                         <i data-lucide="file-text" class="w-4 h-4"></i> Exportar Prontuário PDF
                     </button>
                 </div>
             </div>
 
+            <!-- TABS -->
             <div class="border-b border-slate-200 flex gap-4 overflow-x-auto">
-                <button onclick="switchPatientTab('info')" id="tab-btn-info" class="pb-3 border-b-2 font-bold text-sm border-brand-600 text-brand-600">Dados Cadastrais</button>
-                <button onclick="switchPatientTab('sessions')" id="tab-btn-sessions" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Sessões & Evoluções</button>
-                <button onclick="switchPatientTab('financial')" id="tab-btn-financial" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Financeiro & Recibos</button>
-                <button onclick="switchPatientTab('pdfs')" id="tab-btn-pdfs" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Histórico de PDFs & Anexos</button>
+                <button type="button" onclick="switchPatientTab('info')" id="tab-btn-info" class="pb-3 border-b-2 font-bold text-sm border-brand-600 text-brand-600">Dados Cadastrais</button>
+                <button type="button" onclick="switchPatientTab('sessions')" id="tab-btn-sessions" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Sessões & Evoluções</button>
+                <button type="button" onclick="switchPatientTab('financial')" id="tab-btn-financial" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Financeiro & Recibos</button>
+                <button type="button" onclick="switchPatientTab('pdfs')" id="tab-btn-pdfs" class="pb-3 border-b-2 font-bold text-sm border-transparent text-slate-500 hover:text-slate-800">Histórico de PDFs & Anexos</button>
             </div>
 
+            <!-- TAB CONTENT: DATA -->
             <div id="tab-content-info" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <h3 class="font-bold text-slate-900 border-b pb-2">Informações Detalhadas</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm" id="detail-info-grid">
-                    </div>
+                    <!-- Injected via JS -->
+                </div>
             </div>
 
+            <!-- TAB CONTENT: SESSIONS & EVOLUTIONS -->
             <div id="tab-content-sessions" class="space-y-6 hidden">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200">
                     <h3 class="font-bold text-slate-900">Histórico de Sessões</h3>
-                    <button onclick="openSessionModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1">
+                    <button type="button" onclick="openSessionModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1">
                         <i data-lucide="plus" class="w-4 h-4"></i> Agendar / Registrar Sessão
                     </button>
                 </div>
                 <div id="sessions-list" class="space-y-4">
-                    </div>
+                    <!-- Injected via JS -->
+                </div>
             </div>
 
+            <!-- TAB CONTENT: FINANCIAL -->
             <div id="tab-content-financial" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 hidden">
                 <h3 class="font-bold text-slate-900 border-b pb-2">Histórico Financeiro do Paciente</h3>
                 <div class="overflow-x-auto">
@@ -253,11 +268,13 @@
                             </tr>
                         </thead>
                         <tbody id="patient-financial-table" class="divide-y divide-slate-100">
-                            </tbody>
+                            <!-- Injected via JS -->
+                        </tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- TAB CONTENT: PDFS & ATTACHMENTS -->
             <div id="tab-content-pdfs" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 hidden">
                 <div class="flex justify-between items-center border-b pb-2">
                     <h3 class="font-bold text-slate-900">PDFs Gerados e Documentos Anexados</h3>
@@ -267,10 +284,12 @@
                     </label>
                 </div>
                 <ul id="patient-docs-list" class="divide-y divide-slate-100 text-sm">
-                    </ul>
+                    <!-- Injected via JS -->
+                </ul>
             </div>
         </section>
 
+        <!-- VIEW: GENERAL FINANCIAL -->
         <section id="view-financial" class="space-y-6 hidden">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
                 <div>
@@ -306,7 +325,8 @@
                             </tr>
                         </thead>
                         <tbody id="general-financial-table" class="divide-y divide-slate-100">
-                            </tbody>
+                            <!-- Injected via JS -->
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -314,11 +334,12 @@
 
     </main>
 
+    <!-- MODAL: PATIENT REGISTRATION / EDIT -->
     <div id="modal-patient" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
                 <h3 class="font-bold text-brand-900" id="modal-patient-title">Cadastrar Novo Paciente</h3>
-                <button onclick="closeModal('modal-patient')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button type="button" onclick="closeModal('modal-patient')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form id="form-patient" onsubmit="savePatient(event)" class="p-6 space-y-4">
                 <input type="hidden" id="patient-id">
@@ -405,11 +426,12 @@
         </div>
     </div>
 
+    <!-- MODAL: SESSION REGISTRATION -->
     <div id="modal-session" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
                 <h3 class="font-bold text-brand-900">Registrar / Agendar Sessão</h3>
-                <button onclick="closeModal('modal-session')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button type="button" onclick="closeModal('modal-session')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form id="form-session" onsubmit="saveSession(event)" class="p-6 space-y-4">
                 <div class="grid grid-cols-2 gap-4">
@@ -464,6 +486,7 @@
         </div>
     </div>
 
+    <!-- MODAL: EVOLUTION / PRONTUÁRIO -->
     <div id="modal-evolution" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
@@ -471,7 +494,7 @@
                     <h3 class="font-bold text-brand-900" id="evo-modal-title">Evolução do Prontuário</h3>
                     <p class="text-xs text-brand-700" id="evo-modal-subtitle">Profissional: Daniele Sousa Santos (CRP: 22/07398)</p>
                 </div>
-                <button onclick="closeModal('modal-evolution')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button type="button" onclick="closeModal('modal-evolution')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
             <form id="form-evolution" onsubmit="saveEvolution(event)" class="p-6 space-y-4 overflow-y-auto flex-1">
@@ -509,11 +532,12 @@
         </div>
     </div>
 
+    <!-- MODAL: PDF GENERATION -->
     <div id="modal-pdf" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-brand-50">
                 <h3 class="font-bold text-brand-900">Exportar Prontuário em PDF</h3>
-                <button onclick="closeModal('modal-pdf')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button type="button" onclick="closeModal('modal-pdf')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="p-6 space-y-4">
                 <div>
@@ -541,7 +565,7 @@
 
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('modal-pdf')" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600">Cancelar</button>
-                    <button onclick="generatePDF()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2">
+                    <button type="button" onclick="generatePDF()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold flex items-center gap-2">
                         <i data-lucide="download" class="w-4 h-4"></i> Gerar Documento PDF
                     </button>
                 </div>
@@ -549,10 +573,11 @@
         </div>
     </div>
 
+    <!-- CONTAINER FOR PDF GENERATION -->
     <div id="pdf-template-container" class="hidden"></div>
 
+    <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        // CORE APP STATE
         const APP = {
             professional: {
                 name: "Daniele Sousa Santos",
@@ -569,14 +594,18 @@
             generatedPdfs: []
         };
 
-        // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
             loadFromStorage();
-            lucide.createIcons();
+            refreshIcons();
             navigateTo('dashboard');
         });
 
-        // LOCAL STORAGE MANAGEMENT
+        function refreshIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
         function saveToStorage() {
             localStorage.setItem('psy_patients', JSON.stringify(APP.patients));
             localStorage.setItem('psy_sessions', JSON.stringify(APP.sessions));
@@ -595,16 +624,786 @@
             APP.generatedPdfs = JSON.parse(localStorage.getItem('psy_generated_pdfs')) || [];
         }
 
-        // NAVIGATION CONTROL
         function navigateTo(viewName, patientId = null) {
             APP.currentView = viewName;
             
-            // Hide all views
             document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
             
-            // Reset nav button styling
             ['dashboard', 'patients', 'financial'].forEach(nav => {
                 const btn = document.getElementById(`nav-${nav}`);
                 if (btn) {
                     btn.classList.remove('bg-brand-50', 'text-brand-700');
-                    btn.classList.add('text-slate-60
+                    btn.classList.add('text-slate-600');
+                }
+            });
+
+            const activeNav = document.getElementById(`nav-${viewName}`);
+            if (activeNav) {
+                activeNav.classList.add('bg-brand-50', 'text-brand-700');
+                activeNav.classList.remove('text-slate-600');
+            }
+
+            if (viewName === 'dashboard') {
+                renderDashboard();
+                document.getElementById('view-dashboard').classList.remove('hidden');
+            } else if (viewName === 'patients') {
+                renderPatientsList();
+                document.getElementById('view-patients').classList.remove('hidden');
+            } else if (viewName === 'patient-detail' && patientId) {
+                APP.currentPatientId = patientId;
+                renderPatientDetail();
+                document.getElementById('view-patient-detail').classList.remove('hidden');
+            } else if (viewName === 'financial') {
+                renderFinancialView();
+                document.getElementById('view-financial').classList.remove('hidden');
+            }
+
+            refreshIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openModal(id) { 
+            document.getElementById(id).classList.remove('hidden'); 
+            refreshIcons();
+        }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function renderDashboard() {
+            const activePatients = APP.patients.filter(p => p.status === 'ACTIVE').length;
+            const inactivePatients = APP.patients.filter(p => p.status === 'INACTIVE').length;
+            
+            const completedSessions = APP.sessions.filter(s => s.status === 'REALIZADA').length;
+            const scheduledSessions = APP.sessions.filter(s => s.status === 'AGENDADA').length;
+
+            const now = new Date();
+            const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+            let receivedAmount = 0;
+            let pendingAmount = 0;
+
+            APP.sessions.forEach(s => {
+                const sessionMonth = s.date.substring(0, 7);
+                if (sessionMonth === currentMonthStr) {
+                    if (s.payStatus === 'PAGO') receivedAmount += parseFloat(s.value || 0);
+                    else pendingAmount += parseFloat(s.value || 0);
+                }
+            });
+
+            document.getElementById('dash-active-patients').innerText = activePatients;
+            document.getElementById('dash-inactive-patients').innerText = `${inactivePatients} inativos`;
+            document.getElementById('dash-completed-sessions').innerText = completedSessions;
+            document.getElementById('dash-scheduled-sessions').innerText = `${scheduledSessions} agendadas`;
+            document.getElementById('dash-received-amount').innerText = `R$ ${receivedAmount.toFixed(2)}`;
+            document.getElementById('dash-pending-amount').innerText = `R$ ${pendingAmount.toFixed(2)} pendente`;
+
+            const alertsList = document.getElementById('dash-alerts-list');
+            alertsList.innerHTML = '';
+            let alertCount = 0;
+
+            APP.sessions.filter(s => s.status === 'REALIZADA').forEach(s => {
+                const hasEvo = APP.evolutions.some(e => e.sessionId === s.id);
+                if (!hasEvo) {
+                    alertCount++;
+                    const patient = APP.patients.find(p => p.id === s.patientId);
+                    alertsList.innerHTML += `
+                        <li class="flex items-center justify-between py-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2 text-red-600 font-medium">
+                                🔴 <strong>Sessão sem evolução:</strong> ${patient ? patient.name : 'Paciente'} (${formatDate(s.date)})
+                            </span>
+                            <button type="button" onclick="navigateTo('patient-detail', '${s.patientId}')" class="text-xs bg-red-100 hover:bg-red-200 text-red-800 px-2 py-1 rounded">Resolver</button>
+                        </li>`;
+                }
+            });
+
+            APP.sessions.filter(s => s.payStatus === 'PAGO').forEach(s => {
+                const hasReceipt = APP.receipts.some(r => r.sessionId === s.id);
+                if (!hasReceipt) {
+                    alertCount++;
+                    const patient = APP.patients.find(p => p.id === s.patientId);
+                    alertsList.innerHTML += `
+                        <li class="flex items-center justify-between py-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2 text-red-600 font-medium">
+                                🔴 <strong>Pagamento sem recibo:</strong> ${patient ? patient.name : 'Paciente'} - R$ ${parseFloat(s.value).toFixed(2)} (${formatDate(s.date)})
+                            </span>
+                            <button type="button" onclick="navigateTo('patient-detail', '${s.patientId}')" class="text-xs bg-red-100 hover:bg-red-200 text-red-800 px-2 py-1 rounded">Anexar Recibo</button>
+                        </li>`;
+                }
+            });
+
+            APP.patients.filter(p => p.status === 'ACTIVE').forEach(p => {
+                let missing = [];
+                if (!p.cpf) missing.push("CPF");
+                if (p.type === 'MINOR' && (!p.guardianName || !p.guardianPhone)) missing.push("Dados do Responsável");
+
+                if (missing.length > 0) {
+                    alertCount++;
+                    alertsList.innerHTML += `
+                        <li class="flex items-center justify-between py-2 border-b border-slate-100">
+                            <span class="flex items-center gap-2 text-red-600 font-medium">
+                                🔴 <strong>Cadastro Incompleto:</strong> ${p.name} (Faltando: ${missing.join(', ')})
+                            </span>
+                            <button type="button" onclick="navigateTo('patient-detail', '${p.id}')" class="text-xs bg-red-100 hover:bg-red-200 text-red-800 px-2 py-1 rounded">Completar</button>
+                        </li>`;
+                }
+            });
+
+            document.getElementById('dash-alerts-count').innerText = alertCount;
+            if (alertCount === 0) {
+                alertsList.innerHTML = `<li class="text-slate-500 py-2 text-center">Nenhuma pendência encontrada. Tudo em dia!</li>`;
+            }
+        }
+
+        function openPatientModal(patientId = null) {
+            document.getElementById('form-patient').reset();
+            document.getElementById('patient-id').value = '';
+            document.getElementById('modal-patient-title').innerText = 'Cadastrar Novo Paciente';
+            
+            if (patientId) {
+                const p = APP.patients.find(x => x.id === patientId);
+                if (p) {
+                    document.getElementById('patient-id').value = p.id;
+                    document.getElementById('p-name').value = p.name;
+                    document.getElementById('p-type').value = p.type;
+                    document.getElementById('p-dob').value = p.dob;
+                    document.getElementById('p-cpf').value = p.cpf || '';
+                    document.getElementById('p-phone').value = p.phone;
+                    document.getElementById('p-email').value = p.email || '';
+                    document.getElementById('p-start-date').value = p.startDate;
+                    document.getElementById('p-service-type').value = p.serviceType;
+                    document.getElementById('p-address').value = p.address || '';
+                    document.getElementById('p-notes').value = p.notes || '';
+
+                    if (p.type === 'MINOR') {
+                        document.getElementById('p-guardian-name').value = p.guardianName || '';
+                        document.getElementById('p-guardian-relation').value = p.guardianRelation || '';
+                        document.getElementById('p-guardian-phone').value = p.guardianPhone || '';
+                        document.getElementById('p-guardian-email').value = p.guardianEmail || '';
+                    }
+                    document.getElementById('modal-patient-title').innerText = 'Editar Dados do Paciente';
+                }
+            }
+            toggleMinorFields();
+            openModal('modal-patient');
+        }
+
+        function toggleMinorFields() {
+            const type = document.getElementById('p-type').value;
+            const container = document.getElementById('minor-fields');
+            if (type === 'MINOR') container.classList.remove('hidden');
+            else container.classList.add('hidden');
+        }
+
+        function savePatient(e) {
+            e.preventDefault();
+            const id = document.getElementById('patient-id').value || 'p_' + Date.now();
+            const existingIndex = APP.patients.findIndex(p => p.id === id);
+
+            const patientData = {
+                id,
+                name: document.getElementById('p-name').value.trim(),
+                type: document.getElementById('p-type').value,
+                dob: document.getElementById('p-dob').value,
+                cpf: document.getElementById('p-cpf').value.trim(),
+                phone: document.getElementById('p-phone').value.trim(),
+                email: document.getElementById('p-email').value.trim(),
+                startDate: document.getElementById('p-start-date').value,
+                serviceType: document.getElementById('p-service-type').value,
+                address: document.getElementById('p-address').value.trim(),
+                notes: document.getElementById('p-notes').value.trim(),
+                status: existingIndex >= 0 ? APP.patients[existingIndex].status : 'ACTIVE',
+                guardianName: document.getElementById('p-guardian-name').value.trim(),
+                guardianRelation: document.getElementById('p-guardian-relation').value.trim(),
+                guardianPhone: document.getElementById('p-guardian-phone').value.trim(),
+                guardianEmail: document.getElementById('p-guardian-email').value.trim()
+            };
+
+            if (existingIndex >= 0) APP.patients[existingIndex] = patientData;
+            else APP.patients.push(patientData);
+
+            saveToStorage();
+            closeModal('modal-patient');
+            
+            if (APP.currentView === 'patient-detail' && APP.currentPatientId === id) {
+                renderPatientDetail();
+            } else {
+                renderPatientsList();
+            }
+        }
+
+        function renderPatientsList() {
+            const search = document.getElementById('patient-search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('patient-filter-status').value;
+            const typeFilter = document.getElementById('patient-filter-type').value;
+
+            const tbody = document.getElementById('patients-table-body');
+            tbody.innerHTML = '';
+
+            const filtered = APP.patients.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(search) || (p.cpf && p.cpf.includes(search));
+                const matchesStatus = statusFilter === 'ALL' || p.status === statusFilter;
+                const matchesType = typeFilter === 'ALL' || p.type === typeFilter;
+                return matchesSearch && matchesStatus && matchesType;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Nenhum paciente encontrado.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const statusBadge = p.status === 'ACTIVE' 
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-bold">Ativo</span>`
+                    : `<span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-full font-bold">Inativo</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 font-bold text-slate-900">${p.name}</td>
+                        <td class="p-4 text-slate-600">${p.type === 'ADULT' ? 'Adulto' : 'Criança/Adolescente'}</td>
+                        <td class="p-4 text-slate-600">${p.phone}</td>
+                        <td class="p-4 text-slate-600">${formatDate(p.startDate)}</td>
+                        <td class="p-4">${statusBadge}</td>
+                        <td class="p-4 text-right">
+                            <button type="button" onclick="navigateTo('patient-detail', '${p.id}')" class="text-xs bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold px-3 py-1.5 rounded-lg border border-brand-200">
+                                Abrir Prontuário
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            refreshIcons();
+        }
+
+        function renderPatientDetail() {
+            const p = APP.patients.find(x => x.id === APP.currentPatientId);
+            if (!p) return navigateTo('patients');
+
+            document.getElementById('detail-patient-name').innerText = p.name;
+            document.getElementById('detail-patient-meta').innerText = `${p.type === 'ADULT' ? 'Adulto' : 'Criança/Adolescente'} | CPF: ${p.cpf || 'Não Informado'} | Início: ${formatDate(p.startDate)}`;
+
+            const badge = document.getElementById('detail-patient-status-badge');
+            const btnToggle = document.getElementById('btn-toggle-status');
+            
+            if (p.status === 'ACTIVE') {
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800";
+                badge.innerText = "Ativo";
+                btnToggle.className = "px-3 py-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-lg text-sm font-semibold transition-colors";
+                btnToggle.innerText = "Inativar Paciente";
+            } else {
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 text-slate-700";
+                badge.innerText = "Inativo";
+                btnToggle.className = "px-3 py-2 border border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-lg text-sm font-semibold transition-colors";
+                btnToggle.innerText = "Reativar Paciente";
+            }
+
+            const grid = document.getElementById('detail-info-grid');
+            grid.innerHTML = `
+                <div><strong class="block text-xs text-slate-400 uppercase">Data Nascimento:</strong> ${formatDate(p.dob)}</div>
+                <div><strong class="block text-xs text-slate-400 uppercase">Telefone:</strong> ${p.phone}</div>
+                <div><strong class="block text-xs text-slate-400 uppercase">E-mail:</strong> ${p.email || 'N/A'}</div>
+                <div><strong class="block text-xs text-slate-400 uppercase">Tipo Atendimento:</strong> ${p.serviceType}</div>
+                <div><strong class="block text-xs text-slate-400 uppercase">Endereço:</strong> ${p.address || 'N/A'}</div>
+                <div><strong class="block text-xs text-slate-400 uppercase">Observações:</strong> ${p.notes || 'Nenhum registro'}</div>
+                ${p.type === 'MINOR' ? `
+                    <div class="col-span-full border-t pt-2 mt-2 bg-slate-50 p-3 rounded-lg">
+                        <span class="font-bold text-slate-700 block mb-1">Dados do Responsável Legal</span>
+                        <p class="text-xs text-slate-600"><strong>Nome:</strong> ${p.guardianName} (${p.guardianRelation})</p>
+                        <p class="text-xs text-slate-600"><strong>Telefone:</strong> ${p.guardianPhone} | <strong>E-mail:</strong> ${p.guardianEmail || 'N/A'}</p>
+                    </div>
+                ` : ''}
+            `;
+
+            renderPatientSessionsTab();
+            renderPatientFinancialTab();
+            renderPatientDocsTab();
+            refreshIcons();
+        }
+
+        function togglePatientStatus() {
+            const p = APP.patients.find(x => x.id === APP.currentPatientId);
+            if (!p) return;
+            p.status = p.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+            saveToStorage();
+            renderPatientDetail();
+        }
+
+        function switchPatientTab(tabName) {
+            ['info', 'sessions', 'financial', 'pdfs'].forEach(t => {
+                document.getElementById(`tab-content-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (btn) {
+                    btn.classList.remove('border-brand-600', 'text-brand-600');
+                    btn.classList.add('border-transparent', 'text-slate-500');
+                }
+            });
+
+            document.getElementById(`tab-content-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.add('border-brand-600', 'text-brand-600');
+                activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            }
+            refreshIcons();
+        }
+
+        function openSessionModal() {
+            document.getElementById('form-session').reset();
+            openModal('modal-session');
+        }
+
+        function saveSession(e) {
+            e.preventDefault();
+            const session = {
+                id: 's_' + Date.now(),
+                patientId: APP.currentPatientId,
+                date: document.getElementById('s-date').value,
+                time: document.getElementById('s-time').value,
+                modality: document.getElementById('s-modality').value,
+                status: document.getElementById('s-status').value,
+                value: parseFloat(document.getElementById('s-value').value || 0),
+                payStatus: document.getElementById('s-pay-status').value
+            };
+
+            APP.sessions.push(session);
+            saveToStorage();
+            closeModal('modal-session');
+            renderPatientDetail();
+        }
+
+        function renderPatientSessionsTab() {
+            const container = document.getElementById('sessions-list');
+            container.innerHTML = '';
+
+            const pSessions = APP.sessions.filter(s => s.patientId === APP.currentPatientId)
+                                          .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            if (pSessions.length === 0) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-xl border border-slate-200 text-center text-slate-400">Nenhuma sessão registrada.</div>`;
+                return;
+            }
+
+            pSessions.forEach(s => {
+                const evo = APP.evolutions.find(e => e.sessionId === s.id);
+
+                let statusBadge = '';
+                if (s.status === 'REALIZADA') statusBadge = '<span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Realizada</span>';
+                else if (s.status === 'AGENDADA') statusBadge = '<span class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">Agendada</span>';
+                else statusBadge = '<span class="text-xs bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded">' + s.status + '</span>';
+
+                let evoBadge = evo 
+                    ? `<span class="text-xs text-emerald-700 font-bold flex items-center gap-1">🟢 Evolução Salva</span>`
+                    : (s.status === 'REALIZADA' ? `<span class="text-xs text-red-600 font-bold flex items-center gap-1">🔴 EVOLUÇÃO PENDENTE</span>` : '');
+
+                container.innerHTML += `
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-slate-900">${formatDate(s.date)} às ${s.time}</span>
+                                ${statusBadge}
+                                <span class="text-xs text-slate-500">(${s.modality})</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                ${evoBadge}
+                                <button type="button" onclick="openEvolutionModal('${s.id}')" class="text-xs bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold px-3 py-1.5 rounded-lg border border-brand-200">
+                                    ${evo ? 'Editar Evolução' : 'Registrar Evolução'}
+                                </button>
+                            </div>
+                        </div>
+
+                        ${evo ? `
+                            <div class="bg-slate-50 p-4 rounded-lg space-y-2 text-sm text-slate-700">
+                                <div><strong class="text-xs text-slate-500 uppercase block">1. Queixa Principal / Relato:</strong> <p class="whitespace-pre-line">${escapeHTML(evo.q1)}</p></div>
+                                <div><strong class="text-xs text-slate-500 uppercase block">2. Demanda Trabalhada:</strong> <p class="whitespace-pre-line">${escapeHTML(evo.q2)}</p></div>
+                                <div><strong class="text-xs text-slate-500 uppercase block">3. Descrição Detalhada:</strong> <p class="whitespace-pre-line">${escapeHTML(evo.q3)}</p></div>
+                                <div><strong class="text-xs text-slate-500 uppercase block">4. Análise Técnica:</strong> <p class="whitespace-pre-line">${escapeHTML(evo.q4)}</p></div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            refreshIcons();
+        }
+
+        function openEvolutionModal(sessionId) {
+            document.getElementById('form-evolution').reset();
+            document.getElementById('evo-session-id').value = sessionId;
+            document.getElementById('evo-feedback').className = "hidden";
+
+            const existingEvo = APP.evolutions.find(e => e.sessionId === sessionId);
+            if (existingEvo) {
+                document.getElementById('evo-q1').value = existingEvo.q1;
+                document.getElementById('evo-q2').value = existingEvo.q2;
+                document.getElementById('evo-q3').value = existingEvo.q3;
+                document.getElementById('evo-q4').value = existingEvo.q4;
+            }
+
+            openModal('modal-evolution');
+        }
+
+        function saveEvolution(e) {
+            e.preventDefault();
+            const sessionId = document.getElementById('evo-session-id').value;
+            const q1 = document.getElementById('evo-q1').value.trim();
+            const q2 = document.getElementById('evo-q2').value.trim();
+            const q3 = document.getElementById('evo-q3').value.trim();
+            const q4 = document.getElementById('evo-q4').value.trim();
+
+            const feedback = document.getElementById('evo-feedback');
+
+            if (!q1 || !q2 || !q3 || !q4) {
+                feedback.className = "p-3 rounded-lg text-xs font-semibold bg-red-100 text-red-800 block";
+                feedback.innerText = "Erro: Preencha todos os campos da evolução antes de salvar.";
+                return;
+            }
+
+            const existingIndex = APP.evolutions.findIndex(e => e.sessionId === sessionId);
+            const evoData = {
+                id: existingIndex >= 0 ? APP.evolutions[existingIndex].id : 'evo_' + Date.now(),
+                sessionId,
+                patientId: APP.currentPatientId,
+                updatedAt: new Date().toISOString(),
+                q1, q2, q3, q4
+            };
+
+            if (existingIndex >= 0) APP.evolutions[existingIndex] = evoData;
+            else APP.evolutions.push(evoData);
+
+            saveToStorage();
+
+            feedback.className = "p-3 rounded-lg text-xs font-semibold bg-emerald-100 text-emerald-800 block";
+            feedback.innerText = "EVOLUÇÃO SALVA COM SUCESSO!";
+
+            setTimeout(() => {
+                closeModal('modal-evolution');
+                renderPatientDetail();
+            }, 800);
+        }
+
+        function renderPatientFinancialTab() {
+            const tbody = document.getElementById('patient-financial-table');
+            tbody.innerHTML = '';
+
+            const pSessions = APP.sessions.filter(s => s.patientId === APP.currentPatientId);
+            if (pSessions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Nenhum registro financeiro.</td></tr>`;
+                return;
+            }
+
+            pSessions.forEach(s => {
+                const receipt = APP.receipts.find(r => r.sessionId === s.id);
+                const isPaid = s.payStatus === 'PAGO';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-3">${formatDate(s.date)}</td>
+                        <td class="p-3 font-bold">R$ ${parseFloat(s.value).toFixed(2)}</td>
+                        <td class="p-3">
+                            <select onchange="updatePayStatus('${s.id}', this.value)" class="text-xs border rounded p-1">
+                                <option value="PENDENTE" ${s.payStatus === 'PENDENTE' ? 'selected' : ''}>Pendente</option>
+                                <option value="PAGO" ${s.payStatus === 'PAGO' ? 'selected' : ''}>Pago</option>
+                            </select>
+                        </td>
+                        <td class="p-3">
+                            ${receipt ? `
+                                <span class="text-xs text-emerald-700 font-bold flex items-center gap-1">🟢 Recibo Anexado (${receipt.fileName})</span>
+                            ` : (isPaid ? `<span class="text-xs text-red-600 font-bold">🔴 RECIBO PENDENTE</span>` : '<span class="text-xs text-slate-400">Aguardando Pagamento</span>')}
+                        </td>
+                        <td class="p-3 text-right">
+                            <label class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2 py-1 rounded cursor-pointer">
+                                Upload Recibo
+                                <input type="file" accept="image/*,application/pdf" class="hidden" onchange="uploadReceipt(event, '${s.id}')">
+                            </label>
+                        </td>
+                    </tr>
+                `;
+            });
+            refreshIcons();
+        }
+
+        function updatePayStatus(sessionId, status) {
+            const s = APP.sessions.find(x => x.id === sessionId);
+            if (s) {
+                s.payStatus = status;
+                saveToStorage();
+                renderPatientDetail();
+            }
+        }
+
+        function uploadReceipt(event, sessionId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const receipt = {
+                id: 'rec_' + Date.now(),
+                sessionId,
+                patientId: APP.currentPatientId,
+                fileName: file.name,
+                uploadDate: new Date().toISOString()
+            };
+
+            APP.receipts.push(receipt);
+            saveToStorage();
+            renderPatientDetail();
+        }
+
+        function uploadPatientDocument(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const doc = {
+                id: 'doc_' + Date.now(),
+                patientId: APP.currentPatientId,
+                fileName: file.name,
+                uploadDate: new Date().toISOString()
+            };
+
+            APP.documents.push(doc);
+            saveToStorage();
+            renderPatientDetail();
+        }
+
+        function renderPatientDocsTab() {
+            const list = document.getElementById('patient-docs-list');
+            list.innerHTML = '';
+
+            const pDocs = APP.documents.filter(d => d.patientId === APP.currentPatientId);
+            const pPdfs = APP.generatedPdfs.filter(p => p.patientId === APP.currentPatientId);
+
+            if (pDocs.length === 0 && pPdfs.length === 0) {
+                list.innerHTML = `<li class="py-4 text-center text-slate-400">Nenhum PDF ou documento anexado/gerado.</li>`;
+                return;
+            }
+
+            pPdfs.forEach(p => {
+                list.innerHTML += `
+                    <li class="py-3 flex justify-between items-center">
+                        <div>
+                            <strong class="text-slate-800 block">${p.title}</strong>
+                            <span class="text-xs text-slate-400">Gerado em: ${new Date(p.createdAt).toLocaleString('pt-BR')} | Escopo: ${p.scope}</span>
+                        </div>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full">PDF de Prontuário</span>
+                    </li>
+                `;
+            });
+
+            pDocs.forEach(d => {
+                list.innerHTML += `
+                    <li class="py-3 flex justify-between items-center">
+                        <div>
+                            <strong class="text-slate-800 block">${d.fileName}</strong>
+                            <span class="text-xs text-slate-400">Anexado em: ${new Date(d.uploadDate).toLocaleString('pt-BR')}</span>
+                        </div>
+                        <span class="text-xs bg-blue-100 text-blue-800 font-bold px-2.5 py-1 rounded-full">Documento Anexo</span>
+                    </li>
+                `;
+            });
+            refreshIcons();
+        }
+
+        function renderFinancialView() {
+            const filterMonth = document.getElementById('financial-month-filter').value;
+            const tbody = document.getElementById('general-financial-table');
+            tbody.innerHTML = '';
+
+            let receivedTotal = 0;
+            let pendingTotal = 0;
+
+            const filteredSessions = APP.sessions.filter(s => {
+                if (!filterMonth) return true;
+                return s.date.substring(0, 7) === filterMonth;
+            });
+
+            filteredSessions.forEach(s => {
+                const patient = APP.patients.find(p => p.id === s.patientId);
+                const hasReceipt = APP.receipts.some(r => r.sessionId === s.id);
+                const val = parseFloat(s.value || 0);
+
+                if (s.payStatus === 'PAGO') receivedTotal += val;
+                else pendingTotal += val;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4">${formatDate(s.date)}</td>
+                        <td class="p-4 font-bold text-slate-900">${patient ? patient.name : 'N/A'}</td>
+                        <td class="p-4">R$ ${val.toFixed(2)}</td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 rounded text-xs font-bold ${s.payStatus === 'PAGO' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                ${s.payStatus}
+                            </span>
+                        </td>
+                        <td class="p-4 text-xs">
+                            ${hasReceipt ? '<span class="text-emerald-700 font-bold">🟢 Recibo Anexado</span>' : '<span class="text-red-600 font-bold">🔴 Sem Recibo</span>'}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('fin-total-received').innerText = `R$ ${receivedTotal.toFixed(2)}`;
+            document.getElementById('fin-total-pending').innerText = `R$ ${pendingTotal.toFixed(2)}`;
+            refreshIcons();
+        }
+
+        function openGeneratePDFModal() {
+            openModal('modal-pdf');
+        }
+
+        function togglePDFPeriodInputs() {
+            const type = document.getElementById('pdf-export-type').value;
+            const container = document.getElementById('pdf-period-inputs');
+            if (type === 'PERIOD') container.classList.remove('hidden');
+            else container.classList.add('hidden');
+        }
+
+        function generatePDF() {
+            const patient = APP.patients.find(p => p.id === APP.currentPatientId);
+            if (!patient) return;
+
+            const exportType = document.getElementById('pdf-export-type').value;
+            const startDate = document.getElementById('pdf-start-date').value;
+            const endDate = document.getElementById('pdf-end-date').value;
+
+            let patientSessions = APP.sessions.filter(s => s.patientId === patient.id)
+                                             .sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            if (exportType === 'PERIOD') {
+                if (startDate) patientSessions = patientSessions.filter(s => s.date >= startDate);
+                if (endDate) patientSessions = patientSessions.filter(s => s.date <= endDate);
+            }
+
+            const container = document.getElementById('pdf-template-container');
+            container.innerHTML = `
+                <div id="pdf-content" class="print-pdf-container">
+                    <div style="border-bottom: 2px solid #be185d; padding-bottom: 12px; margin-bottom: 20px;">
+                        <h1 style="font-size: 20px; color: #831843; margin: 0; font-weight: bold;">${APP.professional.name}</h1>
+                        <p style="margin: 2px 0; font-size: 13px; color: #475569;">${APP.professional.title} — CRP: ${APP.professional.crp}</p>
+                        <p style="margin: 2px 0; font-size: 11px; color: #64748b;">Documento Oficial de Prontuário Psicológico — Exportação Integral</p>
+                    </div>
+
+                    <div style="background: #fdf2f8; border: 1px solid #fbcfe8; border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                        <h2 style="font-size: 14px; color: #831843; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid #fbcfe8; padding-bottom: 4px;">IDENTIFICAÇÃO DO PACIENTE</h2>
+                        <table style="width: 100%; font-size: 11px; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 3px 0;"><strong>Nome:</strong> ${patient.name}</td>
+                                <td style="padding: 3px 0;"><strong>Data Nasc:</strong> ${formatDate(patient.dob)}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 0;"><strong>CPF:</strong> ${patient.cpf || 'Não Informado'}</td>
+                                <td style="padding: 3px 0;"><strong>Telefone:</strong> ${patient.phone}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 0;"><strong>Modalidade:</strong> ${patient.serviceType}</td>
+                                <td style="padding: 3px 0;"><strong>Início do Acompanhamento:</strong> ${formatDate(patient.startDate)}</td>
+                            </tr>
+                            ${patient.type === 'MINOR' ? `
+                            <tr>
+                                <td colspan="2" style="padding: 3px 0; border-top: 1px solid #fbcfe8; font-weight: bold;">
+                                    Responsável Legal: ${patient.guardianName} (${patient.guardianRelation}) - Tel: ${patient.guardianPhone}
+                                </td>
+                            </tr>
+                            ` : ''}
+                        </table>
+                    </div>
+
+                    <h2 style="font-size: 15px; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 20px;">HISTÓRICO INTEGRAL DE SESSÕES E EVOLUÇÕES</h2>
+                    
+                    ${patientSessions.length === 0 ? '<p style="font-size: 11px; color: #64748b;">Nenhuma sessão registrada no período selecionado.</p>' : ''}
+
+                    ${patientSessions.map((s, idx) => {
+                        const evo = APP.evolutions.find(e => e.sessionId === s.id);
+                        return `
+                            <div style="border: 1px solid #e2e8f0; border-radius: 6px; margin-top: 12px; padding: 12px; background: #ffffff; page-break-inside: avoid;">
+                                <div style="background: #f8fafc; padding: 6px 10px; border-radius: 4px; margin-bottom: 8px; font-size: 11px; font-weight: bold; color: #0f172a;">
+                                    Sessão #${idx + 1} — Data: ${formatDate(s.date)} às ${s.time} (${s.modality}) | Status: ${s.status}
+                                </div>
+
+                                ${evo ? `
+                                    <div style="font-size: 11px; color: #334155; line-height: 1.6;">
+                                        <p style="margin: 4px 0;"><strong>1. Queixa Principal / Relato:</strong><br>${escapeHTML(evo.q1)}</p>
+                                        <p style="margin: 8px 0 4px 0;"><strong>2. Demanda Trabalhada:</strong><br>${escapeHTML(evo.q2)}</p>
+                                        <p style="margin: 8px 0 4px 0;"><strong>3. Descrição Detalhada da Sessão:</strong><br>${escapeHTML(evo.q3)}</p>
+                                        <p style="margin: 8px 0 4px 0;"><strong>4. Análise Técnica e Evolução:</strong><br>${escapeHTML(evo.q4)}</p>
+                                    </div>
+                                ` : `<p style="font-size: 11px; color: #dc2626; font-style: italic;">Sessão realizada sem evolução registrada no sistema.</p>`}
+                            </div>
+                        `;
+                    }).join('')}
+
+                    <h2 style="font-size: 15px; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 30px;">REGISTRO FINANCEIRO VINCULADO</h2>
+                    <table style="width: 100%; font-size: 10px; border-collapse: collapse; margin-top: 8px;">
+                        <thead>
+                            <tr style="background: #f1f5f9; text-align: left;">
+                                <th style="padding: 6px; border: 1px solid #e2e8f0;">Data</th>
+                                <th style="padding: 6px; border: 1px solid #e2e8f0;">Valor</th>
+                                <th style="padding: 6px; border: 1px solid #e2e8f0;">Status Pagamento</th>
+                                <th style="padding: 6px; border: 1px solid #e2e8f0;">Comprovante / Recibo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${patientSessions.map(s => {
+                                const receipt = APP.receipts.find(r => r.sessionId === s.id);
+                                return `
+                                    <tr>
+                                        <td style="padding: 6px; border: 1px solid #e2e8f0;">${formatDate(s.date)}</td>
+                                        <td style="padding: 6px; border: 1px solid #e2e8f0;">R$ ${parseFloat(s.value).toFixed(2)}</td>
+                                        <td style="padding: 6px; border: 1px solid #e2e8f0;">${s.payStatus}</td>
+                                        <td style="padding: 6px; border: 1px solid #e2e8f0;">${receipt ? 'Anexado (' + receipt.fileName + ')' : 'Pendente'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 40px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 10px; color: #64748b;">
+                        <p>Daniele Sousa Santos — Psicóloga — CRP: 22/07398</p>
+                        <p>Prontuário Psicológico emitido sob conformidade técnica do Conselho Federal de Psicologia.</p>
+                    </div>
+                </div>
+            `;
+
+            const element = document.getElementById('pdf-content');
+            const filename = `Prontuario_${patient.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`;
+
+            const opt = {
+                margin:       [10, 10, 10, 10],
+                filename:     filename,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                const pdfLog = {
+                    id: 'pdf_' + Date.now(),
+                    patientId: patient.id,
+                    title: filename,
+                    createdAt: new Date().toISOString(),
+                    scope: exportType === 'COMPLETE' ? 'Prontuário Completo' : `Período (${startDate} a ${endDate})`
+                };
+                APP.generatedPdfs.push(pdfLog);
+                saveToStorage();
+                closeModal('modal-pdf');
+                renderPatientDetail();
+            });
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            const parts = dateStr.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dateStr;
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>
