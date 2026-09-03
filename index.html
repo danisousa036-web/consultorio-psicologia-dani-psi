@@ -10,7 +10,6 @@
             --secondary-color: #3498db;
             --accent-color: #27ae60;
             --danger-color: #e74c3c;
-            --warning-color: #f39c12;
             --bg-color: #f8f9fa;
             --card-bg: #ffffff;
             --text-color: #333333;
@@ -31,7 +30,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar & Layout */
         .sidebar {
             width: 250px;
             background-color: var(--primary-color);
@@ -47,7 +45,6 @@
             text-align: center;
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            word-break: break-all;
         }
 
         .nav-links {
@@ -67,7 +64,6 @@
             font-size: 1rem;
             cursor: pointer;
             border-radius: 4px;
-            transition: background 0.2s;
         }
 
         .nav-links button:hover, .nav-links button.active {
@@ -94,15 +90,8 @@
             padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
         }
 
-        .btn-back:hover { background-color: #95a5a6; }
-
-        /* UI Components */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -138,7 +127,6 @@
             display: block;
             margin-bottom: 5px;
             font-weight: 600;
-            font-size: 0.9rem;
         }
 
         .form-group input, .form-group select, .form-group textarea {
@@ -146,7 +134,6 @@
             padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
-            font-size: 1rem;
         }
 
         .form-row {
@@ -163,10 +150,7 @@
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 1rem;
         }
-
-        button.btn-primary:hover { background-color: #2980b9; }
 
         button.btn-success {
             background-color: var(--accent-color);
@@ -186,14 +170,12 @@
             cursor: pointer;
         }
 
-        /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
             background: var(--card-bg);
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             margin-bottom: 20px;
         }
 
@@ -203,10 +185,7 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        th {
-            background-color: #f1f2f6;
-            font-weight: 600;
-        }
+        th { background-color: #f1f2f6; }
 
         .badge {
             padding: 4px 8px;
@@ -227,7 +206,6 @@
             align-items: center;
         }
 
-        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -247,12 +225,6 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; }
-            .form-row { flex-direction: column; gap: 0; }
-        }
     </style>
 </head>
 <body>
@@ -271,7 +243,6 @@
             <h1 id="page-title">Dashboard</h1>
         </div>
 
-        <!-- DASHBOARD -->
         <div id="view-dashboard" class="view-section active">
             <div class="card-grid">
                 <div class="card">
@@ -297,7 +268,6 @@
             <button class="btn-primary" onclick="openPatientModal()">+ Cadastrar Novo Paciente</button>
         </div>
 
-        <!-- PACIENTES -->
         <div id="view-pacientes" class="view-section">
             <div class="filter-bar">
                 <button class="btn-primary" onclick="openPatientModal()">+ Novo Paciente</button>
@@ -322,7 +292,6 @@
             </table>
         </div>
 
-        <!-- PRONTUÁRIO INTEGRADO DO PACIENTE -->
         <div id="view-prontuario" class="view-section">
             <div class="card" style="margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
@@ -363,7 +332,6 @@
         </div>
     </div>
 
-    <!-- MODAL PACIENTE -->
     <div id="modal-patient" class="modal">
         <div class="modal-content">
             <h2 id="modal-patient-title">Cadastrar Paciente</h2>
@@ -421,7 +389,6 @@
         </div>
     </div>
 
-    <!-- MODAL SESSÃO -->
     <div id="modal-session" class="modal">
         <div class="modal-content">
             <h2>Registrar Sessão</h2>
@@ -469,7 +436,6 @@
         </div>
     </div>
 
-    <!-- MODAL EVOLUÇÃO -->
     <div id="modal-evolution" class="modal">
         <div class="modal-content">
             <h2>Registro de Evolução Clínica</h2>
@@ -500,7 +466,6 @@
         </div>
     </div>
 
-    <!-- MODAL RECIBO -->
     <div id="modal-receipt" class="modal">
         <div class="modal-content">
             <h2>Anexo de Recibo</h2>
@@ -520,7 +485,6 @@
         </div>
     </div>
 
-    <!-- MODAL RESUMO MENSAL DO PRONTUÁRIO -->
     <div id="modal-monthly-summary" class="modal">
         <div class="modal-content">
             <h2>Resumo Mensal do Prontuário</h2>
@@ -539,7 +503,6 @@
     </div>
 
     <script>
-        /* NAVEGAÇÃO E ESTADO DA TELA */
         const navigationHistory = [];
         let currentPatientId = null;
 
@@ -591,7 +554,6 @@
             }
         }
 
-        /* PERSISTÊNCIA INDEXEDDB */
         let db = null;
 
         function initDB() {
@@ -620,7 +582,6 @@
                 };
 
                 request.onerror = function(e) {
-                    console.error('Erro no IndexedDB:', e);
                     reject(e);
                 };
             });
@@ -654,7 +615,6 @@
             });
         }
 
-        /* GERENCIAMENTO DE PACIENTES */
         function toggleInfantFields() {
             const type = document.getElementById('patient-type').value;
             const infantDiv = document.getElementById('infant-fields');
@@ -766,7 +726,6 @@
             });
         }
 
-        /* PRONTUÁRIO E SESSÕES */
         function openProntuario(patientId) {
             navigateTo('prontuario', false, { patientId: patientId });
         }
@@ -843,7 +802,6 @@
             }
         }
 
-        /* MODAL SESSÃO */
         function openSessionModal(sessionId = null) {
             document.getElementById('form-session').reset();
             document.getElementById('session-id').value = '';
@@ -887,7 +845,6 @@
             loadProntuarioData(currentPatientId);
         }
 
-        /* MODAL EVOLUÇÃO */
         async function openEvolutionModal(sessionId, evolutionId = null) {
             document.getElementById('form-evolution').reset();
             document.getElementById('evolution-id').value = '';
@@ -930,7 +887,6 @@
             loadProntuarioData(currentPatientId);
         }
 
-        /* MODAL RECIBO */
         async function openReceiptModal(sessionId) {
             document.getElementById('form-receipt').reset();
             document.getElementById('receipt-session-id').value = sessionId;
@@ -1000,7 +956,6 @@
             loadProntuarioData(currentPatientId);
         }
 
-        /* RESUMO MENSAL DO PRONTUÁRIO */
         function openMonthlySummaryModal() {
             document.getElementById('summary-month-select').value = '';
             document.getElementById('summary-results').innerHTML = '<p>Selecione um período acima para gerar o resumo.</p>';
@@ -1045,7 +1000,6 @@
             `;
         }
 
-        /* DASHBOARD */
         async function loadDashboardData() {
             const patients = await getAll('pacientes');
             const sessions = await getAll('sessoes');
@@ -1070,16 +1024,12 @@
             document.getElementById('dash-month-pending').innerText = pending.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        /* AUXILIARES MODAL */
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        /* INICIALIZAÇÃO SEGURA */
         window.addEventListener('DOMContentLoaded', () => {
             initDB().then(() => {
                 loadDashboardData();
-            }).catch(err => {
-                console.error("Falha ao inicializar o banco de dados", err);
             });
         });
     </script>
