@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão de Prontuário Psicológico</title>
-    <!-- Tailwind CSS CDN para layout responsivo moderno -->
+    <title>Gestão de Prontuário Psicológico</title>
+    <!-- Tailwind CSS CDN para Estilização Responsiva -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- jsPDF para Geração de PDFs integrais sem limite de páginas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Configuração de Tema em Tons de Rosa -->
+    <!-- html2pdf.js para Geração do PDF Integral sem cortes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Configuração de Cores da Identidade Visual Rosa -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        rosa: {
+                        brand: {
                             50: '#fdf2f8',
                             100: '#fce7f3',
                             200: '#fbcfe8',
@@ -24,7 +24,7 @@
                             600: '#db2777',
                             700: '#be185d',
                             800: '#9d174d',
-                            900: '#831843'
+                            900: '#831843',
                         }
                     }
                 }
@@ -32,1755 +32,905 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .bg-pattern { background-color: #fdf2f8; background-image: radial-gradient(#fbcfe8 0.75px, transparent 0.75px); background-size: 16px 16px; }
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #f472b6; border-radius: 4px; }
+        .pdf-page-break { page-break-after: always; break-after: page; }
+        .pdf-avoid-break { page-break-inside: avoid; break-inside: avoid; }
     </style>
 </head>
-<body class="bg-pattern min-h-screen flex flex-col text-gray-800">
+<body class="bg-brand-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <!-- CABEÇALHO / MENU PRINCIPAL -->
-    <header class="bg-rosa-700 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="navegarPara('dashboard')">
-                <div class="bg-white text-rosa-700 p-2 rounded-full font-bold shadow-sm">
-                    🧠
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight">PsiGestão</h1>
-                    <p class="text-xs text-rosa-200">Prontuário & Consultório</p>
-                </div>
-            </div>
-            
-            <nav class="hidden md:flex space-x-2">
-                <button onclick="navegarPara('dashboard')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Dashboard</button>
-                <button onclick="navegarPara('pacientes')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Pacientes</button>
-                <button onclick="navegarPara('sessoes')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Sessões & Agenda</button>
-                <button onclick="navegarPara('financeiro')" class="px-3 py-2 rounded-md font-medium text-sm hover:bg-rosa-600 transition">Financeiro</button>
-            </nav>
-
-            <div class="flex items-center space-x-2">
-                <button onclick="exportarBackup()" title="Baixar Cópias dos Dados Reais" class="bg-rosa-800 hover:bg-rosa-900 text-white text-xs px-3 py-2 rounded shadow flex items-center gap-1 transition">
-                    💾 Backup
+    <!-- CABEÇALHO / NAVEGAÇÃO -->
+    <header class="bg-brand-600 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <button id="btn-back" onclick="app.goBack()" class="hidden bg-brand-700 hover:bg-brand-800 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition">
+                    ← Voltar
                 </button>
-                <label title="Restaurar Dados" class="bg-rosa-600 hover:bg-rosa-500 text-white text-xs px-3 py-2 rounded shadow cursor-pointer transition">
-                    📥 Importar
-                    <input type="file" id="inputImportarBackup" class="hidden" onchange="importarBackup(event)">
-                </label>
+                <h1 class="text-xl font-bold tracking-wide">Prontuário Psicológico</h1>
             </div>
-        </div>
-
-        <!-- Menu Mobile Sub-Barra -->
-        <div class="md:hidden bg-rosa-800 flex justify-around py-2 text-xs border-t border-rosa-600">
-            <button onclick="navegarPara('dashboard')" class="py-1 px-2 hover:bg-rosa-700 rounded">Dashboard</button>
-            <button onclick="navegarPara('pacientes')" class="py-1 px-2 hover:bg-rosa-700 rounded">Pacientes</button>
-            <button onclick="navegarPara('sessoes')" class="py-1 px-2 hover:bg-rosa-700 rounded">Sessões</button>
-            <button onclick="navegarPara('financeiro')" class="py-1 px-2 hover:bg-rosa-700 rounded">Financeiro</button>
+            <nav class="flex space-x-2">
+                <button onclick="app.navigate('dashboard')" class="hover:bg-brand-700 px-3 py-1.5 rounded-lg text-sm font-medium transition">Dashboard</button>
+                <button onclick="app.navigate('pacientes')" class="hover:bg-brand-700 px-3 py-1.5 rounded-lg text-sm font-medium transition">Pacientes</button>
+                <button onclick="app.navigate('financeiro')" class="hover:bg-brand-700 px-3 py-1.5 rounded-lg text-sm font-medium transition">Financeiro</button>
+            </nav>
         </div>
     </header>
 
-    <!-- BARRA DE NAVEGAÇÃO SECUNDÁRIA (BOTÃO VOLTAR DINÂMICO) -->
-    <div id="barraVoltar" class="hidden bg-white border-b border-rosa-200 py-2 px-4 sm:px-8">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <button onclick="voltarPagina()" class="flex items-center text-rosa-700 font-semibold hover:text-rosa-900 transition text-sm">
-                ⬅️ Voltar para a tela anterior
-            </button>
-            <span id="labelCaminho" class="text-xs text-gray-500 font-medium"></span>
-        </div>
-    </div>
+    <!-- NOTIFICAÇÃO / ALERTA GLOBAL DE CONFIRMAÇÃO -->
+    <div id="toast" class="hidden fixed top-16 right-4 z-50 p-4 rounded-xl shadow-xl text-white font-semibold transition-all duration-300"></div>
 
-    <!-- CONTEÚDO PRINCIPAL (TELAS DINÂMICAS) -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-
-        <!-- 1. TELA DASHBOARD -->
-        <section id="tela-dashboard" class="space-y-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-rosa-900">Painel Principal</h2>
-                    <p class="text-gray-600 text-sm">Visão geral do consultório psicológico e pendências prioritárias.</p>
-                </div>
-                <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="abrirModalPaciente()" class="flex-1 md:flex-initial bg-rosa-600 hover:bg-rosa-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
-                        ➕ Novo Paciente
-                    </button>
-                    <button onclick="abrirModalSessao()" class="flex-1 md:flex-initial bg-rosa-700 hover:bg-rosa-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
-                        📅 Agendar Sessão
-                    </button>
-                </div>
-            </div>
-
-            <!-- CARDS DE METRICAS -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
-                    <span class="text-xs font-semibold text-rosa-600 uppercase">Pacientes</span>
-                    <div class="my-2">
-                        <span id="dash-tot-pacientes" class="text-2xl font-bold text-rosa-900">0</span>
-                    </div>
-                    <span id="dash-sub-pacientes" class="text-xs text-gray-500">0 ativos | 0 inativos</span>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
-                    <span class="text-xs font-semibold text-rosa-600 uppercase">Sessões</span>
-                    <div class="my-2">
-                        <span id="dash-tot-sessoes" class="text-2xl font-bold text-rosa-900">0</span>
-                    </div>
-                    <span id="dash-sub-sessoes" class="text-xs text-gray-500">0 realizadas | 0 cancel./faltas</span>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
-                    <span class="text-xs font-semibold text-emerald-600 uppercase">Recebido (Total)</span>
-                    <div class="my-2">
-                        <span id="dash-val-recebido" class="text-2xl font-bold text-emerald-700">R$ 0,00</span>
-                    </div>
-                    <span id="dash-sub-recebido" class="text-xs text-emerald-600 font-medium">Pagamentos confirmados</span>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-100 flex flex-col justify-between">
-                    <span class="text-xs font-semibold text-amber-600 uppercase">Pendente (Total)</span>
-                    <div class="my-2">
-                        <span id="dash-val-pendente" class="text-2xl font-bold text-amber-700">R$ 0,00</span>
-                    </div>
-                    <span class="text-xs text-amber-600 font-medium">Aguardando recebimento</span>
-                </div>
-            </div>
-
-            <!-- ALERTAS E PENDÊNCIAS EM VERMELHO -->
-            <div class="bg-white rounded-xl shadow-sm border border-rosa-200 overflow-hidden">
-                <div class="bg-rosa-50 px-6 py-4 border-b border-rosa-100 flex justify-between items-center">
-                    <h3 class="font-bold text-rosa-900 flex items-center gap-2">
-                        🚨 Avisos e Pendências do Consultório
-                    </h3>
-                    <span id="dash-badge-pendencias" class="bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">0 pendências</span>
-                </div>
-                <div id="container-pendencias" class="p-6 divide-y divide-gray-100 max-h-96 overflow-y-auto custom-scroll">
-                    <!-- Preenchido via JS -->
-                </div>
-            </div>
-
-            <!-- RESUMO FINANCEIRO MENSAL RAPIDO -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-rosa-100">
-                <h3 class="font-bold text-rosa-900 mb-4 flex items-center gap-2">📊 Resumo Financeiro do Mês Atual</h3>
-                <div id="resumo-financeiro-mes" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <!-- Preenchido via JS -->
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. TELA PACIENTES -->
-        <section id="tela-pacientes" class="hidden space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-rosa-900">Gestão de Pacientes</h2>
-                    <p class="text-gray-600 text-sm">Cadastre, localize e acesse os prontuários de forma individual.</p>
-                </div>
-                <button onclick="abrirModalPaciente()" class="bg-rosa-600 hover:bg-rosa-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm flex items-center gap-2">
-                    ➕ Novo Paciente
-                </button>
-            </div>
-
-            <!-- FILTROS DE PACIENTES -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Buscar por nome</label>
-                    <input type="text" id="filtro-paciente-nome" oninput="renderizarListaPacientes()" placeholder="Digite o nome..." class="w-full border border-rosa-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rosa-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Status do Cadastro</label>
-                    <select id="filtro-paciente-status" onchange="renderizarListaPacientes()" class="w-full border border-rosa-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rosa-500">
-                        <option value="ATIVO">Somente Pacientes Ativos</option>
-                        <option value="INATIVO">Somente Pacientes Inativos</option>
-                        <option value="TODOS">Todos os Pacientes</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Tipo de Atendimento</label>
-                    <select id="filtro-paciente-tipo" onchange="renderizarListaPacientes()" class="w-full border border-rosa-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rosa-500">
-                        <option value="TODOS">Adulto e Infantil</option>
-                        <option value="Adulto">Adulto</option>
-                        <option value="Infantil">Infantil</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- TABELA DE PACIENTES -->
-            <div class="bg-white rounded-xl shadow-sm border border-rosa-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-rosa-100 text-rosa-900 border-b border-rosa-200 uppercase text-xs">
-                            <tr>
-                                <th class="px-6 py-3">Paciente</th>
-                                <th class="px-6 py-3">Tipo</th>
-                                <th class="px-6 py-3">Contatos</th>
-                                <th class="px-6 py-3">Status</th>
-                                <th class="px-6 py-3 text-right">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-pacientes-body" class="divide-y divide-rosa-50">
-                            <!-- Preenchido via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. TELA DETALHES / PRONTUÁRIO DO PACIENTE -->
-        <section id="tela-prontuario" class="hidden space-y-6">
-            <!-- Cabeçalho do Prontuário -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-rosa-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <div class="flex items-center gap-3">
-                        <h2 id="pront-nome-paciente" class="text-2xl font-bold text-rosa-900">---</h2>
-                        <span id="pront-badge-status" class="px-2.5 py-0.5 text-xs font-bold rounded-full">---</span>
-                        <span id="pront-badge-tipo" class="bg-rosa-100 text-rosa-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">---</span>
-                    </div>
-                    <p id="pront-dados-pessoais" class="text-gray-600 text-sm mt-1">---</p>
-                    <div id="pront-dados-responsavel" class="text-xs text-rosa-700 font-medium mt-1 hidden"></div>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="abrirModalEditarPacienteAtual()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold">Editar Dados</button>
-                    <button id="btn-inativar-reativar" onclick="alternarStatusPacienteAtual()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-3 py-2 rounded-lg text-xs font-semibold">Inativar/Reativar</button>
-                    <button onclick="gerarResumoAutomaticoProntuario()" class="bg-rosa-100 hover:bg-rosa-200 text-rosa-800 px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1">✨ Gerar Resumo</button>
-                    <button onclick="gerarEBaixarPDFIntegral()" class="bg-rosa-700 hover:bg-rosa-800 text-white px-4 py-2 rounded-lg text-xs font-bold shadow flex items-center gap-1">✨ GERAR PDF SEMANAL</button>
-                </div>
-            </div>
-
-            <!-- Abas do Prontuário -->
-            <div class="border-b border-rosa-200 bg-white rounded-t-xl px-4 pt-3 flex space-x-4 text-sm font-semibold text-gray-600 overflow-x-auto">
-                <button onclick="trocarAbaProntuario('historico')" id="aba-btn-historico" class="py-2 px-3 border-b-2 border-rosa-600 text-rosa-700">📜 Historico de Sessões</button>
-                <button onclick="trocarAbaProntuario('pdf-semanal')" id="aba-btn-pdf-semanal" class="py-2 px-3 border-b-2 border-transparent hover:text-rosa-700">📄 PDFs Semanais Vinc.</button>
-                <button onclick="trocarAbaProntuario('resumo')" id="aba-btn-resumo" class="py-2 px-3 border-b-2 border-transparent hover:text-rosa-700">📊 Resumo Geral do Prontuário</button>
-            </div>
-
-            <!-- ABA 1: HISTÓRICO DE SESSÕES DO PACIENTE -->
-            <div id="aba-conteudo-historico" class="space-y-4">
-                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-rosa-100">
-                    <h3 class="font-bold text-rosa-900 text-sm">Sessões & Evoluções Registradas</h3>
-                    <button onclick="abrirModalSessaoParaPacienteAtual()" class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow">
-                        ➕ Nova Sessão para este Paciente
-                    </button>
-                </div>
-
-                <div id="lista-sessoes-prontuario" class="space-y-4">
-                    <!-- Preenchido via JS -->
-                </div>
-            </div>
-
-            <!-- ABA 2: PDFS SEMANAIS ANEXADOS / VINCULADOS -->
-            <div id="aba-conteudo-pdf-semanal" class="hidden space-y-4">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-rosa-200 space-y-4">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-rosa-100 pb-4">
-                        <div>
-                            <h3 class="font-bold text-rosa-900">📄 ADICIONAR PDF DO PRONTUÁRIO SEMANAL</h3>
-                            <p class="text-xs text-gray-500">Anexe PDFs externos ou cópias salvas diretamente no histórico do paciente.</p>
-                        </div>
-                        <label class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow cursor-pointer transition">
-                            ➕ Selecionar PDF → Adicionar/Salvar
-                            <input type="file" id="inputAnexarPDFSemanal" accept="application/pdf" class="hidden" onchange="adicionarPDFSemanalAnexo(event)">
-                        </label>
-                    </div>
-
-                    <h4 class="font-bold text-rosa-900 text-sm mt-4">Histórico de PDFs Semanais Armazenados</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-rosa-50 text-rosa-900 text-xs uppercase border-b border-rosa-200">
-                                <tr>
-                                    <th class="p-3">Data Upload</th>
-                                    <th class="p-3">Nome Arquivo</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3 text-right">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela-pdfs-semanais-body" class="divide-y divide-rosa-50">
-                                <!-- Preenchido via JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ABA 3: RESUMO DO PRONTUÁRIO -->
-            <div id="aba-conteudo-resumo" class="hidden space-y-4">
-                <div id="container-resumo-automatico-texto" class="bg-white p-6 rounded-xl shadow-sm border border-rosa-200 leading-relaxed text-sm text-gray-800 space-y-3">
-                    <p class="text-gray-500 italic">Clique em "✨ Gerar Resumo" acima para processar automaticamente os dados do prontuário.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. TELA SESSÕES E AGENDA -->
-        <section id="tela-sessoes" class="hidden space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-rosa-900">Controle de Sessões</h2>
-                    <p class="text-gray-600 text-sm">Agendamentos, evoluções clínicas, pagamentos e emissão de recibos.</p>
-                </div>
-                <button onclick="abrirModalSessao()" class="bg-rosa-600 hover:bg-rosa-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition text-sm">
-                    📅 Agendar Nova Sessão
-                </button>
-            </div>
-
-            <!-- FILTRO DE SESSÕES -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 flex flex-wrap gap-4 items-center justify-between">
-                <div class="flex flex-wrap gap-3 items-center w-full md:w-auto">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700">Mês / Ano</label>
-                        <input type="month" id="filtro-sessao-mes" onchange="renderizarListaSessoesGeral()" class="border border-rosa-200 rounded-lg px-3 py-1.5 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700">Status Sessão</label>
-                        <select id="filtro-sessao-status" onchange="renderizarListaSessoesGeral()" class="border border-rosa-200 rounded-lg px-3 py-1.5 text-sm">
-                            <option value="TODOS">Todos</option>
-                            <option value="Agendada">Agendada</option>
-                            <option value="Realizada">Realizada</option>
-                            <option value="Falta">Falta</option>
-                            <option value="Cancelada">Cancelada</option>
-                        </select>
-                    </div>
-                </div>
-                <button onclick="limparFiltroMesSessao()" class="text-xs text-rosa-700 underline font-semibold">Ver Histórico Completo</button>
-            </div>
-
-            <!-- LISTA DE SESSÕES -->
-            <div id="container-sessoes-geral" class="space-y-4">
-                <!-- Preenchido via JS -->
-            </div>
-        </section>
-
-        <!-- 5. TELA FINANCEIRO -->
-        <section id="tela-financeiro" class="hidden space-y-6">
-            <div>
-                <h2 class="text-2xl font-bold text-rosa-900">Gestão Financeira</h2>
-                <p class="text-gray-600 text-sm">Acompanhamento estrito de pagamentos efetivamente recebidos e recibos emitidos.</p>
-            </div>
-
-            <!-- FILTRO FINANCEIRO -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <label class="text-xs font-bold text-rosa-900 uppercase">Consultar Período:</label>
-                    <input type="month" id="filtro-financeiro-mes" onchange="renderizarPainelFinanceiro()" class="border border-rosa-200 rounded-lg px-3 py-1.5 text-sm">
-                </div>
-                <span class="text-xs text-gray-500">* Somente pagamentos marcados como "RECEBIDO" são somados no faturamento efetivo.</span>
-            </div>
-
-            <!-- CARDS DE CONSOLIDAÇÃO -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-emerald-500">
-                    <span class="text-xs font-bold text-emerald-600 uppercase">Total Efetivamente Recebido</span>
-                    <p id="fin-card-recebido" class="text-3xl font-extrabold text-emerald-700 my-1">R$ 0,00</p>
-                    <span class="text-xs text-gray-500">No período selecionado</span>
-                </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-amber-500">
-                    <span class="text-xs font-bold text-amber-600 uppercase">Total Pendente de Recebimento</span>
-                    <p id="fin-card-pendente" class="text-3xl font-extrabold text-amber-700 my-1">R$ 0,00</p>
-                    <span class="text-xs text-gray-500">Sessões a receber</span>
-                </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-rosa-500">
-                    <span class="text-xs font-bold text-rosa-600 uppercase">Recibos Emitidos / Anexados</span>
-                    <p id="fin-card-recibos" class="text-3xl font-extrabold text-rosa-900 my-1">0 / 0</p>
-                    <span class="text-xs text-gray-500">Anexados vs Total recebidos</span>
-                </div>
-            </div>
-
-            <!-- DETALHAMENTO DE PAGAMENTOS -->
-            <div class="bg-white rounded-xl shadow-sm border border-rosa-200 overflow-hidden">
-                <div class="bg-rosa-50 px-6 py-4 border-b border-rosa-100 font-bold text-rosa-900 text-sm">
-                    Detalhamento de Pacientes e Sessões
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-rosa-100 text-rosa-900 text-xs uppercase border-b border-rosa-200">
-                            <tr>
-                                <th class="p-3">Data Sessão</th>
-                                <th class="p-3">Paciente</th>
-                                <th class="p-3">Valor</th>
-                                <th class="p-3">Status Pagamento</th>
-                                <th class="p-3">Comprovante / Recibo</th>
-                                <th class="p-3 text-right">Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-financeiro-body" class="divide-y divide-rosa-50">
-                            <!-- Preenchido via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
+    <!-- CONTEÚDO PRINCIPAL (MUDANÇA DE TELAS DINÂMICA) -->
+    <main id="app-content" class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+        <!-- Renderizado via JavaScript -->
     </main>
 
-    <!-- ==================== MODAIS ==================== -->
+    <!-- AREA OCULTA PARA IMPRESSÃO/GERAÇÃO DE PDF INTEGRAL -->
+    <div id="pdf-container" class="hidden bg-white p-8 text-black"></div>
 
-    <!-- MODAL CADASTRO / EDIÇÃO DE PACIENTE -->
-    <div id="modal-paciente" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
-                <h3 id="modal-paciente-titulo" class="font-bold text-lg">Cadastrar Paciente</h3>
-                <button onclick="fecharModalPaciente()" class="text-white hover:text-rosa-200 text-xl">✕</button>
-            </div>
-            <form id="form-paciente" onsubmit="salvarPaciente(event)" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm">
-                <input type="hidden" id="paciente-id">
-                
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Nome Completo *</label>
-                    <input type="text" id="paciente-nome" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Tipo de Atendimento *</label>
-                        <select id="paciente-tipo" required onchange="alternarCamposInfantil()" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                            <option value="Adulto">Adulto</option>
-                            <option value="Infantil">Infantil</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Data Nascimento</label>
-                        <input type="date" id="paciente-nascimento" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Telefone / WhatsApp</label>
-                        <input type="text" id="paciente-telefone" placeholder="(00) 00000-0000" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">E-mail</label>
-                        <input type="email" id="paciente-email" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                    </div>
-                </div>
-
-                <!-- CAMPOS EXCLUSIVOS ATENDIMENTO INFANTIL -->
-                <div id="secao-infantil" class="hidden bg-rosa-50 p-4 rounded-lg border border-rosa-200 space-y-3">
-                    <h4 class="font-bold text-rosa-900 text-xs uppercase">Dados do Responsável Legal</h4>
-                    <div>
-                        <label class="block font-semibold text-gray-700 text-xs mb-1">Nome do Responsável *</label>
-                        <input type="text" id="paciente-resp-nome" class="w-full border border-rosa-200 rounded-lg p-2 text-sm bg-white">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-semibold text-gray-700 text-xs mb-1">Parentesco *</label>
-                            <input type="text" id="paciente-resp-parentesco" placeholder="Ex: Mãe, Pai, Avô" class="w-full border border-rosa-200 rounded-lg p-2 text-sm bg-white">
-                        </div>
-                        <div>
-                            <label class="block font-semibold text-gray-700 text-xs mb-1">Telefone Responsável</label>
-                            <input type="text" id="paciente-resp-telefone" class="w-full border border-rosa-200 rounded-lg p-2 text-sm bg-white">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-gray-100 flex justify-end gap-2">
-                    <button type="button" onclick="fecharModalPaciente()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-rosa-600 hover:bg-rosa-700 text-white rounded-lg font-bold shadow">Salvar Paciente</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL REGISTRO DE SESSÃO -->
-    <div id="modal-sessao" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
-                <h3 id="modal-sessao-titulo" class="font-bold text-lg">Agendar / Editar Sessão</h3>
-                <button onclick="fecharModalSessao()" class="text-white hover:text-rosa-200 text-xl">✕</button>
-            </div>
-            <form id="form-sessao" onsubmit="salvarSessao(event)" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm">
-                <input type="hidden" id="sessao-id">
-
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Paciente *</label>
-                    <select id="sessao-paciente-id" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                        <!-- Preenchido via JS -->
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Data *</label>
-                        <input type="date" id="sessao-data" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Horário *</label>
-                        <input type="time" id="sessao-horario" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Modalidade *</label>
-                        <select id="sessao-modalidade" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                            <option value="Presencial">Presencial</option>
-                            <option value="Online">Online</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Status da Sessão *</label>
-                        <select id="sessao-status" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                            <option value="Agendada">Agendada</option>
-                            <option value="Realizada">Realizada</option>
-                            <option value="Falta">Falta</option>
-                            <option value="Cancelada">Cancelada</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Valor (R$) *</label>
-                        <input type="number" step="0.01" min="0" id="sessao-valor" required placeholder="0.00" class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Status Pagamento *</label>
-                        <select id="sessao-pagamento" required class="w-full border border-rosa-200 rounded-lg p-2 focus:ring-2 focus:ring-rosa-500 focus:outline-none">
-                            <option value="Pendente">Pendente</option>
-                            <option value="Recebido">Recebido</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-gray-100 flex justify-end gap-2">
-                    <button type="button" onclick="fecharModalSessao()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-rosa-600 hover:bg-rosa-700 text-white rounded-lg font-bold shadow">Salvar Sessão</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL REGISTRO DE EVOLUÇÃO CLINICA -->
-    <div id="modal-evolucao" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[92vh]">
-            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
-                <div>
-                    <h3 class="font-bold text-lg">Registrar / Editar Evolução Clínica</h3>
-                    <p id="subtitulo-modal-evolucao" class="text-xs text-rosa-200"></p>
-                </div>
-                <button onclick="fecharModalEvolucao()" class="text-white hover:text-rosa-200 text-xl">✕</button>
-            </div>
-            <form id="form-evolucao" onsubmit="salvarEvolucao(event)" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm">
-                <input type="hidden" id="evolucao-sessao-id">
-
-                <div>
-                    <label class="block font-bold text-rosa-900 mb-1">1. Queixa Principal / Relato do Paciente *</label>
-                    <textarea id="ev-queixa" rows="3" required placeholder="Relato do paciente, estado emocional ao chegar, demandas trazidas..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-rosa-900 mb-1">2. Demanda Trabalhada *</label>
-                    <textarea id="ev-demanda" rows="3" required placeholder="Foco da sessão, temas específicos abordados, reestruturações..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-rosa-900 mb-1">3. Descrição Detalhada da Sessão *</label>
-                    <textarea id="ev-descricao" rows="5" required placeholder="Intervenções do psicólogo, técnicas aplicadas, dinâmicas, respostas do paciente (sem limite de tamanho)..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-rosa-900 mb-1">4. Análise Técnica e Evolução *</label>
-                    <textarea id="ev-analise" rows="4" required placeholder="Hipóteses clínicas, progresso do paciente, encaminhamentos e planejamento para próximas sessões..." class="w-full border border-rosa-200 rounded-lg p-2.5 focus:ring-2 focus:ring-rosa-500 focus:outline-none custom-scroll"></textarea>
-                </div>
-
-                <div class="pt-4 border-t border-gray-100 flex justify-end gap-2">
-                    <button type="button" onclick="fecharModalEvolucao()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-rosa-600 hover:bg-rosa-700 text-white rounded-lg font-bold shadow">Salvar Evolução</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL VER EVOLUÇÃO COMPLETA -->
-    <div id="modal-ver-evolucao" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="bg-rosa-700 text-white px-6 py-4 flex justify-between items-center">
-                <h3 id="ver-ev-titulo" class="font-bold text-lg">Evolução Clínica Completa</h3>
-                <button onclick="fecharModalVerEvolucao()" class="text-white hover:text-rosa-200 text-xl">✕</button>
-            </div>
-            <div id="ver-ev-conteudo" class="p-6 space-y-4 overflow-y-auto custom-scroll text-sm leading-relaxed">
-                <!-- Preenchido via JS -->
-            </div>
-            <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 flex justify-end">
-                <button onclick="fecharModalVerEvolucao()" class="px-4 py-2 bg-rosa-700 text-white rounded-lg font-bold">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCRIPT DE LÓGICA E DADOS REAIS DO SISTEMA -->
+    <!-- SCRIPT DA APLICAÇÃO E BANCO DE DADOS INDEXEDDB -->
     <script>
-        // ==================== ESTRUTURA DE BANCO DE DADOS (LOCALSTORAGE) ====================
-        const DB_KEY_PACIENTES = 'psigestao_pacientes_db_v1';
-        const DB_KEY_SESSOES = 'psigestao_sessoes_db_v1';
-
-        let pacientes = [];
-        let sessoes = [];
-
-        // Pilha de Navegação para o Botão Voltar
-        let historicoNavegacao = ['dashboard'];
-        let pacienteAtualId = null;
-
-        // Inicialização do Sistema
-        window.addEventListener('DOMContentLoaded', () => {
-            carregarDadosLocais();
-            // Inicializar filtro de mês financeiro e sessões com o mês atual
-            const hoje = new Date();
-            const mesAno = hoje.toISOString().substring(0, 7);
-            document.getElementById('filtro-sessao-mes').value = mesAno;
-            document.getElementById('filtro-financeiro-mes').value = mesAno;
-
-            renderizarTodasAsTelas();
-        });
-
-        function carregarDadosLocais() {
-            try {
-                const pacLocal = localStorage.getItem(DB_KEY_PACIENTES);
-                const sesLocal = localStorage.getItem(DB_KEY_SESSOES);
-                
-                pacientes = pacLocal ? JSON.parse(pacLocal) : [];
-                sessoes = sesLocal ? JSON.parse(sesLocal) : [];
-            } catch (e) {
-                console.error("Erro ao carregar dados do LocalStorage:", e);
-                pacientes = [];
-                sessoes = [];
+        /**
+         * CAMADA DE BANCO DE DADOS PERSISTENTE (IndexedDB)
+         * Garante que nenhum dado seja armazenado apenas em memória temporária.
+         */
+        class Database {
+            constructor() {
+                this.dbName = 'ProntuarioPsicologiaDB';
+                this.version = 1;
+                this.db = null;
             }
-        }
 
-        function salvarDadosLocais() {
-            localStorage.setItem(DB_KEY_PACIENTES, JSON.stringify(pacientes));
-            localStorage.setItem(DB_KEY_SESSOES, JSON.stringify(sessoes));
-            renderizarTodasAsTelas();
-        }
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
 
-        // Exportação / Importação de Segurança (Backup)
-        function exportarBackup() {
-            const dados = {
-                pacientes: pacientes,
-                sessoes: sessoes,
-                dataBackup: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `backup_psigestao_${new Date().toISOString().substring(0,10)}.json`;
-            a.click();
-        }
-
-        function importarBackup(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const dados = JSON.parse(e.target.result);
-                    if (dados.pacientes && dados.sessoes) {
-                        if (confirm("ATENÇÃO: A importação irá consolidar e atualizar seu banco de dados atual. Deseja prosseguir?")) {
-                            pacientes = dados.pacientes;
-                            sessoes = dados.sessoes;
-                            salvarDadosLocais();
-                            alert("Backup importado com sucesso!");
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('pacientes')) {
+                            db.createObjectStore('pacientes', { keyPath: 'id' });
                         }
-                    } else {
-                        alert("Formato de arquivo de backup inválido.");
-                    }
-                } catch (err) {
-                    alert("Erro ao ler o arquivo JSON.");
+                        if (!db.objectStoreNames.contains('sessoes')) {
+                            const store = db.createObjectStore('sessoes', { keyPath: 'id' });
+                            store.createIndex('pacienteId', 'pacienteId', { unique: false });
+                        }
+                        if (!db.objectStoreNames.contains('evolucoes')) {
+                            const store = db.createObjectStore('evolucoes', { keyPath: 'id' });
+                            store.createIndex('sessaoId', 'sessaoId', { unique: true });
+                            store.createIndex('pacienteId', 'pacienteId', { unique: false });
+                        }
+                        if (!db.objectStoreNames.contains('pdf_documentos')) {
+                            const store = db.createObjectStore('pdf_documentos', { keyPath: 'id' });
+                            store.createIndex('pacienteId', 'pacienteId', { unique: false });
+                        }
+                    };
+
+                    request.onsuccess = (e) => {
+                        this.db = e.target.result;
+                        resolve();
+                    };
+
+                    request.onerror = (e) => reject('Erro ao abrir o banco de dados.');
+                });
+            }
+
+            async getAll(storeName) {
+                return new Promise((resolve) => {
+                    const tx = this.db.transaction(storeName, 'readonly');
+                    const store = tx.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result || []);
+                });
+            }
+
+            async getById(storeName, id) {
+                return new Promise((resolve) => {
+                    const tx = this.db.transaction(storeName, 'readonly');
+                    const store = tx.objectStore(storeName);
+                    const request = store.get(id);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async getByIndex(storeName, indexName, value) {
+                return new Promise((resolve) => {
+                    const tx = this.db.transaction(storeName, 'readonly');
+                    const store = tx.objectStore(storeName);
+                    const index = store.index(indexName);
+                    const request = index.getAll(value);
+                    request.onsuccess = () => resolve(request.result || []);
+                });
+            }
+
+            async put(storeName, data) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction(storeName, 'readwrite');
+                    const store = tx.objectStore(storeName);
+                    const request = store.put(data);
+                    request.onsuccess = () => resolve(data);
+                    request.onerror = () => reject('Erro ao persistir os dados.');
+                });
+            }
+
+            async delete(storeName, id) {
+                return new Promise((resolve) => {
+                    const tx = this.db.transaction(storeName, 'readwrite');
+                    const store = tx.objectStore(storeName);
+                    store.delete(id);
+                    tx.oncomplete = () => resolve();
+                });
+            }
+        }
+
+        /**
+         * NÚCLEO DA APLICAÇÃO (REGRA DE NEGÓCIO E INTERFACE)
+         */
+        class App {
+            constructor() {
+                this.db = new Database();
+                this.historyStack = [];
+                this.currentView = 'dashboard';
+                this.currentParams = null;
+            }
+
+            async init() {
+                await this.db.init();
+                this.navigate('dashboard', null, false);
+            }
+
+            showToast(msg, isError = false) {
+                const toast = document.getElementById('toast');
+                toast.textContent = msg;
+                toast.className = `fixed top-16 right-4 z-50 p-4 rounded-xl shadow-xl text-white font-semibold transition-all duration-300 ${
+                    isError ? 'bg-red-600' : 'bg-green-600'
+                }`;
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 4000);
+            }
+
+            navigate(view, params = null, pushHistory = true) {
+                if (pushHistory && this.currentView) {
+                    this.historyStack.push({ view: this.currentView, params: this.currentParams });
                 }
-            };
-            reader.readAsText(file);
-        }
+                this.currentView = view;
+                this.currentParams = params;
 
-        // ==================== NAVEGAÇÃO E BOTÃO VOLTAR ====================
-        function navegarPara(telaId, paramId = null) {
-            const telaAtual = historicoNavegacao[historicoNavegacao.length - 1];
-            if (telaAtual !== telaId || (telaId === 'prontuario' && pacienteAtualId !== paramId)) {
-                historicoNavegacao.push(telaId);
-            }
-
-            if (telaId === 'prontuario' && paramId) {
-                pacienteAtualId = paramId;
-            }
-
-            atualizarExibicaoTelas();
-        }
-
-        function voltarPagina() {
-            if (historicoNavegacao.length > 1) {
-                historicoNavegacao.pop();
-                atualizarExibicaoTelas();
-            }
-        }
-
-        function atualizarExibicaoTelas() {
-            const telaAtual = historicoNavegacao[historicoNavegacao.length - 1];
-
-            // Esconder todas as telas
-            ['dashboard', 'pacientes', 'prontuario', 'sessoes', 'financeiro'].forEach(id => {
-                document.getElementById(`tela-${id}`).classList.add('hidden');
-            });
-
-            // Exibir a tela ativa
-            document.getElementById(`tela-${telaAtual}`).classList.remove('hidden');
-
-            // Gerenciar Visibilidade do Botão Voltar
-            const barraVoltar = document.getElementById('barraVoltar');
-            if (historicoNavegacao.length > 1) {
-                barraVoltar.classList.remove('hidden');
-                document.getElementById('labelCaminho').innerText = `Navegação > ${telaAtual.toUpperCase()}`;
-            } else {
-                barraVoltar.classList.add('hidden');
-            }
-
-            // Atualizar conteúdos dinâmicos da tela atual
-            if (telaAtual === 'prontuario' && pacienteAtualId) {
-                renderizarProntuarioPaciente(pacienteAtualId);
-            }
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function renderizarTodasAsTelas() {
-            renderizarDashboard();
-            renderizarListaPacientes();
-            renderizarListaSessoesGeral();
-            renderizarPainelFinanceiro();
-            if (pacienteAtualId) {
-                renderizarProntuarioPaciente(pacienteAtualId);
-            }
-        }
-
-        // ==================== LÓGICA DO DASHBOARD ====================
-        function renderizarDashboard() {
-            const totalPacientes = pacientes.length;
-            const ativos = pacientes.filter(p => p.status === 'ATIVO').length;
-            const inativos = pacientes.filter(p => p.status === 'INATIVO').length;
-
-            const totalSessoes = sessoes.length;
-            const realizadas = sessoes.filter(s => s.status === 'Realizada').length;
-            const faltasCanceladas = sessoes.filter(s => s.status === 'Falta' || s.status === 'Cancelada').length;
-
-            // Financeiro Geral
-            const valorRecebidoTotal = sessoes
-                .filter(s => s.pagamento === 'Recebido')
-                .reduce((acc, s) => acc + (parseFloat(s.valor) || 0), 0);
-
-            const valorPendenteTotal = sessoes
-                .filter(s => s.pagamento === 'Pendente')
-                .reduce((acc, s) => acc + (parseFloat(s.valor) || 0), 0);
-
-            document.getElementById('dash-tot-pacientes').innerText = totalPacientes;
-            document.getElementById('dash-sub-pacientes').innerText = `${ativos} ativos | ${inativos} inativos`;
-
-            document.getElementById('dash-tot-sessoes').innerText = totalSessoes;
-            document.getElementById('dash-sub-sessoes').innerText = `${realizadas} realizadas | ${faltasCanceladas} faltas/cancel.`;
-
-            document.getElementById('dash-val-recebido').innerText = formatarMoeda(valorRecebidoTotal);
-            document.getElementById('dash-val-pendente').innerText = formatarMoeda(valorPendenteTotal);
-
-            // Resumo do Mês Atual no Dashboard
-            const hoje = new Date();
-            const mesAnoAtual = hoje.toISOString().substring(0, 7);
-            const sessoesMesAtual = sessoes.filter(s => s.data && s.data.substring(0, 7) === mesAnoAtual);
-            
-            const recMes = sessoesMesAtual.filter(s => s.pagamento === 'Recebido').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-            const pendMes = sessoesMesAtual.filter(s => s.pagamento === 'Pendente').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-
-            document.getElementById('resumo-financeiro-mes').innerHTML = `
-                <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
-                    <span class="text-xs text-gray-500 font-medium">Sessões no Mês</span>
-                    <p class="text-lg font-bold text-rosa-900">${sessoesMesAtual.length}</p>
-                </div>
-                <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                    <span class="text-xs text-emerald-700 font-medium">Recebido no Mês</span>
-                    <p class="text-lg font-bold text-emerald-800">${formatarMoeda(recMes)}</p>
-                </div>
-                <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
-                    <span class="text-xs text-amber-700 font-medium">Pendente no Mês</span>
-                    <p class="text-lg font-bold text-amber-800">${formatarMoeda(pendMes)}</p>
-                </div>
-            `;
-
-            // GERADOR DE ALERTAS E PENDÊNCIAS VERMELHAS 🔴
-            const containerPendencias = document.getElementById('container-pendencias');
-            containerPendencias.innerHTML = '';
-            let contadorPendencias = 0;
-
-            // Loop por Pacientes Ativos para checar pendências
-            pacientes.filter(p => p.status === 'ATIVO').forEach(p => {
-                const sessoesPac = sessoes.filter(s => s.pacienteId === p.id);
-
-                // 🔴 1. Informação obrigatória faltando no cadastro
-                if (!p.telefone || !p.email || (p.tipo === 'Infantil' && (!p.responsavel || !p.responsavel.nome))) {
-                    contadorPendencias++;
-                    containerPendencias.innerHTML += criarItemPendencia(
-                        `Informação obrigatória faltando no cadastro de ${p.nome}`,
-                        `Acesse o cadastro do paciente para preencher telefone, e-mail ou responsável.`,
-                        () => navegarPara('prontuario', p.id)
-                    );
+                const btnBack = document.getElementById('btn-back');
+                if (this.historyStack.length > 0) {
+                    btnBack.classList.remove('hidden');
+                } else {
+                    btnBack.classList.add('hidden');
                 }
 
-                sessoesPac.forEach(s => {
-                    // 🔴 2. Sessão realizada sem evolução
-                    if (s.status === 'Realizada' && (!s.evolucao || !s.evolucao.queixa)) {
-                        contadorPendencias++;
-                        containerPendencias.innerHTML += criarItemPendencia(
-                            `Sessão realizada sem evolução (${p.nome} - ${formatarDataBR(s.data)})`,
-                            `A sessão do dia ${formatarDataBR(s.data)} foi concluída mas não possui evolução clínica registrada.`,
-                            () => abrirModalEvolucao(s.id)
-                        );
-                    }
+                this.render();
+            }
 
-                    // 🔴 3. Pagamento recebido sem recibo anexado
-                    if (s.pagamento === 'Recebido' && !s.reciboAnexo) {
-                        contadorPendencias++;
-                        containerPendencias.innerHTML += criarItemPendencia(
-                            `Recibo não anexado (${p.nome} - ${formatarDataBR(s.data)})`,
-                            `O pagamento de ${formatarMoeda(s.valor)} foi marcado como recebido mas não possui recibo anexado.`,
-                            () => navegarPara('financeiro')
-                        );
+            goBack() {
+                if (this.historyStack.length > 0) {
+                    const last = this.historyStack.pop();
+                    this.currentView = last.view;
+                    this.currentParams = last.params;
+                    if (this.historyStack.length === 0) {
+                        document.getElementById('btn-back').classList.add('hidden');
                     }
+                    this.render();
+                }
+            }
 
-                    // 🔴 4. Pagamento pendente
-                    if (s.pagamento === 'Pendente') {
-                        contadorPendencias++;
-                        containerPendencias.innerHTML += criarItemPendencia(
-                            `Pagamento pendente (${p.nome} - ${formatarDataBR(s.data)})`,
-                            `Valor de ${formatarMoeda(s.valor)} aguardando liquidação.`,
-                            () => navegarPara('financeiro')
-                        );
-                    }
+            async render() {
+                const container = document.getElementById('app-content');
+                container.innerHTML = '';
+
+                switch (this.currentView) {
+                    case 'dashboard':
+                        await this.renderDashboard(container);
+                        break;
+                    case 'pacientes':
+                        await this.renderPacientes(container);
+                        break;
+                    case 'cadastro-paciente':
+                        await this.renderCadastroPaciente(container);
+                        break;
+                    case 'prontuario':
+                        await this.renderProntuario(container, this.currentParams);
+                        break;
+                    case 'evolucao-form':
+                        await this.renderEvolucaoForm(container, this.currentParams);
+                        break;
+                    case 'financeiro':
+                        await this.renderFinanceiro(container);
+                        break;
+                    default:
+                        await this.renderDashboard(container);
+                }
+            }
+
+            // -----------------------------------------------------------------
+            // 1. DASHBOARD COM ALERTAS DE PENDÊNCIAS
+            // -----------------------------------------------------------------
+            async renderDashboard(container) {
+                const pacientes = await this.db.getAll('pacientes');
+                const sessoes = await this.db.getAll('sessoes');
+                const evolucoes = await this.db.getAll('evolucoes');
+
+                const ativos = pacientes.filter(p => p.status === 'Ativo').length;
+                const inativos = pacientes.filter(p => p.status === 'Inativo').length;
+
+                const realizadas = sessoes.filter(s => s.status === 'Realizada').length;
+                const agendadas = sessoes.filter(s => s.status === 'Agendada').length;
+                const faltas = sessoes.filter(s => s.status === 'Falta' || s.status === 'Cancelada').length;
+
+                let recebido = 0;
+                let pendente = 0;
+                sessoes.forEach(s => {
+                    const val = parseFloat(s.valor || 0);
+                    if (s.pago) recebido += val;
+                    else pendente += val;
                 });
 
-                // 🔴 5. PDF Semanal Pendente / Controle Semanal
-                const temAtendimentoRecente = sessoesPac.some(s => s.status === 'Realizada');
-                const temPDFAnexo = p.pdfsSemanais && p.pdfsSemanais.length > 0;
-                if (temAtendimentoRecente && !temPDFAnexo) {
-                    contadorPendencias++;
-                    containerPendencias.innerHTML += criarItemPendencia(
-                        `PDF semanal pendente (${p.nome})`,
-                        `O paciente possui atendimentos registrados mas nenhum PDF integral de prontuário foi vinculado ainda.`,
-                        () => navegarPara('prontuario', p.id)
-                    );
+                // Verificação de Pendências em tempo real
+                const pendencias = [];
+                for (let s of sessoes) {
+                    if (s.status === 'Realizada') {
+                        const evo = evolucoes.find(e => e.sessaoId === s.id);
+                        const pac = pacientes.find(p => p.id === s.pacienteId);
+                        const pacNome = pac ? pac.nome : 'Paciente Desconhecido';
+
+                        if (!evo) {
+                            pendencias.push({ text: `🔴 Sessão realizada sem evolução: ${pacNome} (${s.data})`, link: () => this.navigate('prontuario', s.pacienteId) });
+                        }
+                        if (s.pago && !s.reciboAnexado) {
+                            pendencias.push({ text: `🔴 Pagamento recebido sem recibo: ${pacNome} (${s.data})`, link: () => this.navigate('prontuario', s.pacienteId) });
+                        }
+                    }
                 }
-            });
 
-            document.getElementById('dash-badge-pendencias').innerText = `${contadorPendencias} pendência(s)`;
-            if (contadorPendencias === 0) {
-                containerPendencias.innerHTML = `<div class="text-center py-6 text-gray-500 text-sm">🟢 Nenhuma pendência encontrada! Tudo atualizado no consultório.</div>`;
-            }
-        }
+                container.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-brand-800">Painel Inicial (Dashboard)</h2>
+                            <button onclick="app.navigate('cadastro-paciente')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-xl shadow transition">
+                                + Novo Paciente
+                            </button>
+                        </div>
 
-        function criarItemPendencia(titulo, descricao, acaoOnClick) {
-            const idBtn = 'btn-pend-' + Math.random().toString(36).substr(2, 9);
-            window[idBtn] = acaoOnClick;
-            return `
-                <div class="py-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:bg-rosa-50/50 transition px-2 rounded-lg">
-                    <div class="flex items-start gap-2">
-                        <span class="text-red-600 text-base">🔴</span>
-                        <div>
-                            <h4 class="font-bold text-red-900 text-xs sm:text-sm">${titulo}</h4>
-                            <p class="text-xs text-gray-600">${descricao}</p>
+                        <!-- CARDS DE METRICAS -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-brand-500">
+                                <p class="text-xs text-gray-500 font-semibold uppercase">Total de Pacientes</p>
+                                <p class="text-2xl font-bold text-gray-800 mt-1">${pacientes.length}</p>
+                                <p class="text-xs text-gray-400 mt-1">${ativos} Ativos | ${inativos} Inativos</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-brand-500">
+                                <p class="text-xs text-gray-500 font-semibold uppercase">Sessões Realizadas</p>
+                                <p class="text-2xl font-bold text-gray-800 mt-1">${realizadas}</p>
+                                <p class="text-xs text-gray-400 mt-1">${agendadas} Agendadas | ${faltas} Faltas/Canc.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-green-500">
+                                <p class="text-xs text-gray-500 font-semibold uppercase">Valores Recebidos</p>
+                                <p class="text-2xl font-bold text-green-600 mt-1">R$ ${recebido.toFixed(2)}</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow border-l-4 border-red-500">
+                                <p class="text-xs text-gray-500 font-semibold uppercase">Valores Pendentes</p>
+                                <p class="text-2xl font-bold text-red-600 mt-1">R$ ${pendente.toFixed(2)}</p>
+                            </div>
+                        </div>
+
+                        <!-- PAINEL DE PENDÊNCIAS EM VERMELHO -->
+                        <div class="bg-white p-6 rounded-xl shadow">
+                            <h3 class="text-lg font-bold text-red-700 mb-3 flex items-center">
+                                Avisos e Pendências Locais
+                            </h3>
+                            ${pendencias.length === 0 ? `
+                                <p class="text-sm text-green-600 font-medium">🟢 Nenhuma pendência detectada. Prontuários atualizados!</p>
+                            ` : `
+                                <ul class="space-y-2">
+                                    ${pendencias.map((p, idx) => `
+                                        <li class="bg-red-50 border border-red-200 p-3 rounded-lg flex justify-between items-center text-sm text-red-800 font-medium">
+                                            <span>${p.text}</span>
+                                            <button onclick="app.triggerPendencia(${idx})" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition">Resolver</button>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            `}
                         </div>
                     </div>
-                    <button onclick="window['${idBtn}']()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded font-semibold whitespace-nowrap self-end sm:self-center">
-                        Resolver Agora
-                    </button>
-                </div>
-            `;
-        }
+                `;
 
-        // ==================== LÓGICA DE PACIENTES ====================
-        function renderizarListaPacientes() {
-            const tbody = document.getElementById('tabela-pacientes-body');
-            tbody.innerHTML = '';
-
-            const busca = document.getElementById('filtro-paciente-nome').value.toLowerCase();
-            const statusFiltro = document.getElementById('filtro-paciente-status').value;
-            const tipoFiltro = document.getElementById('filtro-paciente-tipo').value;
-
-            const listaFiltrada = pacientes.filter(p => {
-                const bateNome = p.nome.toLowerCase().includes(busca);
-                const bateStatus = (statusFiltro === 'TODOS') || (p.status === statusFiltro);
-                const bateTipo = (tipoFiltro === 'TODOS') || (p.tipo === tipoFiltro);
-                return bateNome && bateStatus && bateTipo;
-            });
-
-            if (listaFiltrada.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-500">Nenhum paciente encontrado com os filtros aplicados.</td></tr>`;
-                return;
+                this._tempPendencias = pendencias;
             }
 
-            listaFiltrada.forEach(p => {
-                const badgeStatus = p.status === 'ATIVO' 
-                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full">ATIVO</span>`
-                    : `<span class="bg-gray-100 text-gray-700 text-xs font-bold px-2 py-0.5 rounded-full">INATIVO</span>`;
+            triggerPendencia(idx) {
+                if (this._tempPendencias && this._tempPendencias[idx]) {
+                    this._tempPendencias[idx].link();
+                }
+            }
 
-                const infoResp = (p.tipo === 'Infantil' && p.responsavel && p.responsavel.nome)
-                    ? `<div class="text-xs text-rosa-700 font-medium">Resp: ${p.responsavel.nome} (${p.responsavel.parentesco || 'Resp'})</div>`
-                    : '';
+            // -----------------------------------------------------------------
+            // 2. GESTÃO E LISTAGEM DE PACIENTES COM FILTROS
+            // -----------------------------------------------------------------
+            async renderPacientes(container) {
+                const pacientes = await this.db.getAll('pacientes');
 
-                tbody.innerHTML += `
-                    <tr class="hover:bg-rosa-50/50 transition">
-                        <td class="px-6 py-4">
-                            <div class="font-bold text-rosa-900">${p.nome}</div>
-                            ${infoResp}
+                container.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-2xl font-bold text-brand-800">Gestão de Pacientes</h2>
+                            <button onclick="app.navigate('cadastro-paciente')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2 rounded-xl shadow transition">
+                                + Cadastrar Paciente
+                            </button>
+                        </div>
+
+                        <!-- FILTROS -->
+                        <div class="bg-white p-4 rounded-xl shadow flex flex-col md:flex-row gap-4">
+                            <input type="text" id="filter-search" oninput="app.filterPacientes()" placeholder="Buscar pelo nome..." class="flex-1 border border-brand-200 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            
+                            <select id="filter-status" onchange="app.filterPacientes()" class="border border-brand-200 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="TODOS">Todos os Status</option>
+                                <option value="Ativo" selected>Ativos</option>
+                                <option value="Inativo">Inativos</option>
+                            </select>
+
+                            <select id="filter-tipo" onchange="app.filterPacientes()" class="border border-brand-200 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="TODOS">Todos os Tipos</option>
+                                <option value="Adulto">Adulto</option>
+                                <option value="Infantil">Infantil</option>
+                            </select>
+                        </div>
+
+                        <!-- TABELA/LISTA -->
+                        <div class="bg-white rounded-xl shadow overflow-hidden">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-brand-100 text-brand-900 text-xs font-bold uppercase">
+                                    <tr>
+                                        <th class="p-4">Nome</th>
+                                        <th class="p-4">Tipo</th>
+                                        <th class="p-4">Contato</th>
+                                        <th class="p-4">Status</th>
+                                        <th class="p-4 text-right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pacientes-list" class="divide-y divide-brand-50 text-sm">
+                                    <!-- Renderizado via filterPacientes -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+
+                this._pacientesCache = pacientes;
+                this.filterPacientes();
+            }
+
+            filterPacientes() {
+                const search = (document.getElementById('filter-search')?.value || '').toLowerCase();
+                const status = document.getElementById('filter-status')?.value || 'TODOS';
+                const tipo = document.getElementById('filter-tipo')?.value || 'TODOS';
+
+                const list = this._pacientesCache.filter(p => {
+                    const matchSearch = p.nome.toLowerCase().includes(search);
+                    const matchStatus = status === 'TODOS' || p.status === status;
+                    const matchTipo = tipo === 'TODOS' || p.tipoAtendimento === tipo;
+                    return matchSearch && matchStatus && matchTipo;
+                });
+
+                const tbody = document.getElementById('pacientes-list');
+                if (!tbody) return;
+
+                if (list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">Nenhum paciente encontrado com esses critérios.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = list.map(p => `
+                    <tr class="hover:bg-brand-50 transition">
+                        <td class="p-4 font-bold text-gray-800">${p.nome}</td>
+                        <td class="p-4"><span class="px-2 py-1 rounded-full text-xs font-semibold ${p.tipoAtendimento === 'Infantil' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">${p.tipoAtendimento}</span></td>
+                        <td class="p-4 text-gray-600">${p.telefone || '-'}</td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${p.status === 'Ativo' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}">
+                                ${p.status}
+                            </span>
                         </td>
-                        <td class="px-6 py-4 font-medium text-xs text-gray-600">${p.tipo}</td>
-                        <td class="px-6 py-4 text-xs">
-                            <div>📞 ${p.telefone || 'Não informado'}</div>
-                            <div class="text-gray-500">✉️ ${p.email || 'Não informado'}</div>
-                        </td>
-                        <td class="px-6 py-4">${badgeStatus}</td>
-                        <td class="px-6 py-4 text-right space-x-2">
-                            <button onclick="navegarPara('prontuario', '${p.id}')" class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="app.navigate('prontuario', '${p.id}')" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-3 py-1.5 rounded-lg transition">
                                 Abrir Prontuário
+                            </button>
+                            <button onclick="app.togglePacienteStatus('${p.id}')" class="text-xs text-gray-500 hover:underline">
+                                ${p.status === 'Ativo' ? 'Inativar' : 'Reativar'}
                             </button>
                         </td>
                     </tr>
-                `;
-            });
-        }
+                `).join('');
+            }
 
-        function abrirModalPaciente(paciente = null) {
-            document.getElementById('form-paciente').reset();
-            if (paciente) {
-                document.getElementById('modal-paciente-titulo').innerText = 'Editar Paciente';
-                document.getElementById('paciente-id').value = paciente.id;
-                document.getElementById('paciente-nome').value = paciente.nome;
-                document.getElementById('paciente-tipo').value = paciente.tipo;
-                document.getElementById('paciente-nascimento').value = paciente.nascimento || '';
-                document.getElementById('paciente-telefone').value = paciente.telefone || '';
-                document.getElementById('paciente-email').value = paciente.email || '';
-
-                if (paciente.tipo === 'Infantil' && paciente.responsavel) {
-                    document.getElementById('paciente-resp-nome').value = paciente.responsavel.nome || '';
-                    document.getElementById('paciente-resp-parentesco').value = paciente.responsavel.parentesco || '';
-                    document.getElementById('paciente-resp-telefone').value = paciente.responsavel.telefone || '';
+            async togglePacienteStatus(id) {
+                const paciente = await this.db.getById('pacientes', id);
+                if (paciente) {
+                    paciente.status = paciente.status === 'Ativo' ? 'Inativo' : 'Ativo';
+                    await this.db.put('pacientes', paciente);
+                    this.showToast(`Status do paciente alterado para ${paciente.status}.`);
+                    this.renderPacientes(document.getElementById('app-content'));
                 }
-            } else {
-                document.getElementById('modal-paciente-titulo').innerText = 'Cadastrar Novo Paciente';
-                document.getElementById('paciente-id').value = '';
-            }
-            alternarCamposInfantil();
-            document.getElementById('modal-paciente').classList.remove('hidden');
-        }
-
-        function fecharModalPaciente() {
-            document.getElementById('modal-paciente').classList.add('hidden');
-        }
-
-        function alternarCamposInfantil() {
-            const tipo = document.getElementById('paciente-tipo').value;
-            const secaoInfantil = document.getElementById('secao-infantil');
-            if (tipo === 'Infantil') {
-                secaoInfantil.classList.remove('hidden');
-            } else {
-                secaoInfantil.classList.add('hidden');
-            }
-        }
-
-        function salvarPaciente(e) {
-            e.preventDefault();
-            const id = document.getElementById('paciente-id').value;
-            const nome = document.getElementById('paciente-nome').value.trim();
-            const tipo = document.getElementById('paciente-tipo').value;
-            const nascimento = document.getElementById('paciente-nascimento').value;
-            const telefone = document.getElementById('paciente-telefone').value.trim();
-            const email = document.getElementById('paciente-email').value.trim();
-
-            let responsavel = null;
-            if (tipo === 'Infantil') {
-                responsavel = {
-                    nome: document.getElementById('paciente-resp-nome').value.trim(),
-                    parentesco: document.getElementById('paciente-resp-parentesco').value.trim(),
-                    telefone: document.getElementById('paciente-resp-telefone').value.trim()
-                };
             }
 
-            if (id) {
-                // Editar existente sem apagar dados históricos
-                const p = pacientes.find(x => x.id === id);
-                if (p) {
-                    p.nome = nome;
-                    p.tipo = tipo;
-                    p.nascimento = nascimento;
-                    p.telefone = telefone;
-                    p.email = email;
-                    p.responsavel = responsavel;
-                }
-            } else {
-                // Novo paciente
-                const novoPaciente = {
-                    id: 'pac_' + Date.now(),
-                    nome: nome,
-                    tipo: tipo,
-                    nascimento: nascimento,
-                    telefone: telefone,
-                    email: email,
-                    responsavel: responsavel,
-                    status: 'ATIVO',
-                    pdfsSemanais: [],
-                    dataCadastro: new Date().toISOString()
-                };
-                pacientes.push(novoPaciente);
-            }
-
-            salvarDadosLocais();
-            fecharModalPaciente();
-        }
-
-        function alternarStatusPacienteAtual() {
-            if (!pacienteAtualId) return;
-            const p = pacientes.find(x => x.id === pacienteAtualId);
-            if (!p) return;
-
-            const novoStatus = p.status === 'ATIVO' ? 'INATIVO' : 'ATIVO';
-            if (confirm(`Deseja alterar o status de ${p.nome} para ${novoStatus}? Os dados históricos de prontuário, sessões e recebimentos permanecerão intactos.`)) {
-                p.status = novoStatus;
-                salvarDadosLocais();
-            }
-        }
-
-        function abrirModalEditarPacienteAtual() {
-            const p = pacientes.find(x => x.id === pacienteAtualId);
-            if (p) abrirModalPaciente(p);
-        }
-
-        // ==================== LÓGICA DO PRONTUÁRIO INDIVIDUAL ====================
-        function renderizarProntuarioPaciente(id) {
-            const p = pacientes.find(x => x.id === id);
-            if (!p) return;
-
-            document.getElementById('pront-nome-paciente').innerText = p.nome;
-            
-            const badgeStatus = document.getElementById('pront-badge-status');
-            if (p.status === 'ATIVO') {
-                badgeStatus.innerText = 'ATIVO';
-                badgeStatus.className = 'px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800';
-            } else {
-                badgeStatus.innerText = 'INATIVO';
-                badgeStatus.className = 'px-2.5 py-0.5 text-xs font-bold rounded-full bg-gray-200 text-gray-700';
-            }
-
-            document.getElementById('pront-badge-tipo').innerText = p.tipo;
-            document.getElementById('pront-dados-pessoais').innerText = `📞 ${p.telefone || 'Sem Tel'} | ✉️ ${p.email || 'Sem Email'} | 🎂 ${formatarDataBR(p.nascimento)}`;
-
-            const divResp = document.getElementById('pront-dados-responsavel');
-            if (p.tipo === 'Infantil' && p.responsavel && p.responsavel.nome) {
-                divResp.classList.remove('hidden');
-                divResp.innerText = `👨‍👩‍👧 Responsável Legal: ${p.responsavel.nome} (${p.responsavel.parentesco}) - Tel: ${p.responsavel.telefone || 'N/A'}`;
-            } else {
-                divResp.classList.add('hidden');
-            }
-
-            const btnInativar = document.getElementById('btn-inativar-reativar');
-            btnInativar.innerText = p.status === 'ATIVO' ? 'Inativar Paciente' : 'Reativar Paciente';
-
-            // Renderizar Sessões do Paciente
-            renderizarSessoesDoPaciente(p.id);
-            // Renderizar PDFs Semanais Vinc.
-            renderizarPDFsSemanaisTabela(p);
-        }
-
-        function trocarAbaProntuario(aba) {
-            ['historico', 'pdf-semanal', 'resumo'].forEach(a => {
-                document.getElementById(`aba-conteudo-${a}`).classList.add('hidden');
-                document.getElementById(`aba-btn-${a}`).className = 'py-2 px-3 border-b-2 border-transparent hover:text-rosa-700';
-            });
-
-            document.getElementById(`aba-conteudo-${aba}`).classList.remove('hidden');
-            document.getElementById(`aba-btn-${aba}`).className = 'py-2 px-3 border-b-2 border-rosa-600 text-rosa-700 font-bold';
-        }
-
-        function renderizarSessoesDoPaciente(pacienteId) {
-            const container = document.getElementById('lista-sessoes-prontuario');
-            container.innerHTML = '';
-
-            const sessoesPac = sessoes.filter(s => s.pacienteId === pacienteId)
-                .sort((a,b) => new Date(b.data + 'T' + b.horario) - new Date(a.data + 'T' + a.horario));
-
-            if (sessoesPac.length === 0) {
-                container.innerHTML = `<div class="bg-white p-6 rounded-xl text-center text-gray-500 text-sm">Nenhuma sessão registrada para este paciente.</div>`;
-                return;
-            }
-
-            sessoesPac.forEach(s => {
-                const temEvolucao = s.evolucao && s.evolucao.queixa;
-                const alertaEvolucao = (s.status === 'Realizada' && !temEvolucao)
-                    ? `<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">🔴 EVOLUÇÃO PENDENTE</span>`
-                    : '';
-
-                const alertaRecibo = (s.pagamento === 'Recebido' && !s.reciboAnexo)
-                    ? `<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">🔴 RECIBO PENDENTE</span>`
-                    : (s.reciboAnexo ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">🟢 Recibo Anexado</span>` : '');
-
-                container.innerHTML += `
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-rosa-200 space-y-3">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-rosa-100 pb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-rosa-900 text-base">📅 ${formatarDataBR(s.data)} às ${s.horario}</span>
-                                <span class="text-xs bg-rosa-100 text-rosa-800 px-2 py-0.5 rounded font-medium">${s.modalidade}</span>
-                                <span class="text-xs font-bold px-2 py-0.5 rounded ${s.status==='Realizada'?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'}">${s.status}</span>
+            // -----------------------------------------------------------------
+            // 3. FORMULÁRIO DE CADASTRO/EDIÇÃO DE PACIENTE (SALVAMENTO REAL)
+            // -----------------------------------------------------------------
+            async renderCadastroPaciente(container) {
+                container.innerHTML = `
+                    <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow space-y-4">
+                        <h2 class="text-xl font-bold text-brand-800">Cadastrar Novo Paciente</h2>
+                        
+                        <form id="form-paciente" onsubmit="app.savePaciente(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700">Nome Completo *</label>
+                                <input type="text" id="p-nome" required class="w-full border border-brand-200 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
                             </div>
-                            <div class="flex items-center gap-2">
-                                ${albertaEvolucao || ''}
-                                ${alertaRecibo || ''}
-                                <span class="font-bold text-gray-700 text-sm">${formatarMoeda(s.valor)} (${s.pagamento})</span>
-                            </div>
-                        </div>
 
-                        <!-- CONTEÚDO DA EVOLUÇÃO CLÍNICA -->
-                        ${temEvolucao ? `
-                            <div class="bg-rosa-50/60 p-4 rounded-lg space-y-2 text-xs">
-                                <div><strong class="text-rosa-900">Queixa / Relato:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.queixa}</p></div>
-                                <div><strong class="text-rosa-900">Demanda Trabalhada:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.demanda}</p></div>
-                                <div><strong class="text-rosa-900">Descrição Detalhada:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.descricao}</p></div>
-                                <div><strong class="text-rosa-900">Análise Técnica & Evolução:</strong> <p class="text-gray-800 line-clamp-2">${s.evolucao.analise}</p></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700">Tipo de Atendimento *</label>
+                                    <select id="p-tipo" onchange="app.toggleCamposInfantil(this.value)" required class="w-full border border-brand-200 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
+                                        <option value="Adulto">Adulto</option>
+                                        <option value="Infantil">Infantil</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700">Telefone / WhatsApp</label>
+                                    <input type="text" id="p-telefone" class="w-full border border-brand-200 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
                             </div>
-                        ` : `
-                            <div class="text-xs text-gray-500 italic">Nenhuma evolução clínica registrada até o momento.</div>
-                        `}
 
-                        <!-- AÇÕES DA SESSÃO -->
-                        <div class="flex flex-wrap justify-between items-center gap-2 pt-2 text-xs">
-                            <div class="flex gap-2">
-                                <button onclick="abrirModalEvolucao('${s.id}')" class="bg-rosa-600 hover:bg-rosa-700 text-white font-bold px-3 py-1.5 rounded shadow">
-                                    ${temEvolucao ? 'Editar Evolução' : '➕ Salvar Evolução'}
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700">E-mail</label>
+                                <input type="email" id="p-email" class="w-full border border-brand-200 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+
+                            <!-- CAMPOS ESPECÍFICOS PARA INFANTIL -->
+                            <div id="campos-infantil" class="hidden border-t border-brand-100 pt-4 space-y-3">
+                                <h3 class="text-sm font-bold text-brand-700">Informações do Responsável Legal</h3>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600">Nome do Responsável</label>
+                                    <input type="text" id="p-resp-nome" class="w-full border border-brand-200 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-600">Parentesco</label>
+                                        <input type="text" id="p-resp-parentesco" class="w-full border border-brand-200 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-600">Telefone do Responsável</label>
+                                        <input type="text" id="p-resp-telefone" class="w-full border border-brand-200 rounded-lg p-2 mt-1 focus:ring-2 focus:ring-brand-500 outline-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end space-x-3 pt-4">
+                                <button type="button" onclick="app.goBack()" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100">Cancelar</button>
+                                <button type="submit" class="px-6 py-2 text-sm bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg transition shadow">
+                                    Salvar Paciente
                                 </button>
-                                ${temEvolucao ? `
-                                    <button onclick="verEvolucaoCompleta('${s.id}')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold px-3 py-1.5 rounded">
-                                        Ver Evolução Completa
-                                    </button>
-                                ` : ''}
                             </div>
-                            <div class="flex items-center gap-2">
-                                <label class="bg-rosa-100 hover:bg-rosa-200 text-rosa-800 font-semibold px-3 py-1.5 rounded cursor-pointer">
-                                    ${s.reciboAnexo ? 'Substituir Recibo' : 'Anexar Recibo'}
-                                    <input type="file" accept="image/*,application/pdf" class="hidden" onchange="anexarReciboSessao(event, '${s.id}')">
-                                </label>
-                                ${s.reciboAnexo ? `
-                                    <button onclick="visualizarRecibo('${s.id}')" class="bg-emerald-600 text-white px-2.5 py-1.5 rounded font-bold">Ver</button>
-                                    <button onclick="removerRecibo('${s.id}')" class="bg-red-100 text-red-700 px-2 py-1.5 rounded font-bold">🗑️</button>
-                                ` : ''}
-                                <button onclick="abrirModalSessao(sessoes.find(x=>x.id==='${s.id}'))" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1.5 rounded">✏️ Editar Sessão</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 `;
-            });
-        }
-
-        // ==================== LÓGICA DE EVOLUÇÕES CLINICAS ====================
-        function abrirModalEvolucao(sessaoId) {
-            const s = sessoes.find(x => x.id === sessaoId);
-            if (!s) return;
-
-            const p = pacientes.find(x => x.id === s.pacienteId);
-
-            document.getElementById('evolucao-sessao-id').value = s.id;
-            document.getElementById('subtitulo-modal-evolucao').innerText = `Paciente: ${p ? p.nome : 'N/A'} - Data: ${formatarDataBR(s.data)}`;
-
-            if (s.evolucao) {
-                document.getElementById('ev-queixa').value = s.evolucao.queixa || '';
-                document.getElementById('ev-demanda').value = s.evolucao.demanda || '';
-                document.getElementById('ev-descricao').value = s.evolucao.descricao || '';
-                document.getElementById('ev-analise').value = s.evolucao.analise || '';
-            } else {
-                document.getElementById('form-evolucao').reset();
-                document.getElementById('evolucao-sessao-id').value = s.id;
             }
 
-            document.getElementById('modal-evolucao').classList.remove('hidden');
-        }
-
-        function fecharModalEvolucao() {
-            document.getElementById('modal-evolucao').classList.add('hidden');
-        }
-
-        function salvarEvolucao(e) {
-            e.preventDefault();
-            const sessaoId = document.getElementById('evolucao-sessao-id').value;
-            const s = sessoes.find(x => x.id === sessaoId);
-            if (!s) return;
-
-            s.evolucao = {
-                queixa: document.getElementById('ev-queixa').value.trim(),
-                demanda: document.getElementById('ev-demanda').value.trim(),
-                descricao: document.getElementById('ev-descricao').value.trim(),
-                analise: document.getElementById('ev-analise').value.trim(),
-                dataRegistro: new Date().toISOString()
-            };
-
-            salvarDadosLocais();
-            fecharModalEvolucao();
-        }
-
-        function verEvolucaoCompleta(sessaoId) {
-            const s = sessoes.find(x => x.id === sessaoId);
-            if (!s || !s.evolucao) return;
-
-            const p = pacientes.find(x => x.id === s.pacienteId);
-
-            document.getElementById('ver-ev-titulo').innerText = `Evolução Clínica - ${p ? p.nome : ''} (${formatarDataBR(s.data)})`;
-            document.getElementById('ver-ev-conteudo').innerHTML = `
-                <div class="space-y-4">
-                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
-                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Queixa Principal / Relato</h4>
-                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.queixa}</p>
-                    </div>
-                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
-                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Demanda Trabalhada</h4>
-                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.demanda}</p>
-                    </div>
-                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
-                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Descrição Detalhada da Sessão</h4>
-                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.descricao}</p>
-                    </div>
-                    <div class="bg-rosa-50 p-3 rounded-lg border border-rosa-100">
-                        <h4 class="font-bold text-rosa-900 text-xs uppercase mb-1">Análise Técnica e Evolução</h4>
-                        <p class="whitespace-pre-wrap text-gray-800">${s.evolucao.analise}</p>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('modal-ver-evolucao').classList.remove('hidden');
-        }
-
-        function fecharModalVerEvolucao() {
-            document.getElementById('modal-ver-evolucao').classList.add('hidden');
-        }
-
-        // ==================== LÓGICA DE SESSÕES & AGENDA ====================
-        function renderizarListaSessoesGeral() {
-            const container = document.getElementById('container-sessoes-geral');
-            container.innerHTML = '';
-
-            const mesFiltro = document.getElementById('filtro-sessao-mes').value;
-            const statusFiltro = document.getElementById('filtro-sessao-status').value;
-
-            let lista = [...sessoes];
-
-            if (mesFiltro) {
-                lista = lista.filter(s => s.data && s.data.substring(0, 7) === mesFiltro);
-            }
-            if (statusFiltro !== 'TODOS') {
-                lista = lista.filter(s => s.status === statusFiltro);
+            toggleCamposInfantil(val) {
+                const fields = document.getElementById('campos-infantil');
+                if (val === 'Infantil') fields.classList.remove('hidden');
+                else fields.classList.add('hidden');
             }
 
-            lista.sort((a,b) => new Date(b.data + 'T' + b.horario) - new Date(a.data + 'T' + a.horario));
+            async savePaciente(e) {
+                e.preventDefault();
+                try {
+                    const paciente = {
+                        id: 'pac_' + Date.now(),
+                        nome: document.getElementById('p-nome').value.trim(),
+                        tipoAtendimento: document.getElementById('p-tipo').value,
+                        telefone: document.getElementById('p-telefone').value.trim(),
+                        email: document.getElementById('p-email').value.trim(),
+                        status: 'Ativo',
+                        responsavel: {
+                            nome: document.getElementById('p-resp-nome')?.value.trim() || '',
+                            parentesco: document.getElementById('p-resp-parentesco')?.value.trim() || '',
+                            telefone: document.getElementById('p-resp-telefone')?.value.trim() || ''
+                        },
+                        dataCriacao: new Date().toISOString()
+                    };
 
-            if (lista.length === 0) {
-                container.innerHTML = `<div class="bg-white p-6 rounded-xl text-center text-gray-500 text-sm">Nenhuma sessão encontrada com os filtros selecionados.</div>`;
-                return;
-            }
+                    if (!paciente.nome) {
+                        this.showToast('Erro: Informe o nome do paciente.', true);
+                        return;
+                    }
 
-            lista.forEach(s => {
-                const p = pacientes.find(x => x.id === s.pacienteId);
-                const nomePaciente = p ? p.nome : 'Paciente Não Encontrado';
-
-                container.innerHTML += `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-rosa-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-rosa-900 text-base">${nomePaciente}</span>
-                                <span class="text-xs bg-rosa-100 text-rosa-800 px-2 py-0.5 rounded font-medium">${s.modalidade}</span>
-                            </div>
-                            <div class="text-xs text-gray-600 mt-1">
-                                📅 ${formatarDataBR(s.data)} às ${s.horario} | Valor: <strong>${formatarMoeda(s.valor)}</strong> (${s.pagamento})
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold px-2.5 py-1 rounded ${s.status==='Realizada'?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'}">${s.status}</span>
-                            <button onclick="abrirModalSessao(sessoes.find(x=>x.id==='${s.id}'))" class="bg-rosa-600 hover:bg-rosa-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow">
-                                Gerenciar / Editar
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function limparFiltroMesSessao() {
-            document.getElementById('filtro-sessao-mes').value = '';
-            document.getElementById('filtro-sessao-status').value = 'TODOS';
-            renderizarListaSessoesGeral();
-        }
-
-        function abrirModalSessao(sessao = null) {
-            const selectPac = document.getElementById('sessao-paciente-id');
-            selectPac.innerHTML = '';
-
-            pacientes.forEach(p => {
-                selectPac.innerHTML += `<option value="${p.id}">${p.nome} (${p.status})</option>`;
-            });
-
-            if (sessao) {
-                document.getElementById('modal-sessao-titulo').innerText = 'Editar Sessão';
-                document.getElementById('sessao-id').value = sessao.id;
-                selectPac.value = sessao.pacienteId;
-                document.getElementById('sessao-data').value = sessao.data;
-                document.getElementById('sessao-horario').value = sessao.horario;
-                document.getElementById('sessao-modalidade').value = sessao.modalidade;
-                document.getElementById('sessao-status').value = sessao.status;
-                document.getElementById('sessao-valor').value = sessao.valor;
-                document.getElementById('sessao-pagamento').value = sessao.pagamento;
-            } else {
-                document.getElementById('modal-sessao-titulo').innerText = 'Agendar Nova Sessão';
-                document.getElementById('form-sessao').reset();
-                document.getElementById('sessao-id').value = '';
-                document.getElementById('sessao-data').value = new Date().toISOString().substring(0,10);
-                if (pacienteAtualId) selectPac.value = pacienteAtualId;
-            }
-
-            document.getElementById('modal-sessao').classList.remove('hidden');
-        }
-
-        function abrirModalSessaoParaPacienteAtual() {
-            abrirModalSessao();
-        }
-
-        function fecharModalSessao() {
-            document.getElementById('modal-sessao').classList.add('hidden');
-        }
-
-        function salvarSessao(e) {
-            e.preventDefault();
-            const id = document.getElementById('sessao-id').value;
-            const pacienteId = document.getElementById('sessao-paciente-id').value;
-            const data = document.getElementById('sessao-data').value;
-            const horario = document.getElementById('sessao-horario').value;
-            const modalidade = document.getElementById('sessao-modalidade').value;
-            const status = document.getElementById('sessao-status').value;
-            const valor = parseFloat(document.getElementById('sessao-valor').value) || 0;
-            const pagamento = document.getElementById('sessao-pagamento').value;
-
-            if (id) {
-                const s = sessoes.find(x => x.id === id);
-                if (s) {
-                    s.pacienteId = pacienteId;
-                    s.data = data;
-                    s.horario = horario;
-                    s.modalidade = modalidade;
-                    s.status = status;
-                    s.valor = valor;
-                    s.pagamento = pagamento;
+                    await this.db.put('pacientes', paciente);
+                    this.showToast('🟢 PACIENTE REGISTRADO COM SUCESSO!');
+                    this.navigate('prontuario', paciente.id);
+                } catch (err) {
+                    this.showToast('Erro ao tentar salvar o paciente.', true);
                 }
-            } else {
+            }
+
+            // -----------------------------------------------------------------
+            // 4. PRONTUÁRIO INDIVIDUAL DO PACIENTE (VISUALIZAÇÃO COMPLETA)
+            // -----------------------------------------------------------------
+            async renderProntuario(container, pacienteId) {
+                const paciente = await this.db.getById('pacientes', pacienteId);
+                if (!paciente) {
+                    container.innerHTML = `<div class="p-4 text-red-600 font-bold">Paciente não encontrado.</div>`;
+                    return;
+                }
+
+                const sessoes = await this.db.getByIndex('sessoes', 'pacienteId', pacienteId);
+                const evolucoes = await this.db.getByIndex('evolucoes', 'pacienteId', pacienteId);
+                const pdfs = await this.db.getByIndex('pdf_documentos', 'pacienteId', pacienteId);
+
+                sessoes.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+                container.innerHTML = `
+                    <div class="space-y-6">
+                        <!-- HEADER PACIENTE -->
+                        <div class="bg-white p-6 rounded-xl shadow flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-l-8 border-brand-600">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">${paciente.nome}</h2>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Tipo: <strong class="text-brand-700">${paciente.tipoAtendimento}</strong> | 
+                                    Contato: ${paciente.telefone || 'Não informado'} | 
+                                    Status: <span class="font-bold ${paciente.status === 'Ativo' ? 'text-green-600' : 'text-gray-500'}">${paciente.status}</span>
+                                </p>
+                                ${paciente.tipoAtendimento === 'Infantil' ? `
+                                    <p class="text-xs text-purple-700 mt-1 font-medium">
+                                        Responsável: ${paciente.responsavel?.nome} (${paciente.responsavel?.parentesco}) - Tel: ${paciente.responsavel?.telefone}
+                                    </p>
+                                ` : ''}
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="app.openNovaSessaoModal('${paciente.id}')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm px-4 py-2 rounded-lg transition shadow">
+                                    + Registrar Nova Sessão
+                                </button>
+                                <button onclick="app.gerarPDFSemanalIntegral('${paciente.id}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm px-4 py-2 rounded-lg transition shadow">
+                                    ✨ Gerar PDF Integral
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- LISTA DE SESSÕES E EVOLUÇÕES -->
+                        <div class="bg-white p-6 rounded-xl shadow space-y-4">
+                            <h3 class="text-lg font-bold text-brand-800 border-b border-brand-100 pb-2">Histórico de Sessões e Evoluções</h3>
+                            
+                            ${sessoes.length === 0 ? `
+                                <p class="text-sm text-gray-500 py-4">Nenhuma sessão registrada para este paciente ainda.</p>
+                            ` : `
+                                <div class="space-y-4">
+                                    ${sessoes.map(s => {
+                                        const evo = evolucoes.find(e => e.sessaoId === s.id);
+                                        return `
+                                            <div class="border border-brand-100 rounded-xl p-4 bg-brand-50/30 space-y-3">
+                                                <div class="flex flex-col md:flex-row justify-between md:items-center gap-2 border-b border-brand-100 pb-2">
+                                                    <div>
+                                                        <span class="font-bold text-brand-900 text-base">Sessão: ${s.data} (${s.horario || 'Horário n/i'})</span>
+                                                        <span class="ml-2 text-xs px-2 py-0.5 rounded font-semibold ${
+                                                            s.status === 'Realizada' ? 'bg-green-100 text-green-800' :
+                                                            s.status === 'Agendada' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'
+                                                        }">${s.status}</span>
+                                                    </div>
+                                                    <div class="flex items-center space-x-2 text-sm">
+                                                        <span class="font-bold text-gray-700">R$ ${parseFloat(s.valor || 0).toFixed(2)}</span>
+                                                        <button onclick="app.togglePagamento('${s.id}')" class="text-xs px-2 py-1 rounded font-bold ${s.pago ? 'bg-green-600 text-white' : 'bg-yellow-500 text-white'}">
+                                                            ${s.pago ? 'Pago' : 'Pendente'}
+                                                        </button>
+                                                        <button onclick="app.toggleRecibo('${s.id}')" class="text-xs px-2 py-1 rounded border border-gray-300 ${s.reciboAnexado ? 'bg-green-50 text-green-700 border-green-300' : 'bg-red-50 text-red-600 border-red-300'}">
+                                                            ${s.reciboAnexado ? '🟢 Recibo Anexado' : '🔴 Sem Recibo'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- PAINEL DA EVOLUÇÃO -->
+                                                <div>
+                                                    ${evo ? `
+                                                        <div class="bg-white p-4 rounded-lg border border-brand-200 space-y-2">
+                                                            <div class="flex justify-between items-center">
+                                                                <span class="text-xs font-bold text-green-700 uppercase">🟢 EVOLUÇÃO SALVA NO BANCO</span>
+                                                                <button onclick="app.navigate('evolucao-form', { pacienteId: '${paciente.id}', sessaoId: '${s.id}' })" class="text-xs bg-brand-100 text-brand-800 hover:bg-brand-200 font-bold px-3 py-1 rounded">
+                                                                    Editar Evolução
+                                                                </button>
+                                                            </div>
+                                                            <div class="text-xs text-gray-700 space-y-1">
+                                                                <p><strong>Queixa Principal / Relato:</strong> ${evo.queixa}</p>
+                                                                <p><strong>Demanda Trabalhada:</strong> ${evo.demanda}</p>
+                                                                <p><strong>Descrição Detalhada:</strong> ${evo.descricao}</p>
+                                                                <p><strong>Análise Técnica e Evolução:</strong> ${evo.analise}</p>
+                                                            </div>
+                                                        </div>
+                                                    ` : `
+                                                        <div class="flex justify-between items-center bg-red-50 p-3 rounded-lg border border-red-200">
+                                                            <span class="text-xs font-bold text-red-700">🔴 EVOLUÇÃO PENDENTE DESTA SESSÃO</span>
+                                                            <button onclick="app.navigate('evolucao-form', { pacienteId: '${paciente.id}', sessaoId: '${s.id}' })" class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded shadow">
+                                                                Preencher e Salvar Evolução
+                                                            </button>
+                                                        </div>
+                                                    `}
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }
+
+            async togglePagamento(sessaoId) {
+                const s = await this.db.getById('sessoes', sessaoId);
+                if (s) {
+                    s.pago = !s.pago;
+                    await this.db.put('sessoes', s);
+                    this.showToast('Status de pagamento atualizado!');
+                    this.render();
+                }
+            }
+
+            async toggleRecibo(sessaoId) {
+                const s = await this.db.getById('sessoes', sessaoId);
+                if (s) {
+                    s.reciboAnexado = !s.reciboAnexado;
+                    await this.db.put('sessoes', s);
+                    this.showToast('Status do recibo atualizado!');
+                    this.render();
+                }
+            }
+
+            async openNovaSessaoModal(pacienteId) {
+                const dataStr = prompt("Data da sessão (AAAA-MM-DD):", new Date().toISOString().split('T')[0]);
+                if (!dataStr) return;
+
                 const novaSessao = {
                     id: 'ses_' + Date.now(),
                     pacienteId: pacienteId,
-                    data: data,
-                    horario: horario,
-                    modalidade: modalidade,
-                    status: status,
-                    valor: valor,
-                    pagamento: pagamento,
-                    reciboAnexo: null,
-                    evolucao: null
+                    data: dataStr,
+                    horario: '14:00',
+                    status: 'Realizada',
+                    valor: 150.00,
+                    pago: false,
+                    reciboAnexado: false
                 };
-                sessoes.push(novaSessao);
+
+                await this.db.put('sessoes', novaSessao);
+                this.showToast('Sessão criada com sucesso!');
+                this.render();
             }
 
-            salvarDadosLocais();
-            fecharModalSessao();
-        }
+            // -----------------------------------------------------------------
+            // 5. REGRA FUNDAMENTAL: FORMULÁRIO E PERSISTÊNCIA DA EVOLUÇÃO
+            // -----------------------------------------------------------------
+            async renderEvolucaoForm(container, params) {
+                const { pacienteId, sessaoId } = params;
+                const paciente = await this.db.getById('pacientes', pacienteId);
+                const sessao = await this.db.getById('sessoes', sessaoId);
+                const evolucoes = await this.db.getByIndex('evolucoes', 'sessaoId', sessaoId);
+                const evolucaoExistente = evolucoes.length > 0 ? evolucoes[0] : null;
 
-        // ==================== LÓGICA DE RECIBOS ANEXADOS ====================
-        function anexarReciboSessao(event, sessaoId) {
-            const file = event.target.files[0];
-            if (!file) return;
+                container.innerHTML = `
+                    <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow space-y-6 border-t-4 border-brand-600">
+                        <div>
+                            <h2 class="text-xl font-bold text-brand-800">Registrar / Editar Evolução do Prontuário</h2>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Paciente: <strong class="text-gray-800">${paciente.nome}</strong> | Sessão de: <strong class="text-gray-800">${sessao.data}</strong>
+                            </p>
+                        </div>
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const s = sessoes.find(x => x.id === sessaoId);
-                if (s) {
-                    s.reciboAnexo = {
-                        nome: file.name,
-                        tipo: file.type,
-                        base64: e.target.result,
-                        dataUpload: new Date().toISOString()
+                        <form id="form-evolucao" onsubmit="app.salvarEvolucaoDefinitiva(event, '${pacienteId}', '${sessaoId}')" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Queixa Principal / Relato</label>
+                                <textarea id="evo-queixa" rows="3" required class="w-full border border-brand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">${evolucaoExistente?.queixa || ''}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Demanda Trabalhada</label>
+                                <textarea id="evo-demanda" rows="3" required class="w-full border border-brand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">${evolucaoExistente?.demanda || ''}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Descrição Detalhada da Sessão</label>
+                                <textarea id="evo-descricao" rows="5" required class="w-full border border-brand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">${evolucaoExistente?.descricao || ''}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Análise Técnica e Evolução</label>
+                                <textarea id="evo-analise" rows="5" required class="w-full border border-brand-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">${evolucaoExistente?.analise || ''}</textarea>
+                            </div>
+
+                            <div class="p-4 bg-brand-50 rounded-lg border border-brand-200 flex justify-between items-center">
+                                <span class="text-xs font-semibold text-brand-800">
+                                    ⚠️ A evolução será permanentemente salva no Banco de Dados local antes de estar disponível para PDF.
+                                </span>
+                                <div class="space-x-2">
+                                    <button type="button" onclick="app.goBack()" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100">Cancelar</button>
+                                    <button type="submit" class="px-6 py-2 text-sm bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg transition shadow">
+                                        💾 SALVAR EVOLUÇÃO
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                `;
+            }
+
+            async salvarEvolucaoDefinitiva(e, pacienteId, sessaoId) {
+                e.preventDefault();
+                try {
+                    const evolucoes = await this.db.getByIndex('evolucoes', 'sessaoId', sessaoId);
+                    const evolucaoExistente = evolucoes.length > 0 ? evolucoes[0] : null;
+
+                    const novaEvolucao = {
+                        id: evolucaoExistente ? evolucaoExistente.id : 'evo_' + Date.now(),
+                        pacienteId: pacienteId,
+                        sessaoId: sessaoId,
+                        queixa: document.getElementById('evo-queixa').value.trim(),
+                        demanda: document.getElementById('evo-demanda').value.trim(),
+                        descricao: document.getElementById('evo-descricao').value.trim(),
+                        analise: document.getElementById('evo-analise').value.trim(),
+                        dataAtualizacao: new Date().toISOString()
                     };
-                    salvarDadosLocais();
+
+                    await this.db.put('evolucoes', novaEvolucao);
+
+                    // Notificação Obrigatória
+                    this.showToast('🟢 EVOLUÇÃO SALVA COM SUCESSO');
+                    this.navigate('prontuario', pacienteId);
+                } catch (err) {
+                    this.showToast('🔴 ERRO AO SALVAR EVOLUÇÃO. NENHUM DADO FOI PERDIDO.', true);
                 }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function visualizarRecibo(sessaoId) {
-            const s = sessoes.find(x => x.id === sessaoId);
-            if (s && s.reciboAnexo) {
-                const win = window.open();
-                win.document.write(`<iframe src="${s.reciboAnexo.base64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
             }
-        }
 
-        function removerRecibo(sessaoId) {
-            const s = sessoes.find(x => x.id === sessaoId);
-            if (s && confirm("Deseja remover o recibo anexado desta sessão?")) {
-                s.reciboAnexo = null;
-                salvarDadosLocais();
-            }
-        }
+            // -----------------------------------------------------------------
+            // 6. GERAÇÃO DE PDF INTEGRAL VIA DADOS PERSISTIDOS
+            // -----------------------------------------------------------------
+            async gerarPDFSemanalIntegral(pacienteId) {
+                const paciente = await this.db.getById('pacientes', pacienteId);
+                const sessoes = await this.db.getByIndex('sessoes', 'pacienteId', pacienteId);
+                const evolucoes = await this.db.getByIndex('evolucoes', 'pacienteId', pacienteId);
 
-        // ==================== LÓGICA DE FINANÇAS ====================
-        function renderizarPainelFinanceiro() {
-            const mesFiltro = document.getElementById('filtro-financeiro-mes').value;
-            const tbody = document.getElementById('tabela-financeiro-body');
-            tbody.innerHTML = '';
-
-            let sessoesFiltradas = sessoes.filter(s => s.data && s.data.substring(0, 7) === mesFiltro);
-
-            let recTotal = 0;
-            let pendTotal = 0;
-            let recibosAnexados = 0;
-            let totalRecebidos = 0;
-
-            sessoesFiltradas.forEach(s => {
-                const p = pacientes.find(x => x.id === s.pacienteId);
-                const nomePac = p ? p.nome : 'Paciente Não Encontrado';
-
-                if (s.pagamento === 'Recebido') {
-                    recTotal += (parseFloat(s.valor) || 0);
-                    totalRecebidos++;
-                    if (s.reciboAnexo) recibosAnexados++;
-                } else {
-                    pendTotal += (parseFloat(s.valor) || 0);
+                if (sessoes.length === 0) {
+                    this.showToast('Não há sessões registradas para gerar o PDF.', true);
+                    return;
                 }
 
-                const statusPagBadge = s.pagamento === 'Recebido'
-                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">RECEBIDO</span>`
-                    : `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded">PENDENTE</span>`;
+                this.showToast('Iniciando busca no banco e montagem do PDF Integral...');
 
-                const reciboBadge = s.reciboAnexo
-                    ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">🟢 Recibo Anexado</span>`
-                    : (s.pagamento === 'Recebido' ? `<span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-0.5 rounded">🔴 RECIBO PENDENTE</span>` : `<span class="text-xs text-gray-400">---</span>`);
+                const pdfContainer = document.getElementById('pdf-container');
+                pdfContainer.classList.remove('hidden');
 
-                tbody.innerHTML += `
-                    <tr class="hover:bg-rosa-50/50 transition">
-                        <td class="p-3 font-semibold text-xs">${formatarDataBR(s.data)}</td>
-                        <td class="p-3 font-bold text-rosa-900">${nomePac}</td>
-                        <td class="p-3 font-bold">${formatarMoeda(s.valor)}</td>
-                        <td class="p-3">${statusPagBadge}</td>
-                        <td class="p-3">${reciboBadge}</td>
-                        <td class="p-3 text-right">
-                            <button onclick="alternarPagamentoSessao('${s.id}')" class="bg-rosa-100 hover:bg-rosa-200 text-rosa-800 text-xs font-bold px-2.5 py-1 rounded">
-                                Alterar Status Pag.
-                            </button>
-                        </td>
-                    </tr>
+                pdfContainer.innerHTML = `
+                    <div style="font-family: Arial, sans-serif; padding: 20px;">
+                        <div style="border-bottom: 2px solid #db2777; padding-bottom: 10px; margin-bottom: 20px;">
+                            <h1 style="color: #db2777; font-size: 22px; font-weight: bold; margin: 0;">PRONTUÁRIO PSICOLÓGICO INTEGRAL</h1>
+                            <p style="font-size: 12px; color: #555; margin: 5px 0 0 0;">Documento impresso diretamente dos dados persistidos do prontuário.</p>
+                        </div>
+
+                        <div style="background-color: #fdf2f8; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 12px;">
+                            <p style="margin: 2px 0;"><strong>PACIENTE:</strong> ${paciente.nome}</p>
+                            <p style="margin: 2px 0;"><strong>TIPO DE ATENDIMENTO:</strong> ${paciente.tipoAtendimento}</p>
+                            <p style="margin: 2px 0;"><strong>CONTATO:</strong> ${paciente.telefone || 'N/A'}</p>
+                            ${paciente.tipoAtendimento === 'Infantil' ? `<p style="margin: 2px 0;"><strong>RESPONSÁVEL:</strong> ${paciente.responsavel?.nome} (${paciente.responsavel?.parentesco})</p>` : ''}
+                        </div>
+
+                        <h2 style="font-size: 16px; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 5px;">HISTÓRICO INTEGRAL DE EVOLUÇÕES</h2>
+
+                        ${sessoes.map(s => {
+                            const evo = evolucoes.find(e => e.sessaoId === s.id);
+                            return `
+                                <div class="pdf-avoid-break" style="margin-top: 15px; border: 1px solid #e5e7eb; padding: 12px; border-radius: 6px; font-size: 11px; line-height: 1.5;">
+                                    <p style="background-color: #f3f4f6; padding: 4px 8px; font-weight: bold; margin-top: 0;">
+                                        SESSÃO REALIZADA EM: ${s.data} (${s.horario})
+                                    </p>
+                                    ${evo ? `
+                                        <div style="margin-top: 8px;">
+                                            <p style="margin: 4px 0;"><strong>1. Queixa Principal / Relato:</strong><br>${evo.queixa.replace(/\n/g, '<br>')}</p>
+                                            <p style="margin: 4px 0;"><strong>2. Demanda Trabalhada:</strong><br>${evo.demanda.replace(/\n/g, '<br>')}</p>
+                                            <p style="margin: 4px 0;"><strong>3. Descrição Detalhada da Sessão:</strong><br>${evo.descricao.replace(/\n/g, '<br>')}</p>
+                                            <p style="margin: 4px 0;"><strong>4. Análise Técnica e Evolução:</strong><br>${evo.analise.replace(/\n/g, '<br>')}</p>
+                                        </div>
+                                    ` : `
+                                        <p style="color: red; font-style: italic;">[Sessão registrada sem evolução no banco de dados]</p>
+                                    `}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
                 `;
-            });
 
-            document.getElementById('fin-card-recebido').innerText = formatarMoeda(recTotal);
-            document.getElementById('fin-card-pendente').innerText = formatarMoeda(pendTotal);
-            document.getElementById('fin-card-recibos').innerText = `${recibosAnexados} / ${totalRecebidos}`;
+                const opt = {
+                    margin:       10,
+                    filename:     `Prontuario_${paciente.nome.replace(/\s+/g, '_')}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2 },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
 
-            if (sessoesFiltradas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-500">Nenhum registro financeiro encontrado para o período.</td></tr>`;
-            }
-        }
-
-        function alternarPagamentoSessao(sessaoId) {
-            const s = sessoes.find(x => x.id === sessaoId);
-            if (s) {
-                s.pagamento = s.pagamento === 'Recebido' ? 'Pendente' : 'Recebido';
-                salvarDadosLocais();
-            }
-        }
-
-        // ==================== LÓGICA DE PDFS SEMANAIS & ANEXOS ====================
-        function adicionarPDFSemanalAnexo(event) {
-            const file = event.target.files[0];
-            if (!file || !pacienteAtualId) return;
-
-            const p = pacientes.find(x => x.id === pacienteAtualId);
-            if (!p) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (!p.pdfsSemanais) p.pdfsSemanais = [];
-                p.pdfsSemanais.push({
-                    id: 'pdf_' + Date.now(),
-                    nomeArquivo: file.name,
-                    base64: e.target.result,
-                    dataUpload: new Date().toISOString()
+                html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                    pdfContainer.classList.add('hidden');
+                    pdfContainer.innerHTML = '';
+                    this.showToast('🟢 PDF Integral gerado com sucesso!');
                 });
-                salvarDadosLocais();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function renderizarPDFsSemanaisTabela(paciente) {
-            const tbody = document.getElementById('tabela-pdfs-semanais-body');
-            tbody.innerHTML = '';
-
-            const lista = paciente.pdfsSemanais || [];
-            if (lista.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-gray-500">Nenhum PDF do prontuário vinculado a este paciente.</td></tr>`;
-                return;
             }
 
-            lista.sort((a,b) => new Date(b.dataUpload) - new Date(a.dataUpload)).forEach(pdf => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-rosa-50/50 transition">
-                        <td class="p-3 text-xs font-semibold">${formatarDataHoraBR(pdf.dataUpload)}</td>
-                        <td class="p-3 font-bold text-rosa-900">${pdf.nomeArquivo}</td>
-                        <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded">Vinculado</span></td>
-                        <td class="p-3 text-right space-x-2">
-                            <button onclick="visualizarPDFSemanal('${paciente.id}', '${pdf.id}')" class="bg-rosa-600 text-white text-xs px-2.5 py-1 rounded font-bold">Visualizar</button>
-                            <button onclick="removerPDFSemanal('${paciente.id}', '${pdf.id}')" class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold">Remover</button>
-                        </td>
-                    </tr>
+            // -----------------------------------------------------------------
+            // 7. PAINEL FINANCEIRO
+            // -----------------------------------------------------------------
+            async renderFinanceiro(container) {
+                const sessoes = await this.db.getAll('sessoes');
+                const pacientes = await this.db.getAll('pacientes');
+
+                let totalRecebido = 0;
+                let totalPendente = 0;
+
+                sessoes.forEach(s => {
+                    const val = parseFloat(s.valor || 0);
+                    if (s.pago) totalRecebido += val;
+                    else totalPendente += val;
+                });
+
+                container.innerHTML = `
+                    <div class="space-y-6">
+                        <h2 class="text-2xl font-bold text-brand-800">Controle Financeiro</h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-6 rounded-xl shadow border-l-4 border-green-500">
+                                <p class="text-sm font-semibold text-gray-500">Total Efectivamente Recebido</p>
+                                <p class="text-3xl font-bold text-green-600 mt-2">R$ ${totalRecebido.toFixed(2)}</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-xl shadow border-l-4 border-yellow-500">
+                                <p class="text-sm font-semibold text-gray-500">Total a Receber (Pendente)</p>
+                                <p class="text-3xl font-bold text-yellow-600 mt-2">R$ ${totalPendente.toFixed(2)}</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow overflow-hidden">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-brand-100 text-brand-900 text-xs font-bold uppercase">
+                                    <tr>
+                                        <th class="p-4">Data</th>
+                                        <th class="p-4">Paciente</th>
+                                        <th class="p-4">Valor</th>
+                                        <th class="p-4">Status</th>
+                                        <th class="p-4">Recibo</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-brand-50 text-sm">
+                                    ${sessoes.map(s => {
+                                        const pac = pacientes.find(p => p.id === s.pacienteId);
+                                        return `
+                                            <tr class="hover:bg-brand-50">
+                                                <td class="p-4">${s.data}</td>
+                                                <td class="p-4 font-bold">${pac ? pac.nome : 'N/A'}</td>
+                                                <td class="p-4 font-semibold">R$ ${parseFloat(s.valor || 0).toFixed(2)}</td>
+                                                <td class="p-4">
+                                                    <span class="px-2 py-1 rounded text-xs font-bold ${s.pago ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
+                                                        ${s.pago ? 'Pago' : 'Pendente'}
+                                                    </span>
+                                                </td>
+                                                <td class="p-4">
+                                                    <span class="text-xs font-bold ${s.reciboAnexado ? 'text-green-600' : 'text-red-600'}">
+                                                        ${s.reciboAnexado ? '🟢 Anexado' : '🔴 Sem Recibo'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 `;
-            });
-        }
-
-        function visualizarPDFSemanal(pacienteId, pdfId) {
-            const p = pacientes.find(x => x.id === pacienteId);
-            if (p && p.pdfsSemanais) {
-                const item = p.pdfsSemanais.find(x => x.id === pdfId);
-                if (item) {
-                    const win = window.open();
-                    win.document.write(`<iframe src="${item.base64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
-                }
             }
         }
 
-        function removerPDFSemanal(pacienteId, pdfId) {
-            const p = pacientes.find(x => x.id === pacienteId);
-            if (p && p.pdfsSemanais && confirm("Deseja remover este PDF vinculado do paciente?")) {
-                p.pdfsSemanais = p.pdfsSemanais.filter(x => x.id !== pdfId);
-                salvarDadosLocais();
-            }
-        }
-
-        // ==================== GERADOR DE RESUMO AUTOMÁTICO DO PRONTUÁRIO ====================
-        function gerarResumoAutomaticoProntuario() {
-            if (!pacienteAtualId) return;
-            const p = pacientes.find(x => x.id === pacienteAtualId);
-            if (!p) return;
-
-            const sessoesPac = sessoes.filter(s => s.pacienteId === p.id);
-            const totalSessoes = sessoesPac.length;
-            const realizadas = sessoesPac.filter(s => s.status === 'Realizada').length;
-            const faltas = sessoesPac.filter(s => s.status === 'Falta').length;
-            const canceladas = sessoesPac.filter(s => s.status === 'Cancelada').length;
-
-            const pagoTotal = sessoesPac.filter(s => s.pagamento === 'Recebido').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-            const pendTotal = sessoesPac.filter(s => s.pagamento === 'Pendente').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-
-            // Principais demandas compiladas
-            const demandas = sessoesPac
-                .filter(s => s.evolucao && s.evolucao.demanda)
-                .map(s => `• ${formatarDataBR(s.data)}: ${s.evolucao.demanda}`)
-                .join('<br>');
-
-            const div = document.getElementById('container-resumo-automatico-texto');
-            div.innerHTML = `
-                <div class="border-b border-rosa-200 pb-3">
-                    <h3 class="text-base font-bold text-rosa-900">✨ Resumo Automático do Prontuário Psicológico</h3>
-                    <p class="text-xs text-gray-500">Paciente: <strong>${p.nome}</strong> | Gerado em: ${formatarDataHoraBR(new Date().toISOString())}</p>
-                </div>
-
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center my-3">
-                    <div class="bg-rosa-50 p-2 rounded">
-                        <span class="text-xs text-gray-500 block">Total Sessões</span>
-                        <span class="font-bold text-rosa-900 text-base">${totalSessoes}</span>
-                    </div>
-                    <div class="bg-emerald-50 p-2 rounded">
-                        <span class="text-xs text-emerald-700 block">Realizadas</span>
-                        <span class="font-bold text-emerald-900 text-base">${realizadas}</span>
-                    </div>
-                    <div class="bg-amber-50 p-2 rounded">
-                        <span class="text-xs text-amber-700 block">Faltas / Cancel.</span>
-                        <span class="font-bold text-amber-900 text-base">${faltas} / ${canceladas}</span>
-                    </div>
-                    <div class="bg-blue-50 p-2 rounded">
-                        <span class="text-xs text-blue-700 block">Total Pago</span>
-                        <span class="font-bold text-blue-900 text-base">${formatarMoeda(pagoTotal)}</span>
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <h4 class="font-bold text-rosa-900 text-xs uppercase">Síntese do Período de Acompanhamento</h4>
-                    <p class="text-xs text-gray-700">
-                        O paciente encontra-se cadastrado como <strong>${p.tipo}</strong> com status <strong>${p.status}</strong>. Possui um faturamento liquidado de ${formatarMoeda(pagoTotal)} e pendência financeira acumulada de ${formatarMoeda(pendTotal)}.
-                    </p>
-                </div>
-
-                <div class="space-y-2 pt-2">
-                    <h4 class="font-bold text-rosa-900 text-xs uppercase">Principais Demandas Trabalhadas no Prontuário</h4>
-                    <div class="bg-gray-50 p-3 rounded border border-gray-100 text-xs text-gray-800 leading-relaxed">
-                        ${demandas || 'Nenhuma demanda clínica registrada nas evoluções até o momento.'}
-                    </div>
-                </div>
-            `;
-
-            trocarAbaProntuario('resumo');
-        }
-
-        // ==================== EMISSÃO DE PDF INTEGRAL SEM LIMITE DE PÁGINAS (jsPDF) ====================
-        function gerarEBaixarPDFIntegral() {
-            if (!pacienteAtualId) return;
-            const p = pacientes.find(x => x.id === pacienteAtualId);
-            if (!p) return;
-
-            const sessoesPac = sessoes.filter(s => s.pacienteId === p.id)
-                .sort((a,b) => new Date(a.data + 'T' + a.horario) - new Date(b.data + 'T' + b.horario));
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const margin = 40;
-            const maxLineWidth = pageWidth - (margin * 2);
-            let y = margin;
-
-            // Função Auxiliar de Quebra Automática de Página Se Necessário
-            function checarEspacoEPaginar(alturaNecessaria) {
-                if (y + alturaNecessaria > pageHeight - margin) {
-                    doc.addPage();
-                    y = margin;
-                }
-            }
-
-            // CABEÇALHO DO PDF INTEGRAL
-            doc.setFillColor(190, 24, 93); // Rosa-700
-            doc.rect(0, 0, pageWidth, 50, 'F');
-
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('Helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.text('PRONTUÁRIO PSICOLÓGICO INTEGRAL - DOCUMENTO OFICIAL', margin, 32);
-
-            y = 70;
-
-            // DADOS DO PACIENTE
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(11);
-            doc.setFont('Helvetica', 'bold');
-            doc.text(`PACIENTE: ${p.nome.toUpperCase()}`, margin, y); y += 15;
-
-            doc.setFont('Helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.text(`Tipo de Atendimento: ${p.tipo} | Status: ${p.status} | Data Nasc: ${formatarDataBR(p.nascimento)}`, margin, y); y += 12;
-            doc.text(`Contatos: ${p.telefone || 'N/A'} - ${p.email || 'N/A'}`, margin, y); y += 12;
-
-            if (p.tipo === 'Infantil' && p.responsavel) {
-                doc.text(`Responsável Legal: ${p.responsavel.nome} (${p.responsavel.parentesco}) - Tel: ${p.responsavel.telefone || 'N/A'}`, margin, y); y += 12;
-            }
-
-            y += 10;
-            doc.setDrawColor(200, 200, 200);
-            doc.line(margin, y, pageWidth - margin, y);
-            y += 20;
-
-            // REGISTROS INTEGRAIS DAS SESSÕES
-            if (sessoesPac.length === 0) {
-                doc.text('Nenhuma sessão ou evolução clínica registrada no prontuário.', margin, y);
-            } else {
-                sessoesPac.forEach((s, idx) => {
-                    checarEspacoEPaginar(60);
-
-                    // Faixa da Sessão
-                    doc.setFillColor(253, 242, 248); // Rosa-50
-                    doc.rect(margin, y, maxLineWidth, 20, 'F');
-                    doc.setFont('Helvetica', 'bold');
-                    doc.setFontSize(10);
-                    doc.setTextColor(157, 23, 77); // Rosa-800
-                    doc.text(`Sessão #${idx+1} - Data: ${formatarDataBR(s.data)} às ${s.horario} | Modalidade: ${s.modalidade} | Status: ${s.status}`, margin + 5, y + 14);
-                    y += 30;
-
-                    if (s.evolucao && s.evolucao.queixa) {
-                        const camposEvolucao = [
-                            { titulo: 'QUEIXA PRINCIPAL / RELATO:', texto: s.evolucao.queixa },
-                            { titulo: 'DEMANDA TRABALHADA:', texto: s.evolucao.demanda },
-                            { titulo: 'DESCRIÇÃO DETALHADA DA SESSÃO:', texto: s.evolucao.descricao },
-                            { titulo: 'ANÁLISE TÉCNICA E EVOLUÇÃO:', texto: s.evolucao.analise }
-                        ];
-
-                        camposEvolucao.forEach(campo => {
-                            checarEspacoEPaginar(30);
-
-                            doc.setFont('Helvetica', 'bold');
-                            doc.setFontSize(8.5);
-                            doc.setTextColor(0, 0, 0);
-                            doc.text(campo.titulo, margin, y); y += 12;
-
-                            doc.setFont('Helvetica', 'normal');
-                            doc.setFontSize(8.5);
-                            doc.setTextColor(50, 50, 50);
-
-                            const linhasTexto = doc.splitTextToSize(campo.texto, maxLineWidth);
-                            linhasTexto.forEach(linha => {
-                                checarEspacoEPaginar(12);
-                                doc.text(linha, margin, y);
-                                y += 11;
-                            });
-
-                            y += 6;
-                        });
-                    } else {
-                        doc.setFont('Helvetica', 'italic');
-                        doc.setFontSize(8.5);
-                        doc.setTextColor(120, 120, 120);
-                        doc.text('Sessão registrada sem evolução clínica inserida.', margin, y);
-                        y += 15;
-                    }
-
-                    y += 15; // Espaçamento entre sessões
-                });
-            }
-
-            // Rodapé com número de páginas
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8);
-                doc.setTextColor(150, 150, 150);
-                doc.text(`Prontuário Psicológico Integral - Paciente: ${p.nome} - Página ${i} de ${pageCount}`, margin, pageHeight - 20);
-            }
-
-            // Salvar PDF no Navegador
-            const nomeArquivoPDF = `Prontuario_Integral_${p.nome.replace(/\s+/g, '_')}.pdf`;
-            doc.save(nomeArquivoPDF);
-
-            // AUTO-VINCULAR O PDF GERADO AO HISTÓRICO DO PACIENTE
-            try {
-                const pdfBase64 = doc.output('datauristring');
-                if (!p.pdfsSemanais) p.pdfsSemanais = [];
-                p.pdfsSemanais.push({
-                    id: 'pdf_gen_' + Date.now(),
-                    nomeArquivo: nomeArquivoPDF,
-                    base64: pdfBase64,
-                    dataUpload: new Date().toISOString()
-                });
-                salvarDadosLocais();
-            } catch (err) {
-                console.log("PDF gerado e baixado. Armazenamento em string mantido.", err);
-            }
-        }
-
-        // ==================== FUNÇÕES UTILITÁRIAS DE FORMATAÇÃO ====================
-        function formatarMoeda(valor) {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
-        }
-
-        function formatarDataBR(dataISO) {
-            if (!dataISO) return 'N/A';
-            const partes = dataISO.split('-');
-            if (partes.length === 3) {
-                return `${partes[2]}/${partes[1]}/${partes[0]}`;
-            }
-            return dataISO;
-        }
-
-        function formatarDataHoraBR(isoStr) {
-            if (!isoStr) return 'N/A';
-            const d = new Date(isoStr);
-            return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        }
+        // Inicialização Global do Sistema
+        const app = new App();
+        window.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
 </html>
