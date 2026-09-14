@@ -124,7 +124,7 @@ body {
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md); 
+  box-shadow: var(--shadow-md);
 }
 .btn-secondary {
   background-color: var(--light-pink);
@@ -166,7 +166,7 @@ body {
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-}
+} 
 /* Cards e Dashboard */
 .card-grid {
   display: grid;
@@ -207,7 +207,10 @@ body {
   border: 1px solid rgba(244, 143, 177, 0.2);
   margin-bottom: 25px;
 }
-table { width: 100%; border-collapse: collapse; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 th, td {
   padding: 14px 18px;
   text-align: left;
@@ -242,9 +245,10 @@ tr:hover { background-color: #fff8fa; }
   align-items: center;
   flex-wrap: wrap;
 }
-/* Modal */
+/* Modais */
 .modal {
-  display: none; position: fixed;
+  display: none;
+  position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(55, 71, 79, 0.5);
   backdrop-filter: blur(3px);
@@ -297,23 +301,12 @@ tr:hover { background-color: #fff8fa; }
   gap: 6px;
   flex-wrap: wrap;
 }
-.anamnese-section-title {
-  background-color: var(--light-pink);
-  color: var(--dark-pink);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-weight: 600;
-  margin: 18px 0 10px 0;
-  font-size: 0.95rem;
-}
-.alert-banner {
-  background-color: #fff3e0;
-  color: #e65100;
-  padding: 12px;
+.doc-section-box {
+  background: #fff8fa;
+  border: 1px solid var(--border-color);
+  padding: 15px;
   border-radius: 8px;
-  border-left: 4px solid #ff9800;
   margin-bottom: 15px;
-  font-size: 0.88rem;
 }
 @media (max-width: 768px) {
   body { flex-direction: column; }
@@ -332,7 +325,7 @@ tr:hover { background-color: #fff8fa; }
     <li><button onclick="navigateTo('dashboard')" id="nav-dashboard" class="active">Dashboard</button></li>
     <li><button onclick="navigateTo('pacientes')" id="nav-pacientes">Pacientes</button></li>
     <li><button onclick="navigateTo('financeiro')" id="nav-financeiro">Financeiro Mensal</button></li>
-    <li><button onclick="navigateTo('faltas')" id="nav-faltas">📋 Relatório de Faltas</button></li>
+    <li><button onclick="navigateTo('faltas')" id="nav-faltas">Relatório de Faltas</button></li>
   </ul>
 </div>
 
@@ -368,7 +361,7 @@ tr:hover { background-color: #fff8fa; }
         <button class="btn-primary" onclick="openPatientModal()">+ Cadastrar Novo Paciente</button>
         <button class="btn-secondary" onclick="navigateTo('pacientes')">Ver Todos os Pacientes</button>
         <button class="btn-secondary" onclick="navigateTo('financeiro')">Ver Relatório Financeiro</button>
-        <button class="btn-secondary" onclick="navigateTo('faltas')">📋 Relatório de Faltas</button>
+        <button class="btn-secondary" onclick="navigateTo('faltas')">Relatório de Faltas</button>
       </div>
     </div>
   </div>
@@ -408,24 +401,24 @@ tr:hover { background-color: #fff8fa; }
           <h2 id="pront-patient-name" style="color: var(--dark-pink); font-size: 1.4rem;">Nome do Paciente</h2>
           <p id="pront-patient-details" style="color: var(--text-muted); margin-top: 5px; font-size: 0.9rem;"></p>
         </div>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 10px;">
           <button class="btn-secondary" onclick="openMonthlySummaryModal()">Resumo Mensal</button>
           <button class="btn-primary" onclick="openSessionModal()">+ Registrar Sessão</button>
         </div>
       </div>
     </div>
 
-    <!-- ÁREA NOVO REQUISITO: DOCUMENTOS E PRONTUÁRIO -->
-    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: var(--shadow-sm); margin-bottom: 30px; border: 1px solid rgba(244, 143, 177, 0.4);">
-      <h3 style="color: var(--dark-pink); margin-bottom: 15px; font-size: 1.1rem;">📁 Documentos e Prontuário</h3>
+    <!-- PAINEL DE DOCUMENTOS E PRONTUÁRIO DO PACIENTE -->
+    <div class="card" style="margin-bottom: 30px; background: #fff8fa;">
+      <h3 style="color: var(--dark-pink); margin-bottom: 15px; font-size: 1.1rem;">📁 Documentos e prontuário</h3>
       <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
-        <button class="btn-secondary" onclick="openAnamneseModal()">📝 Anamnese Inicial</button>
-        <button class="btn-secondary" onclick="openDocBuilderModal()">➕ Adicionar Novo Documento</button>
-        <button class="btn-secondary" onclick="generateAutoReportDraft()">📑 Gerar Relatório Psicológico</button>
-        <button class="btn-pdf" onclick="exportFullProntuario()">📄 Exportar Prontuário</button>
+        <button class="btn-secondary" onclick="openAnamneseModal()">📝 Anamnese inicial</button>
+        <button class="btn-secondary" onclick="openNewDocModal()">➕ Adicionar novo documento</button>
+        <button class="btn-secondary" onclick="generateAutoReport()">📑 Gerar relatório psicológico</button>
+        <button class="btn-primary" onclick="exportFullProntuarioPDF()">📄 Exportar prontuário</button>
       </div>
 
-      <div class="table-container" style="margin-bottom:0;">
+      <div class="table-container" style="margin-bottom: 0;">
         <table>
           <thead>
             <tr>
@@ -579,7 +572,7 @@ tr:hover { background-color: #fff8fa; }
         </select>
       </div>
       <button class="btn-primary" onclick="renderFaultsReport()" style="margin-top: 20px;">Gerar Relatório</button>
-      <button class="btn-pdf" onclick="downloadFaultsReportPDF()" style="margin-top: 20px;">📄 Gerar PDF do Relatório</button>
+      <button class="btn-pdf" onclick="downloadFaultsReportPDF()" style="margin-top: 20px;">Gerar PDF do Relatório</button>
     </div>
     <div class="table-container">
       <table>
@@ -598,8 +591,6 @@ tr:hover { background-color: #fff8fa; }
   </div>
 </div>
 
-<!-- MODAIS -->
-
 <!-- MODAL PACIENTE -->
 <div id="modal-patient" class="modal">
   <div class="modal-content">
@@ -613,21 +604,21 @@ tr:hover { background-color: #fff8fa; }
       <div class="form-row">
         <div class="form-group">
           <label>Data de Nascimento</label>
-          <input type="date" id="patient-birthdate" onchange="calculateAgeField()">
+          <input type="date" id="patient-dob" onchange="calcPatientAge()">
         </div>
         <div class="form-group">
           <label>Idade</label>
-          <input type="text" id="patient-age" placeholder="Ex: 15 anos">
+          <input type="number" id="patient-age" placeholder="Ex: 15">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Escolaridade</label>
-          <input type="text" id="patient-schooling" placeholder="Ex: 9º Ano Ensino Fundamental">
+          <input type="text" id="patient-schooling" placeholder="Ex: Ensino Médio Incompleto">
         </div>
         <div class="form-group">
           <label>Com quem mora</label>
-          <input type="text" id="patient-lives-with" placeholder="Ex: Pais e irmão">
+          <input type="text" id="patient-liveswith" placeholder="Ex: Pais e irmão">
         </div>
       </div>
       <div class="form-row">
@@ -635,8 +626,7 @@ tr:hover { background-color: #fff8fa; }
           <label>Tipo de Atendimento *</label>
           <select id="patient-type" required onchange="toggleInfantFields()">
             <option value="Adulto">Adulto</option>
-            <option value="Adolescente">Adolescente</option>
-            <option value="Infantil">Infantil</option>
+            <option value="Infantil">Infantil/Adolescente</option>
           </select>
         </div>
         <div class="form-group">
@@ -760,7 +750,7 @@ tr:hover { background-color: #fff8fa; }
       <input type="hidden" id="receipt-session-id">
       <div class="form-group">
         <label>Anexar Comprovante / Recibo (PDF ou Imagem)</label>
-        <input type="file" id="receipt-file" accept=".pdf,.jpg,.jpeg,.png">
+        <input type="file" id="receipt-file" accept=".pdf, .jpg, .jpeg, .png">
       </div>
       <div id="receipt-current-status" style="margin-bottom: 15px;"></div>
       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
@@ -789,149 +779,146 @@ tr:hover { background-color: #fff8fa; }
   </div>
 </div>
 
-<!-- NOVO MODAL: ANAMNESE INICIAL DO ADOLESCENTE -->
+<!-- MODAL ANAMNESE INICIAL DO ADOLESCENTE -->
 <div id="modal-anamnese" class="modal">
-  <div class="modal-content" style="max-width: 850px;">
+  <div class="modal-content" style="max-width: 900px;">
     <h2>ANAMNESE INICIAL DO ADOLESCENTE</h2>
-    <p style="color: var(--dark-pink); font-weight: 500; font-size:0.9rem;">Perspectiva Analítico-Comportamental</p>
-    <p style="color: var(--text-muted); font-size:0.85rem; margin-bottom: 20px;">Daniele Sousa Santos – CRP 22/07398</p>
+    <p style="color: var(--dark-pink); font-weight: 600; font-size: 0.9rem;">Perspectiva Analítico-Comportamental</p>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Daniele Sousa Santos – CRP 22/07398</p>
 
-    <form id="form-anamnese">
+    <form id="form-anamnese" onsubmit="handleAnamneseSubmit(event)">
       <input type="hidden" id="anamnese-id">
+      <input type="hidden" id="anamnese-status" value="rascunho">
 
-      <div class="anamnese-section-title">1. Identificação</div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">1. Identificação</h3>
       <div class="form-row">
-        <div class="form-group"><label>Nome:</label><input type="text" id="anam-nome"></div>
-        <div class="form-group"><label>Idade:</label><input type="text" id="anam-idade"></div>
+        <div class="form-group"><label>Nome:</label><input type="text" id="ana-nome"></div>
+        <div class="form-group"><label>Idade:</label><input type="text" id="ana-idade"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Data de Nascimento:</label><input type="text" id="anam-dtnasc"></div>
-        <div class="form-group"><label>Escolaridade:</label><input type="text" id="anam-escolaridade"></div>
+        <div class="form-group"><label>Data de nascimento:</label><input type="text" id="ana-dob"></div>
+        <div class="form-group"><label>Escolaridade:</label><input type="text" id="ana-escolaridade"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Com quem mora:</label><input type="text" id="anam-mora"></div>
-        <div class="form-group"><label>Responsável:</label><input type="text" id="anam-responsavel"></div>
+        <div class="form-group"><label>Com quem mora:</label><input type="text" id="ana-com-quem-mora"></div>
+        <div class="form-group"><label>Responsável:</label><input type="text" id="ana-responsavel"></div>
       </div>
 
-      <div class="anamnese-section-title">2. Motivo da busca</div>
-      <p style="font-size:0.82rem; font-weight:bold; color:var(--dark-pink);">Ao adolescente:</p>
-      <div class="form-group"><label>O que fez você vir para a terapia?</label><textarea id="anam-m2-a1" rows="2"></textarea></div>
-      <div class="form-group"><label>Tem alguma coisa que você gostaria que fosse diferente na sua vida hoje?</label><textarea id="anam-m2-a2" rows="2"></textarea></div>
-      <div class="form-group"><label>O que mais tem sido difícil ultimamente?</label><textarea id="anam-m2-a3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você espera conseguir com a terapia?</label><textarea id="anam-m2-a4" rows="2"></textarea></div>
-      
-      <p style="font-size:0.82rem; font-weight:bold; color:var(--dark-pink);">Aos responsáveis:</p>
-      <div class="form-group"><label>O que levou vocês a procurarem atendimento?</label><textarea id="anam-m2-r1" rows="2"></textarea></div>
-      <div class="form-group"><label>Quando começaram a perceber essa dificuldade?</label><textarea id="anam-m2-r2" rows="2"></textarea></div>
-      <div class="form-group"><label>Em quais situações ela costuma aparecer mais?</label><textarea id="anam-m2-r3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que vocês costumam fazer quando isso acontece?</label><textarea id="anam-m2-r4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">2. Motivo da busca</h3>
+      <strong style="color: var(--primary-pink); font-size: 0.9rem;">Ao adolescente:</strong>
+      <div class="form-group"><label>O que fez você vir para a terapia?</label><textarea id="ana-q1" rows="2"></textarea></div>
+      <div class="form-group"><label>Tem alguma coisa que você gostaria que fosse diferente na sua vida hoje?</label><textarea id="ana-q2" rows="2"></textarea></div>
+      <div class="form-group"><label>O que mais tem sido difícil ultimamente?</label><textarea id="ana-q3" rows="2"></textarea></div>
+      <div class="form-group"><label>O que você espera conseguir com a terapia?</label><textarea id="ana-q4" rows="2"></textarea></div>
+      <strong style="color: var(--primary-pink); font-size: 0.9rem;">Aos responsáveis:</strong>
+      <div class="form-group"><label>O que levou vocês a procurarem atendimento?</label><textarea id="ana-q5" rows="2"></textarea></div>
+      <div class="form-group"><label>Quando começaram a perceber essa dificuldade?</label><textarea id="ana-q6" rows="2"></textarea></div>
+      <div class="form-group"><label>Em quais situações ela costuma aparecer mais?</label><textarea id="ana-q7" rows="2"></textarea></div>
+      <div class="form-group"><label>O que vocês costumam fazer quando isso acontece?</label><textarea id="ana-q8" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">3. Rotina e vida atual</div>
-      <div class="form-group"><label>Como costuma ser um dia normal para você?</label><textarea id="anam-m3-1" rows="2"></textarea></div>
-      <div class="form-group"><label>Como estão escola, estudos e notas?</label><textarea id="anam-m3-2" rows="2"></textarea></div>
-      <div class="form-group"><label>Como estão sono, alimentação e atividades de lazer?</label><textarea id="anam-m3-3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você gosta de fazer no seu tempo livre?</label><textarea id="anam-m3-4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">3. Rotina e vida atual</h3>
+      <div class="form-group"><label>Como costuma ser um dia normal para você?</label><textarea id="ana-q9" rows="2"></textarea></div>
+      <div class="form-group"><label>Como estão escola, estudos e notas?</label><textarea id="ana-q10" rows="2"></textarea></div>
+      <div class="form-group"><label>Como estão sono, alimentação e atividades de lazer?</label><textarea id="ana-q11" rows="2"></textarea></div>
+      <div class="form-group"><label>O que você gosta de fazer no seu tempo livre?</label><textarea id="ana-q12" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">4. Família</div>
-      <div class="form-group"><label>Como é sua relação com as pessoas que moram com você?</label><textarea id="anam-m4-1" rows="2"></textarea></div>
-      <div class="form-group"><label>Com quem você costuma conversar quando precisa de ajuda?</label><textarea id="anam-m4-2" rows="2"></textarea></div>
-      <div class="form-group"><label>O que costuma gerar conflitos em casa?</label><textarea id="anam-m4-3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que acontece depois desses conflitos?</label><textarea id="anam-m4-4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">4. Família</h3>
+      <div class="form-group"><label>Como é sua relação com as pessoas que moram com você?</label><textarea id="ana-q13" rows="2"></textarea></div>
+      <div class="form-group"><label>Com quem você costuma conversar quando precisa de ajuda?</label><textarea id="ana-q14" rows="2"></textarea></div>
+      <div class="form-group"><label>O que costuma gerar conflitos em casa?</label><textarea id="ana-q15" rows="2"></textarea></div>
+      <div class="form-group"><label>O que acontece depois desses conflitos?</label><textarea id="ana-q16" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">5. Amigos e relacionamentos</div>
-      <div class="form-group"><label>Como estão suas amizades atualmente?</label><textarea id="anam-m5-1" rows="2"></textarea></div>
-      <div class="form-group"><label>Você sente que consegue ser você mesmo com seus amigos?</label><textarea id="anam-m5-2" rows="2"></textarea></div>
-      <div class="form-group"><label>Tem acontecido alguma situação difícil com amigos ou colegas?</label><textarea id="anam-m5-3" rows="2"></textarea></div>
-      <div class="form-group"><label>Como estão seus relacionamentos afetivos, se houver?</label><textarea id="anam-m5-4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">5. Amigos e relacionamentos</h3>
+      <div class="form-group"><label>Como estão suas amizades atualmente?</label><textarea id="ana-q17" rows="2"></textarea></div>
+      <div class="form-group"><label>Você sente que consegue ser você mesmo com seus amigos?</label><textarea id="ana-q18" rows="2"></textarea></div>
+      <div class="form-group"><label>Tem acontecido alguma situação difícil com amigos ou colegas?</label><textarea id="ana-q19" rows="2"></textarea></div>
+      <div class="form-group"><label>Como estão seus relacionamentos afetivos, se houver?</label><textarea id="ana-q20" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">6. Situações difíceis</div>
-      <div class="form-group"><label>Qual situação tem sido mais difícil para você ultimamente?</label><textarea id="anam-m6-1" rows="2"></textarea></div>
-      <div class="form-group"><label>O que costuma acontecer antes dessa situação?</label><textarea id="anam-m6-2" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você geralmente faz quando isso acontece?</label><textarea id="anam-m6-3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que acontece depois?</label><textarea id="anam-m6-4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">6. Situações difíceis</h3>
+      <div class="form-group"><label>Qual situação tem sido mais difícil para você ultimamente?</label><textarea id="ana-q21" rows="2"></textarea></div>
+      <div class="form-group"><label>O que costuma acontecer antes dessa situação?</label><textarea id="ana-q22" rows="2"></textarea></div>
+      <div class="form-group"><label>O que você geralmente faz quando isso acontece?</label><textarea id="ana-q23" rows="2"></textarea></div>
+      <div class="form-group"><label>O que acontece depois?</label><textarea id="ana-q24" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">7. Saúde e histórico</div>
-      <div class="form-group"><label>Já fez terapia ou algum outro acompanhamento psicológico?</label><textarea id="anam-m7-1" rows="2"></textarea></div>
-      <div class="form-group"><label>Já realizou acompanhamento médico relacionado à demanda?</label><textarea id="anam-m7-2" rows="2"></textarea></div>
-      <div class="form-group"><label>Usa alguma medicação?</label><textarea id="anam-m7-3" rows="2"></textarea></div>
-      <div class="form-group"><label>Houve alguma mudança importante na família, escola ou rotina recentemente?</label><textarea id="anam-m7-4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">7. Saúde e histórico</h3>
+      <div class="form-group"><label>Já fez terapia ou algum outro acompanhamento psicológico?</label><textarea id="ana-q25" rows="2"></textarea></div>
+      <div class="form-group"><label>Já realizou acompanhamento médico relacionado à demanda?</label><textarea id="ana-q26" rows="2"></textarea></div>
+      <div class="form-group"><label>Usa alguma medicação?</label><textarea id="ana-q27" rows="2"></textarea></div>
+      <div class="form-group"><label>Houve alguma mudança importante na família, escola ou rotina recentemente?</label><textarea id="ana-q28" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">8. Pontos fortes e recursos</div>
-      <div class="form-group"><label>O que você acha que faz bem?</label><textarea id="anam-m8-1" rows="2"></textarea></div>
-      <div class="form-group"><label>O que costuma te ajudar quando está passando por uma situação difícil?</label><textarea id="anam-m8-2" rows="2"></textarea></div>
-      <div class="form-group"><label>Quais pessoas são importantes para você?</label><textarea id="anam-m8-3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você gostaria de aprender ou melhorar?</label><textarea id="anam-m8-4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">8. Pontos fortes e recursos</h3>
+      <div class="form-group"><label>O que você acha que faz bem?</label><textarea id="ana-q29" rows="2"></textarea></div>
+      <div class="form-group"><label>O que costuma te ajudar quando está passando por uma situação difícil?</label><textarea id="ana-q30" rows="2"></textarea></div>
+      <div class="form-group"><label>Quais pessoas são importantes para você?</label><textarea id="ana-q31" rows="2"></textarea></div>
+      <div class="form-group"><label>O que você gostaria de aprender ou melhorar?</label><textarea id="ana-q32" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">9. Segurança</div>
-      <div class="form-group"><label>Já teve pensamentos de se machucar ou de não querer estar vivo?</label><textarea id="anam-m9-1" rows="2"></textarea></div>
-      <div class="form-group"><label>Já aconteceu de se machucar de propósito?</label><textarea id="anam-m9-2" rows="2"></textarea></div>
-      <div class="form-group"><label>Existe alguma situação atual em que você não se sente seguro?</label><textarea id="anam-m9-3" rows="2"></textarea></div>
-      <div class="form-group"><label>Há algo que você tenha medo de contar para alguém?</label><textarea id="anam-m9-4" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">9. Segurança</h3>
+      <div class="form-group"><label>Já teve pensamentos de se machucar ou de não querer estar vivo?</label><textarea id="ana-q33" rows="2"></textarea></div>
+      <div class="form-group"><label>Já aconteceu de se machucar de propósito?</label><textarea id="ana-q34" rows="2"></textarea></div>
+      <div class="form-group"><label>Existe alguma situação atual em que você não se sente seguro?</label><textarea id="ana-q35" rows="2"></textarea></div>
+      <div class="form-group"><label>Há algo que você tenha medo de contar para alguém?</label><textarea id="ana-q36" rows="2"></textarea></div>
 
-      <div class="anamnese-section-title">10. Registro do psicólogo</div>
-      <div class="form-group"><label>Principais demandas:</label><textarea id="anam-m10-1" rows="2"></textarea></div>
-      <div class="form-group"><label>Comportamentos-alvo identificados:</label><textarea id="anam-m10-2" rows="2"></textarea></div>
-      <div class="form-group"><label>Situações/antecedentes relevantes:</label><textarea id="anam-m10-3" rows="2"></textarea></div>
-      <div class="form-group"><label>Consequências observadas:</label><textarea id="anam-m10-4" rows="2"></textarea></div>
-      <div class="form-group"><label>Repertórios e potencialidades:</label><textarea id="anam-m10-5" rows="2"></textarea></div>
-      <div class="form-group"><label>Hipóteses funcionais iniciais:</label><textarea id="anam-m10-6" rows="2"></textarea></div>
-      <div class="form-group"><label>Pontos a investigar nas próximas sessões:</label><textarea id="anam-m10-7" rows="2"></textarea></div>
+      <h3 style="color: var(--dark-pink); margin: 15px 0 10px 0; font-size: 1.05rem;">10. Registro do psicólogo</h3>
+      <div class="form-group"><label>Principais demandas:</label><textarea id="ana-reg1" rows="2"></textarea></div>
+      <div class="form-group"><label>Comportamentos-alvo identificados:</label><textarea id="ana-reg2" rows="2"></textarea></div>
+      <div class="form-group"><label>Situações/antecedentes relevantes:</label><textarea id="ana-reg3" rows="2"></textarea></div>
+      <div class="form-group"><label>Consequências observadas:</label><textarea id="ana-reg4" rows="2"></textarea></div>
+      <div class="form-group"><label>Repertórios e potencialidades:</label><textarea id="ana-reg5" rows="2"></textarea></div>
+      <div class="form-group"><label>Hipóteses funcionais iniciais:</label><textarea id="ana-reg6" rows="2"></textarea></div>
+      <div class="form-group"><label>Pontos a investigar nas próximas sessões:</label><textarea id="ana-reg7" rows="2"></textarea></div>
 
       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
-        <button type="button" class="btn-back" onclick="closeModal('modal-anamnese')">Cancelar</button>
+        <button type="button" class="btn-back" onclick="closeModal('modal-anamnese')">Fechar</button>
         <button type="button" class="btn-secondary" onclick="saveAnamnese('rascunho')">Salvar Rascunho</button>
-        <button type="button" class="btn-primary" onclick="saveAnamnese('finalizada')">Finalizar Anamnese</button>
-        <button type="button" class="btn-pdf" onclick="exportAnamnesePDF()">📄 Exportar PDF</button>
+        <button type="submit" class="btn-primary">Finalizar Anamnese</button>
+        <button type="button" class="btn-pdf" onclick="generateAnamnesePDF()">📄 Exportar PDF</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- NOVO MODAL: CONSTRUTOR DE DOCUMENTOS -->
-<div id="modal-doc-builder" class="modal">
-  <div class="modal-content" style="max-width: 800px;">
-    <h2>➕ Construtor de Documentos Clínicos</h2>
-    <input type="hidden" id="doc-id">
+<!-- MODAL NOVO DOCUMENTO / EDITOR DE DOCUMENTO PERSONALIZADO -->
+<div id="modal-custom-doc" class="modal">
+  <div class="modal-content" style="max-width: 850px;">
+    <h2 id="modal-doc-title">➕ Criar Documento Personalizado</h2>
     
-    <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center;">
-      <select id="select-model-template" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); flex: 1;">
-        <option value="">-- Usar modelo salvo --</option>
-      </select>
-      <button class="btn-secondary" onclick="applySelectedModel()">📋 Usar Modelo</button>
+    <div style="background: var(--light-pink); padding: 12px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <label style="font-weight: 600; font-size: 0.88rem; color: var(--dark-pink);">Carregar de um modelo salvo:</label>
+        <select id="model-select-dropdown" style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.88rem;">
+          <option value="">-- Selecione um modelo --</option>
+        </select>
+      </div>
+      <button type="button" class="btn-secondary" onclick="applySelectedModel()">📋 Usar modelo</button>
     </div>
 
-    <div class="form-group">
-      <label>Título do Documento *</label>
-      <input type="text" id="doc-title" placeholder="Ex: RELATÓRIO PSICOLÓGICO, DECLARAÇÃO, ENCAMINHAMENTO">
-    </div>
+    <form id="form-custom-doc" onsubmit="handleCustomDocSubmit(event)">
+      <input type="hidden" id="doc-id">
+      <input type="hidden" id="doc-status" value="rascunho">
 
-    <div class="form-group">
-      <label>Tipo de Documento *</label>
-      <select id="doc-type">
-        <option value="Relatório Psicológico">Relatório Psicológico</option>
-        <option value="Declaração">Declaração</option>
-        <option value="Documento Clínico">Documento Clínico</option>
-        <option value="Documento de Encaminhamento">Documento de Encaminhamento</option>
-        <option value="Registro Complementar">Registro Complementar</option>
-        <option value="Outros">Outros</option>
-      </select>
-    </div>
+      <div class="form-group">
+        <label>Título do Documento *</label>
+        <input type="text" id="doc-title-input" placeholder="Ex: RELATÓRIO PSICOLÓGICO, DECLARAÇÃO, ENCAMINHAMENTO" required>
+      </div>
 
-    <div id="doc-draft-notice" class="alert-banner" style="display:none;">
-      "Rascunho gerado a partir dos registros do prontuário. Revise e edite antes de finalizar o documento."
-    </div>
+      <div id="doc-sections-container">
+        <!-- Tópicos dinâmicos adicionados via JS -->
+      </div>
 
-    <div id="doc-sections-container"></div>
+      <button type="button" class="btn-secondary" onclick="addDocSectionField()" style="margin-bottom: 20px;">+ Adicionar Tópico / Seção</button>
 
-    <button class="btn-secondary" onclick="addDocSection()" style="margin-bottom: 20px;">+ Adicionar Tópico / Seção</button>
-
-    <div style="display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;">
-      <button type="button" class="btn-back" onclick="closeModal('modal-doc-builder')">Cancelar</button>
-      <button type="button" class="btn-secondary" onclick="saveCurrentDocAsModel()">☑ Salvar estrutura como modelo</button>
-      <button type="button" class="btn-secondary" onclick="saveCustomDoc('rascunho')">💾 Salvar Rascunho</button>
-      <button type="button" class="btn-primary" onclick="saveCustomDoc('finalizado')">Finalizar Documento</button>
-      <button type="button" class="btn-pdf" onclick="exportCustomDocPDF()">📄 Exportar PDF</button>
-    </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--light-pink); pt-3; margin-top: 15px; flex-wrap: wrap; gap: 10px;">
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9rem; color: var(--dark-pink);">
+          <input type="checkbox" id="save-as-model-checkbox"> ☑ Salvar estrutura como modelo
+        </label>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-back" onclick="closeModal('modal-custom-doc')">Cancelar</button>
+          <button type="button" class="btn-secondary" onclick="saveCustomDoc('rascunho')">Salvar Rascunho</button>
+          <button type="submit" class="btn-primary">Finalizar Documento</button>
+          <button type="button" class="btn-pdf" onclick="generateCustomDocPDF()">📄 Exportar PDF</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -943,18 +930,25 @@ let currentPatientId = null;
 function navigateTo(viewId, isBack = false, state = {}) {
   const currentView = document.querySelector('.view-section.active');
   const currentViewId = currentView ? currentView.id.replace('view-', '') : 'dashboard';
+  
   if (!isBack && currentViewId !== viewId) {
     navigationHistory.push({ view: currentViewId, patientId: currentPatientId });
   }
+  
   if (state.patientId !== undefined) currentPatientId = state.patientId;
+
   document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-links button').forEach(el => el.classList.remove('active'));
+
   const targetView = document.getElementById(`view-${viewId}`);
   if (targetView) targetView.classList.add('active');
+
   const navBtn = document.getElementById(`nav-${viewId}`);
   if (navBtn) navBtn.classList.add('active');
+
   const backBtn = document.getElementById('btn-global-back');
   backBtn.style.display = navigationHistory.length > 0 ? 'inline-flex' : 'none';
+
   const titleMap = {
     'dashboard': 'Dashboard',
     'pacientes': 'Gestão de Pacientes',
@@ -963,6 +957,7 @@ function navigateTo(viewId, isBack = false, state = {}) {
     'faltas': 'Relatório de Faltas'
   };
   document.getElementById('page-title').innerText = titleMap[viewId] || '';
+
   if (viewId === 'dashboard') loadDashboardData();
   if (viewId === 'pacientes') renderPatientsList();
   if (viewId === 'prontuario' && currentPatientId) loadProntuarioData(currentPatientId);
@@ -980,9 +975,10 @@ function goBack() {
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-/* DATABASE INDEXEDDB INCREMENTAL (VERSÃO 3) */
+/* DATABASE INDEXEDDB (VERSÃO 3 COM SUPORTE COMPLETO A DOCUMENTOS E MODELOS) */
 let db;
 const request = indexedDB.open('PsicoGestaoRosaDB', 3);
+
 request.onupgradeneeded = function(e) {
   db = e.target.result;
   if (!db.objectStoreNames.contains('pacientes')) {
@@ -998,17 +994,21 @@ request.onupgradeneeded = function(e) {
     evolucoesStore.createIndex('sessaold', 'sessaold', { unique: true });
     evolucoesStore.createIndex('pacienteld', 'pacienteld', { unique: false });
   }
-  // NOVAS STORES DE PERSISTÊNCIA REAL
-  if (!db.objectStoreNames.contains('anamnese')) {
-    const anamStore = db.createObjectStore('anamnese', { keyPath: 'id', autoIncrement: true });
-    anamStore.createIndex('patientId', 'patientId', { unique: true });
+  // Novas Stores para os Requisitos 1-22
+  if (!db.objectStoreNames.contains('anamneses')) {
+    const anaStore = db.createObjectStore('anamneses', { keyPath: 'id', autoIncrement: true });
+    anaStore.createIndex('pacienteId', 'pacienteId', { unique: false });
   }
   if (!db.objectStoreNames.contains('documentos')) {
     const docStore = db.createObjectStore('documentos', { keyPath: 'id', autoIncrement: true });
-    docStore.createIndex('patientId', 'patientId', { unique: false });
+    docStore.createIndex('pacienteId', 'pacienteId', { unique: false });
   }
   if (!db.objectStoreNames.contains('modelos')) {
     db.createObjectStore('modelos', { keyPath: 'id', autoIncrement: true });
+  }
+  if (!db.objectStoreNames.contains('pdfs_armazenados')) {
+    const pdfStore = db.createObjectStore('pdfs_armazenados', { keyPath: 'id', autoIncrement: true });
+    pdfStore.createIndex('pacienteId', 'pacienteId', { unique: false });
   }
 };
 
@@ -1025,7 +1025,7 @@ function getAll(storeName) {
   return new Promise((resolve) => {
     const store = dbTransaction(storeName, 'readonly');
     const req = store.getAll();
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => resolve(req.result || []);
   });
 }
 
@@ -1059,13 +1059,18 @@ async function loadDashboardData() {
   if (!db) return;
   const patients = await getAll('pacientes');
   const sessions = await getAll('sessoes');
+
   document.getElementById('dash-active-patients').innerText = patients.filter(p => p.status === 'ativo').length;
+
   const now = new Date();
   const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  
   const monthSessions = sessions.filter(s => (s.dataHora || s.datetime || '').startsWith(currentMonthStr));
   document.getElementById('dash-month-sessions').innerText = monthSessions.length;
+
   let totalReceived = 0;
   let totalPending = 0;
+
   monthSessions.forEach(s => {
     if (s.status === 'falta') return;
     const val = parseFloat(s.valor || s.value) || 0;
@@ -1073,6 +1078,7 @@ async function loadDashboardData() {
     if (isPaid) totalReceived += val;
     else totalPending += val;
   });
+
   document.getElementById('dash-month-revenue').innerText = totalReceived.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   document.getElementById('dash-month-pending').innerText = totalPending.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
@@ -1082,7 +1088,7 @@ function toggleInfantFields() {
   const type = document.getElementById('patient-type').value;
   const infantDiv = document.getElementById('infant-fields');
   const reqs = infantDiv.querySelectorAll('input');
-  if (type === 'Infantil' || type === 'Adolescente') {
+  if (type === 'Infantil') {
     infantDiv.style.display = 'block';
     reqs.forEach(r => r.required = true);
   } else {
@@ -1091,15 +1097,13 @@ function toggleInfantFields() {
   }
 }
 
-function calculateAgeField() {
-  const birthStr = document.getElementById('patient-birthdate').value;
-  if (!birthStr) return;
-  const birth = new Date(birthStr);
-  const now = new Date();
-  let age = now.getFullYear() - birth.getFullYear();
-  const m = now.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
-  document.getElementById('patient-age').value = `${age} anos`;
+function calcPatientAge() {
+  const dobVal = document.getElementById('patient-dob').value;
+  if (!dobVal) return;
+  const dob = new Date(dobVal);
+  const diff = Date.now() - dob.getTime();
+  const ageDate = new Date(diff);
+  document.getElementById('patient-age').value = Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
 function openPatientModal(patientId = null) {
@@ -1107,18 +1111,19 @@ function openPatientModal(patientId = null) {
   document.getElementById('patient-id').value = '';
   document.getElementById('modal-patient-title').innerText = 'Cadastrar Paciente';
   toggleInfantFields();
+
   if (patientId) {
     getById('pacientes', patientId).then(p => {
       document.getElementById('patient-id').value = p.id;
       document.getElementById('patient-name').value = p.nome || p.name || '';
-      document.getElementById('patient-birthdate').value = p.dataNascimento || '';
+      document.getElementById('patient-dob').value = p.dataNascimento || '';
       document.getElementById('patient-age').value = p.idade || '';
       document.getElementById('patient-schooling').value = p.escolaridade || '';
-      document.getElementById('patient-lives-with').value = p.comQuemMora || '';
+      document.getElementById('patient-liveswith').value = p.comQuemMora || '';
       document.getElementById('patient-type').value = p.tipo || p.type || 'Adulto';
       document.getElementById('patient-phone').value = p.telefone || p.phone || '';
       toggleInfantFields();
-      if ((p.tipo || p.type) === 'Infantil' || (p.tipo || p.type) === 'Adolescente') {
+      if ((p.tipo || p.type) === 'Infantil') {
         document.getElementById('patient-guardian').value = p.responsavel || p.guardian || '';
         document.getElementById('patient-kinship').value = p.parentesco || p.kinship || '';
         document.getElementById('patient-guardian-phone').value = p.telefoneResponsavel || p.guardianPhone || '';
@@ -1135,26 +1140,30 @@ async function handlePatientSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('patient-id').value;
   const type = document.getElementById('patient-type').value;
+
   const patientData = {
     nome: document.getElementById('patient-name').value,
-    dataNascimento: document.getElementById('patient-birthdate').value,
+    dataNascimento: document.getElementById('patient-dob').value,
     idade: document.getElementById('patient-age').value,
     escolaridade: document.getElementById('patient-schooling').value,
-    comQuemMora: document.getElementById('patient-lives-with').value,
+    comQuemMora: document.getElementById('patient-liveswith').value,
     tipo: type,
     telefone: document.getElementById('patient-phone').value,
     status: 'ativo'
   };
+
   if (id) {
     const existing = await getById('pacientes', id);
     patientData.id = Number(id);
     patientData.status = existing ? existing.status : 'ativo';
   }
-  if (type === 'Infantil' || type === 'Adolescente') {
+
+  if (type === 'Infantil') {
     patientData.responsavel = document.getElementById('patient-guardian').value;
     patientData.parentesco = document.getElementById('patient-kinship').value;
     patientData.telefoneResponsavel = document.getElementById('patient-guardian-phone').value;
   }
+
   await saveItem('pacientes', patientData);
   closeModal('modal-patient');
   if (document.getElementById('view-pacientes').classList.contains('active')) renderPatientsList();
@@ -1178,17 +1187,20 @@ async function renderPatientsList() {
   const searchQuery = document.getElementById('patient-search-input').value.toLowerCase();
   const tbody = document.getElementById('patients-table-body');
   tbody.innerHTML = '';
+
   const filtered = patients.filter(p => {
     const matchesStatus = filter === 'todos' ? true : p.status === filter;
     const pName = (p.nome || p.name || '').toLowerCase();
     const matchesSearch = pName.includes(searchQuery);
     return matchesStatus && matchesSearch;
   });
+
   filtered.forEach(p => {
     const tr = document.createElement('tr');
     const pName = p.nome || p.name || '';
     const pType = p.tipo || p.type || '';
     const pPhone = p.telefone || p.phone || '';
+
     tr.innerHTML = `
       <td><strong>${pName}</strong></td>
       <td>${pType}</td>
@@ -1198,7 +1210,7 @@ async function renderPatientsList() {
         <button class="btn-primary" onclick="openProntuario(${p.id})">Prontuário</button>
         <button class="btn-secondary" onclick="openPatientModal(${p.id})">Editar</button>
         ${p.status === 'ativo' 
-          ? `<button class="btn-danger" onclick="togglePatientStatus(${p.id}, 'inativo')">Inativar</button>` 
+          ? `<button class="btn-danger" onclick="togglePatientStatus(${p.id}, 'inativo')">Inativar</button>`
           : `<button class="btn-secondary" onclick="togglePatientStatus(${p.id}, 'ativo')">Reativar</button>`
         }
       </td>`;
@@ -1214,12 +1226,14 @@ function openProntuario(patientId) {
 async function loadProntuarioData(patientId, monthFilter = null) {
   const patient = await getById('pacientes', patientId);
   if (!patient) return;
+
   const pName = patient.nome || patient.name || '';
   const pType = patient.tipo || patient.type || '';
   const pPhone = patient.telefone || patient.phone || '';
+
   document.getElementById('pront-patient-name').innerText = `${pName} (${pType})`;
   let details = `Tel: ${pPhone}`;
-  if (pType === 'Infantil' || pType === 'Adolescente') {
+  if (pType === 'Infantil') {
     const pResp = patient.responsavel || patient.guardian || '';
     const pKin = patient.parentesco || patient.kinship || '';
     const pRespTel = patient.telefoneResponsavel || patient.guardianPhone || '';
@@ -1227,19 +1241,25 @@ async function loadProntuarioData(patientId, monthFilter = null) {
   }
   document.getElementById('pront-patient-details').innerText = details;
 
-  // Carregar Histórico de Sessões
+  // Carregar Documentos Vinculados (Anamneses, Documentos Personalizados e PDFs)
+  await renderPatientDocsTable(patientId);
+
   const allSessions = await getAll('sessoes');
   const allEvolutions = await getAll('evolucoes');
-  let patientSessions = allSessions.filter(s => Number(s.pacienteld || s.patientId) === Number(patientId));
+
+  let patientSessions = allSessions.filter(s => Number(s.pacienteId || s.patientId || s.pacienteld) === Number(patientId));
+
   if (monthFilter) {
     patientSessions = patientSessions.filter(s => (s.dataHora || s.datetime || '').startsWith(monthFilter));
   }
+
   patientSessions.sort((a, b) => new Date(b.dataHora || b.datetime) - new Date(a.dataHora || a.datetime));
-  
+
   const tbody = document.getElementById('prontuario-table-body');
   tbody.innerHTML = '';
+
   patientSessions.forEach(s => {
-    const evo = allEvolutions.find(e => Number(e.sessaold) === Number(s.id));
+    const evo = allEvolutions.find(e => Number(e.sessaold || e.sessaoId) === Number(s.id));
     const dtStr = s.dataHora || s.datetime;
     const dt = new Date(dtStr).toLocaleString('pt-BR');
     const isFalta = s.status === 'falta';
@@ -1247,15 +1267,18 @@ async function loadProntuarioData(patientId, monthFilter = null) {
     const val = isFalta ? '-' : valNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     const payStatus = isFalta ? 'N/A' : (s.pagamentoStatus || s.paymentStatus || 'pendente');
     const mode = s.modalidade || s.mode || '';
+
     let evoCol = '';
     if (isFalta) {
       evoCol = `<strong>FALTA REGISTRADA</strong><br><span style="font-size:0.85rem; color:var(--text-muted);">Motivo: ${s.motivoFalta || 'Não informado'}</span><br>
-      <button class="btn-pdf" style="margin-top:4px;" onclick="generateFaultPDF(${s.id})">📄 Gerar registro de falta em PDF</button>`;
+      <button class="btn-pdf" style="margin-top:4px;" onclick="generateFaultPDF(${s.id})">Gerar registro de falta em PDF</button>`;
     } else {
-      evoCol = evo ? `<button class="btn-secondary" onclick="openEvolutionModal(${s.id}, ${evo.id})">Editar Evolução</button>
-      <button class="btn-pdf" onclick="generateSessionPDF(${s.id})">PDF Sessão</button>`
-      : `<button class="btn-primary" onclick="openEvolutionModal(${s.id})">+ Evolução</button>`;
+      evoCol = evo
+        ? `<button class="btn-secondary" onclick="openEvolutionModal(${s.id}, ${evo.id})">Editar Evolução</button>
+           <button class="btn-pdf" onclick="generateSessionPDF(${s.id})">PDF Sessão</button>`
+        : `<button class="btn-primary" onclick="openEvolutionModal(${s.id})">+ Evolução</button>`;
     }
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${dt}</td>
@@ -1266,7 +1289,9 @@ async function loadProntuarioData(patientId, monthFilter = null) {
       </td>
       <td><div class="action-btns">${evoCol}</div></td>
       <td>
-        ${isFalta ? '-' : ((s.recibo || s.receipt) ? `<button class="btn-secondary" onclick="openReceiptModal(${s.id})">Ver Comprovante</button>` : `<button class="btn-secondary" style="border-style:dashed;" onclick="openReceiptModal(${s.id})">+ Anexar</button>`)}
+        ${isFalta ? '-' : ((s.recibo || s.receipt)
+          ? `<button class="btn-secondary" onclick="openReceiptModal(${s.id})">Ver Comprovante</button>`
+          : `<button class="btn-secondary" style="border-style:dashed;" onclick="openReceiptModal(${s.id})">+ Anexar</button>`)}
       </td>
       <td>
         <div class="action-btns">
@@ -1277,592 +1302,836 @@ async function loadProntuarioData(patientId, monthFilter = null) {
     tbody.appendChild(tr);
   });
 
-  renderPatientDocsList(patientId);
   renderPatientFaultsHistory();
 }
 
-/* RENDERIZAR TABELA DE DOCUMENTOS E PRONTUÁRIO */
-async function renderPatientDocsList(patientId) {
-  const docsTable = document.getElementById('patient-docs-table-body');
-  docsTable.innerHTML = '';
+/* TABELA DE DOCUMENTOS E PRONTUÁRIO */
+async function renderPatientDocsTable(patientId) {
+  const tbody = document.getElementById('patient-docs-table-body');
+  tbody.innerHTML = '';
 
-  // 1. Anamnese
-  const allAnamneses = await getAll('anamnese');
-  const anam = allAnamneses.find(a => Number(a.patientId) === Number(patientId));
-  if (anam) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><strong>Anamnese Inicial do Adolescente</strong></td>
-      <td>${new Date(anam.dataAlteracao || Date.now()).toLocaleDateString('pt-BR')}</td>
-      <td><span class="badge ${anam.status === 'finalizada' ? 'badge-active' : 'badge-pending'}">${anam.status.toUpperCase()}</span></td>
-      <td>
-        <button class="btn-secondary" onclick="openAnamneseModal()">Visualizar / Editar</button>
-        <button class="btn-pdf" onclick="exportAnamnesePDF()">PDF</button>
-      </td>`;
-    docsTable.appendChild(tr);
+  const anamneses = await getAll('anamneses');
+  const docs = await getAll('documentos');
+
+  const pAna = anamneses.filter(a => Number(a.pacienteId) === Number(patientId));
+  const pDocs = docs.filter(d => Number(d.pacienteId) === Number(patientId));
+
+  const allItems = [
+    ...pAna.map(a => ({ id: a.id, tipo: 'Anamnese Inicial', data: a.dataAtualizacao || a.dataCriacao, status: a.status || 'Finalizada', raw: a, itemType: 'ana' })),
+    ...pDocs.map(d => ({ id: d.id, tipo: d.titulo || 'Documento Personalizado', data: d.dataAtualizacao || d.dataCriacao, status: d.status || 'Finalizado', raw: d, itemType: 'doc' }))
+  ];
+
+  if (allItems.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhum documento salvo para este paciente.</td></tr>';
+    return;
   }
 
-  // 2. Documentos Personalizados / Relatórios
-  const allDocs = await getAll('documentos');
-  const patientDocs = allDocs.filter(d => Number(d.patientId) === Number(patientId));
-  patientDocs.forEach(d => {
+  allItems.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+  allItems.forEach(item => {
     const tr = document.createElement('tr');
+    const dtStr = item.data ? new Date(item.data).toLocaleDateString('pt-BR') : '-';
+    
+    let btnAction = '';
+    if (item.itemType === 'ana') {
+      btnAction = `
+        <button class="btn-secondary" onclick="openAnamneseModal(${item.id})">Visualizar / Editar</button>
+        <button class="btn-pdf" onclick="generateAnamnesePDF(${item.id})">PDF</button>`;
+    } else {
+      btnAction = `
+        <button class="btn-secondary" onclick="openNewDocModal(${item.id})">Editar</button>
+        <button class="btn-pdf" onclick="generateCustomDocPDF(${item.id})">PDF</button>`;
+    }
+
     tr.innerHTML = `
-      <td><strong>${d.titulo}</strong> (${d.tipo})</td>
-      <td>${new Date(d.dataCriacao).toLocaleDateString('pt-BR')}</td>
-      <td><span class="badge ${d.status === 'finalizado' ? 'badge-active' : 'badge-pending'}">${d.status.toUpperCase()}</span></td>
-      <td>
-        <button class="btn-secondary" onclick="openDocBuilderModal(${d.id})">Editar</button>
-        <button class="btn-pdf" onclick="exportCustomDocPDF(${d.id})">PDF</button>
-      </td>`;
-    docsTable.appendChild(tr);
+      <td><strong>${item.tipo}</strong></td>
+      <td>${dtStr}</td>
+      <td><span class="badge ${item.status === 'rascunho' ? 'badge-pending' : 'badge-active'}">${item.status.toUpperCase()}</span></td>
+      <td><div class="action-btns">${btnAction}</div></td>`;
+    tbody.appendChild(tr);
   });
-
-  if (!anam && patientDocs.length === 0) {
-    docsTable.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhum documento cadastrado para este paciente.</td></tr>`;
-  }
 }
 
-function filterPatientHistory() {
-  const filterVal = document.getElementById('history-month-filter').value;
-  if (filterVal && currentPatientId) loadProntuarioData(currentPatientId, filterVal);
-}
-
-function resetPatientHistory() {
-  document.getElementById('history-month-filter').value = '';
-  if (currentPatientId) loadProntuarioData(currentPatientId);
-}
-
-/* 2. ANAMNESE INICIAL DO ADOLESCENTE */
-async function openAnamneseModal() {
+/* 2, 3 e 4. IMPLEMENTAÇÃO DA ANAMNESE INICIAL */
+async function openAnamneseModal(anamneseId = null) {
   document.getElementById('form-anamnese').reset();
   document.getElementById('anamnese-id').value = '';
-  const patient = await getById('pacientes', currentPatientId);
-  if (patient) {
-    document.getElementById('anam-nome').value = patient.nome || patient.name || '';
-    document.getElementById('anam-idade').value = patient.idade || '';
-    document.getElementById('anam-dtnasc').value = patient.dataNascimento ? new Date(patient.dataNascimento).toLocaleDateString('pt-BR') : '';
-    document.getElementById('anam-escolaridade').value = patient.escolaridade || '';
-    document.getElementById('anam-mora').value = patient.comQuemMora || '';
-    document.getElementById('anam-responsavel').value = patient.responsavel ? `${patient.responsavel} (${patient.parentesco || ''})` : '';
-  }
 
-  const allAnam = await getAll('anamnese');
-  const existing = allAnam.find(a => Number(a.patientId) === Number(currentPatientId));
+  const patient = await getById('pacientes', currentPatientId);
+  if (!patient) return;
+
+  // Auto-preenchimento
+  document.getElementById('ana-nome').value = patient.nome || '';
+  document.getElementById('ana-idade').value = patient.idade || '';
+  document.getElementById('ana-dob').value = patient.dataNascimento || '';
+  document.getElementById('ana-escolaridade').value = patient.escolaridade || '';
+  document.getElementById('ana-com-quem-mora').value = patient.comQuemMora || '';
+  document.getElementById('ana-responsavel').value = patient.responsavel || '';
+
+  const anamneses = await getAll('anamneses');
+  const existing = anamneseId 
+    ? anamneses.find(a => a.id === Number(anamneseId))
+    : anamneses.find(a => Number(a.pacienteId) === Number(currentPatientId));
+
   if (existing) {
     document.getElementById('anamnese-id').value = existing.id;
+    document.getElementById('anamnese-status').value = existing.status || 'rascunho';
+    
+    // Preencher todos os campos
     for (let key in existing.dados) {
       const el = document.getElementById(key);
       if (el) el.value = existing.dados[key];
     }
   }
+
   openModal('modal-anamnese');
 }
 
-async function saveAnamnese(statusStr) {
-  const formData = {};
-  const inputs = document.querySelectorAll('#form-anamnese input, #form-anamnese textarea');
-  inputs.forEach(i => { if (i.id) formData[i.id] = i.value; });
+async function saveAnamnese(status = 'finalizada') {
+  if (!currentPatientId) return;
+  const id = document.getElementById('anamnese-id').value;
 
-  const anamId = document.getElementById('anamnese-id').value;
-  const anamRecord = {
-    patientId: Number(currentPatientId),
-    status: statusStr,
-    dados: formData,
-    dataAlteracao: new Date().toISOString()
+  const fields = [
+    'ana-nome', 'ana-idade', 'ana-dob', 'ana-escolaridade', 'ana-com-quem-mora', 'ana-responsavel',
+    'ana-q1','ana-q2','ana-q3','ana-q4','ana-q5','ana-q6','ana-q7','ana-q8','ana-q9','ana-q10',
+    'ana-q11','ana-q12','ana-q13','ana-q14','ana-q15','ana-q16','ana-q17','ana-q18','ana-q19','ana-q20',
+    'ana-q21','ana-q22','ana-q23','ana-q24','ana-q25','ana-q26','ana-q27','ana-q28','ana-q29','ana-q30',
+    'ana-q31','ana-q32','ana-q33','ana-q34','ana-q35','ana-q36','ana-reg1','ana-reg2','ana-reg3','ana-reg4',
+    'ana-reg5','ana-reg6','ana-reg7'
+  ];
+
+  const dados = {};
+  fields.forEach(f => {
+    const el = document.getElementById(f);
+    if (el) dados[f] = el.value;
+  });
+
+  const anamneseData = {
+    pacienteId: Number(currentPatientId),
+    status: status,
+    dataAtualizacao: new Date().toISOString(),
+    dados: dados
   };
-  if (anamId) anamRecord.id = Number(anamId);
+
+  if (id) anamneseData.id = Number(id);
+  else anamneseData.dataCriacao = new Date().toISOString();
 
   try {
-    const savedId = await saveItem('anamnese', anamRecord);
+    const savedId = await saveItem('anamneses', anamneseData);
     document.getElementById('anamnese-id').value = savedId;
-    alert('✓ Documento salvo com sucesso no banco de dados.');
+    alert("✓ Documento salvo com sucesso.");
     closeModal('modal-anamnese');
     loadProntuarioData(currentPatientId);
-  } catch (err) {
-    alert('⚠ Não foi possível salvar o documento. Tente novamente.');
+  } catch(err) {
+    alert("⚠ Não foi possível salvar o documento. Tente novamente.");
   }
 }
 
-/* 4. PDF DA ANAMNESE SEM CORTES DE TEXTO */
-async function exportAnamnesePDF() {
-  const patient = await getById('pacientes', currentPatientId);
-  const pName = patient ? (patient.nome || patient.name) : 'Paciente';
-  
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4');
-  let currentY = 20;
-  const contentWidth = 170;
-  const margin = 20;
+function handleAnamneseSubmit(e) {
+  e.preventDefault();
+  saveAnamnese('finalizada');
+}
 
-  function checkPageBreak(needed) {
-    if (currentY + needed > 275) {
-      doc.addPage();
-      currentY = 20;
-    }
+/* 4. PDF DA ANAMNESE COMPLETA */
+async function generateAnamnesePDF(anamneseId = null) {
+  const anamneses = await getAll('anamneses');
+  const ana = anamneseId 
+    ? anamneses.find(a => a.id === Number(anamneseId))
+    : anamneses.find(a => Number(a.pacienteId) === Number(currentPatientId));
+
+  if (!ana) {
+    alert("Nenhuma anamnese salva para exportar.");
+    return;
   }
 
-  // Cabeçalho
-  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
-  doc.text("ANAMNESE INICIAL DO ADOLESCENTE", 105, currentY, { align: "center" }); currentY += 6;
-  doc.setFontSize(10); doc.setTextColor(216, 27, 96);
-  doc.text("Perspectiva Analítico-Comportamental", 105, currentY, { align: "center" }); currentY += 5;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(120, 144, 156);
-  doc.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" }); currentY += 8;
-  doc.line(margin, currentY, 210 - margin, currentY); currentY += 8;
+  const patient = await getById('pacientes', ana.pacienteId);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+
+  const pageHeight = 297;
+  const margin = 20;
+  const contentWidth = 170;
+  let currentY = 20;
+
+  function checkPageBreak(heightNeeded) {
+    if (currentY + heightNeeded > pageHeight - margin) {
+      doc.addPage();
+      currentY = margin;
+      return true;
+    }
+    return false;
+  }
+
+  // Cabeçalho Obrigatório
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(136, 14, 79);
+  doc.text("ANAMNESE INICIAL DO ADOLESCENTE", 105, currentY, { align: "center" });
+  currentY += 6;
+  doc.setFontSize(11);
+  doc.setTextColor(216, 27, 96);
+  doc.text("Perspectiva Analítico-Comportamental", 105, currentY, { align: "center" });
+  currentY += 6;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(120, 144, 156);
+  doc.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" });
+  currentY += 8;
+  doc.setDrawColor(216, 27, 96);
+  doc.setLineWidth(0.5);
+  doc.line(margin, currentY, 210 - margin, currentY);
+  currentY += 10;
+
+  const d = ana.dados;
 
   const sections = [
-    { title: "1. Identificação", fields: ['anam-nome', 'anam-idade', 'anam-dtnasc', 'anam-escolaridade', 'anam-mora', 'anam-responsavel'] },
-    { title: "2. Motivo da busca", fields: ['anam-m2-a1', 'anam-m2-a2', 'anam-m2-a3', 'anam-m2-a4', 'anam-m2-r1', 'anam-m2-r2', 'anam-m2-r3', 'anam-m2-r4'] },
-    { title: "3. Rotina e vida atual", fields: ['anam-m3-1', 'anam-m3-2', 'anam-m3-3', 'anam-m3-4'] },
-    { title: "4. Família", fields: ['anam-m4-1', 'anam-m4-2', 'anam-m4-3', 'anam-m4-4'] },
-    { title: "5. Amigos e relacionamentos", fields: ['anam-m5-1', 'anam-m5-2', 'anam-m5-3', 'anam-m5-4'] },
-    { title: "6. Situações difíceis", fields: ['anam-m6-1', 'anam-m6-2', 'anam-m6-3', 'anam-m6-4'] },
-    { title: "7. Saúde e histórico", fields: ['anam-m7-1', 'anam-m7-2', 'anam-m7-3', 'anam-m7-4'] },
-    { title: "8. Pontos fortes e recursos", fields: ['anam-m8-1', 'anam-m8-2', 'anam-m8-3', 'anam-m8-4'] },
-    { title: "9. Segurança", fields: ['anam-m9-1', 'anam-m9-2', 'anam-m9-3', 'anam-m9-4'] },
-    { title: "10. Registro do psicólogo", fields: ['anam-m10-1', 'anam-m10-2', 'anam-m10-3', 'anam-m10-4', 'anam-m10-5', 'anam-m10-6', 'anam-m10-7'] }
+    {
+      title: "1. Identificação",
+      items: [
+        `Nome: ${d['ana-nome'] || ''}`,
+        `Idade: ${d['ana-idade'] || ''}`,
+        `Data de nascimento: ${d['ana-dob'] || ''}`,
+        `Escolaridade: ${d['ana-escolaridade'] || ''}`,
+        `Com quem mora: ${d['ana-com-quem-mora'] || ''}`,
+        `Responsável: ${d['ana-responsavel'] || ''}`
+      ]
+    },
+    {
+      title: "2. Motivo da busca",
+      items: [
+        "Ao adolescente:",
+        `• O que fez você vir para a terapia? ${d['ana-q1'] || ''}`,
+        `• Tem alguma coisa que você gostaria que fosse diferente na sua vida hoje? ${d['ana-q2'] || ''}`,
+        `• O que mais tem sido difícil ultimamente? ${d['ana-q3'] || ''}`,
+        `• O que você espera conseguir com a terapia? ${d['ana-q4'] || ''}`,
+        "Aos responsáveis:",
+        `• O que levou vocês a procurarem atendimento? ${d['ana-q5'] || ''}`,
+        `• Quando começaram a perceber essa dificuldade? ${d['ana-q6'] || ''}`,
+        `• Em quais situações ela costuma aparecer mais? ${d['ana-q7'] || ''}`,
+        `• O que vocês costumam fazer quando isso acontece? ${d['ana-q8'] || ''}`
+      ]
+    },
+    {
+      title: "3. Rotina e vida atual",
+      items: [
+        `• Como costuma ser um dia normal para você? ${d['ana-q9'] || ''}`,
+        `• Como estão escola, estudos e notas? ${d['ana-q10'] || ''}`,
+        `• Como estão sono, alimentação e atividades de lazer? ${d['ana-q11'] || ''}`,
+        `• O que você gosta de fazer no seu tempo livre? ${d['ana-q12'] || ''}`
+      ]
+    },
+    {
+      title: "4. Família",
+      items: [
+        `• Como é sua relação com as pessoas que moram com você? ${d['ana-q13'] || ''}`,
+        `• Com quem você costuma conversar quando precisa de ajuda? ${d['ana-q14'] || ''}`,
+        `• O que costuma gerar conflitos em casa? ${d['ana-q15'] || ''}`,
+        `• O que acontece depois desses conflitos? ${d['ana-q16'] || ''}`
+      ]
+    },
+    {
+      title: "5. Amigos e relacionamentos",
+      items: [
+        `• Como estão suas amizades atualmente? ${d['ana-q17'] || ''}`,
+        `• Você sente que consegue ser você mesmo com seus amigos? ${d['ana-q18'] || ''}`,
+        `• Tem acontecido alguma situação difícil com amigos ou colegas? ${d['ana-q19'] || ''}`,
+        `• Como estão seus relacionamentos afetivos, se houver? ${d['ana-q20'] || ''}`
+      ]
+    },
+    {
+      title: "6. Situações difíceis",
+      items: [
+        `• Qual situação tem sido mais difícil para você ultimamente? ${d['ana-q21'] || ''}`,
+        `• O que costuma acontecer antes dessa situação? ${d['ana-q22'] || ''}`,
+        `• O que você geralmente faz quando isso acontece? ${d['ana-q23'] || ''}`,
+        `• O que acontece depois? ${d['ana-q24'] || ''}`
+      ]
+    },
+    {
+      title: "7. Saúde e histórico",
+      items: [
+        `• Já fez terapia ou algum outro acompanhamento psicológico? ${d['ana-q25'] || ''}`,
+        `• Já realizou acompanhamento médico relacionado à demanda? ${d['ana-q26'] || ''}`,
+        `• Usa alguma medicação? ${d['ana-q27'] || ''}`,
+        `• Houve alguma mudança importante na família, escola ou rotina recentemente? ${d['ana-q28'] || ''}`
+      ]
+    },
+    {
+      title: "8. Pontos fortes e recursos",
+      items: [
+        `• O que você acha que faz bem? ${d['ana-q29'] || ''}`,
+        `• O que costuma te ajudar quando está passando por uma situação difícil? ${d['ana-q30'] || ''}`,
+        `• Quais pessoas são importantes para você? ${d['ana-q31'] || ''}`,
+        `• O que você gostaria de aprender ou melhorar? ${d['ana-q32'] || ''}`
+      ]
+    },
+    {
+      title: "9. Segurança",
+      items: [
+        `• Já teve pensamentos de se machucar ou de não querer estar vivo? ${d['ana-q33'] || ''}`,
+        `• Já aconteceu de se machucar de propósito? ${d['ana-q34'] || ''}`,
+        `• Existe alguma situação atual em que você não se sente seguro? ${d['ana-q35'] || ''}`,
+        `• Há algo que você tenha medo de contar para alguém? ${d['ana-q36'] || ''}`
+      ]
+    },
+    {
+      title: "10. Registro do psicólogo",
+      items: [
+        `Principais demandas: ${d['ana-reg1'] || ''}`,
+        `Comportamentos-alvo identificados: ${d['ana-reg2'] || ''}`,
+        `Situações/antecedentes relevantes: ${d['ana-reg3'] || ''}`,
+        `Consequências observadas: ${d['ana-reg4'] || ''}`,
+        `Repertórios e potencialidades: ${d['ana-reg5'] || ''}`,
+        `Hipóteses funcionais iniciais: ${d['ana-reg6'] || ''}`,
+        `Pontos a investigar nas próximas sessões: ${d['ana-reg7'] || ''}`
+      ]
+    }
   ];
 
   sections.forEach(sec => {
     checkPageBreak(12);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(136, 14, 79);
-    doc.text(sec.title, margin, currentY); currentY += 6;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10.5);
+    doc.setTextColor(136, 14, 79);
+    doc.text(sec.title, margin, currentY);
+    currentY += 6;
 
-    sec.fields.forEach(fid => {
-      const el = document.getElementById(fid);
-      if (el && el.value.trim()) {
-        const lbl = el.previousElementSibling ? el.previousElementSibling.innerText : '';
-        checkPageBreak(10);
-        doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(55, 71, 79);
-        doc.text(lbl, margin, currentY); currentY += 4;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(55, 71, 79);
 
-        doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-        const lines = doc.splitTextToSize(el.value, contentWidth);
-        lines.forEach(line => {
-          checkPageBreak(5);
-          doc.text(line, margin, currentY, { align: "justify", maxWidth: contentWidth });
-          currentY += 4;
-        });
-        currentY += 2;
-      }
+    sec.items.forEach(item => {
+      const lines = doc.splitTextToSize(item, contentWidth);
+      lines.forEach(line => {
+        checkPageBreak(5);
+        doc.text(line, margin, currentY, { align: "justify", maxWidth: contentWidth });
+        currentY += 4.5;
+      });
+      currentY += 1.5;
     });
     currentY += 4;
   });
 
-  // Assinatura Final Automática
-  checkPageBreak(30); currentY += 10;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(55, 71, 79);
-  doc.text("Daniele Sousa Santos", margin, currentY); currentY += 4;
-  doc.text("CRP 22/07398", margin, currentY); currentY += 8;
-  doc.text("Assinatura: __________________________________", margin, currentY);
+  // Assinatura Obrigatória
+  checkPageBreak(35);
+  currentY += 10;
+  doc.setDrawColor(55, 71, 79);
+  doc.setLineWidth(0.3);
+  doc.line(60, currentY, 150, currentY);
+  currentY += 5;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  doc.setTextColor(120, 144, 156);
+  doc.text("CRP 22/07398", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.text("Assinatura: __________________________________", 105, currentY, { align: "center" });
 
-  // Numeração de Páginas
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
+  // Adicionar numeração de páginas
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFontSize(8); doc.setTextColor(120, 144, 156);
-    doc.text(`Página ${i} de ${totalPages}`, 105, 287, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
   }
 
-  const dtNow = new Date().toISOString().substring(0,10);
-  doc.save(`Anamnese_Inicial_${pName.replace(/\s+/g, '_')}_${dtNow}.pdf`);
+  const pNameClean = (patient ? patient.nome : 'Paciente').replace(/\s+/g, '_');
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const fileName = `Anamnese_Inicial_${pNameClean}_${dateStr}.pdf`;
+  
+  doc.save(fileName);
 }
 
-/* 5 & 6. CONSTRUTOR DE DOCUMENTOS PERSONALIZADOS */
-let sectionCount = 0;
-async function openDocBuilderModal(docId = null) {
-  document.getElementById('doc-id').value = '';
-  document.getElementById('doc-title').value = '';
-  document.getElementById('doc-type').value = 'Relatório Psicológico';
-  document.getElementById('doc-draft-notice').style.display = 'none';
-  document.getElementById('doc-sections-container').innerHTML = '';
-  sectionCount = 0;
+/* 5, 6, 7, 8, 9 e 10. CONSTRUTOR DE DOCUMENTOS PERSONALIZADOS E MODELOS */
+let sectionCounter = 0;
 
-  await loadModelTemplatesSelect();
+async function openNewDocModal(docId = null) {
+  document.getElementById('form-custom-doc').reset();
+  document.getElementById('doc-id').value = '';
+  document.getElementById('doc-sections-container').innerHTML = '';
+  sectionCounter = 0;
+
+  await loadModelsDropdown();
 
   if (docId) {
     const doc = await getById('documentos', docId);
     if (doc) {
       document.getElementById('doc-id').value = doc.id;
-      document.getElementById('doc-title').value = doc.titulo;
-      document.getElementById('doc-type').value = doc.tipo;
-      if (doc.isRascunhoAuto) document.getElementById('doc-draft-notice').style.display = 'block';
-      doc.topicos.forEach(t => addDocSection(t.titulo, t.conteudo));
+      document.getElementById('doc-title-input').value = doc.titulo || '';
+      document.getElementById('doc-status').value = doc.status || 'rascunho';
+
+      if (doc.topicos && doc.topicos.length > 0) {
+        doc.topicos.forEach(t => addDocSectionField(t.titulo, t.conteudo));
+      }
     }
   } else {
-    addDocSection("Identificação", "");
-    addDocSection("Descrição da demanda", "");
+    // Tópicos padrão de exemplo
+    addDocSectionField("Identificação", "");
+    addDocSectionField("Descrição da demanda", "");
+    addDocSectionField("Procedimentos realizados", "");
   }
-  openModal('modal-doc-builder');
+
+  openModal('modal-custom-doc');
 }
 
-function addDocSection(title = '', content = '') {
-  sectionCount++;
+function addDocSectionField(title = '', content = '') {
+  sectionCounter++;
   const container = document.getElementById('doc-sections-container');
   const div = document.createElement('div');
-  div.className = 'form-group doc-section-item';
-  div.style.border = '1px solid #ffcdd2';
-  div.style.padding = '12px';
-  div.style.borderRadius = '8px';
-  div.style.marginBottom = '12px';
+  div.className = 'doc-section-box';
+  div.id = `sec-box-${sectionCounter}`;
+
   div.innerHTML = `
-    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-      <label style="font-weight:bold;">Tópico/Seção ${sectionCount}</label>
-      <button type="button" class="btn-danger" style="padding:2px 6px;" onclick="this.parentElement.parentElement.remove()">Remover Tópico</button>
+    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+      <strong style="color:var(--dark-pink); font-size:0.88rem;">Tópico/Seção #${sectionCounter}</strong>
+      <button type="button" class="btn-danger" style="padding:2px 8px;" onclick="removeDocSectionField('sec-box-${sectionCounter}')">Remover</button>
     </div>
-    <input type="text" class="sec-title" placeholder="Título do Tópico (Ex: Considerações Finais)" value="${title}" style="margin-bottom:8px;">
-    <textarea class="sec-content" rows="3" placeholder="Conteúdo do tópico...">${content}</textarea>
-  `;
+    <div class="form-group">
+      <input type="text" class="sec-title" placeholder="Título do Tópico (Ex: Considerações finais)" value="${title}" required>
+    </div>
+    <div class="form-group" style="margin-bottom:0;">
+      <textarea class="sec-content" rows="3" placeholder="Conteúdo do tópico...">${content}</textarea>
+    </div>`;
   container.appendChild(div);
 }
 
-async function saveCustomDoc(statusStr) {
-  const title = document.getElementById('doc-title').value;
-  if (!title) { alert('Informe o título do documento.'); return; }
-
-  const docId = document.getElementById('doc-id').value;
-  const topicos = [];
-  document.querySelectorAll('.doc-section-item').forEach(el => {
-    topicos.push({
-      titulo: el.querySelector('.sec-title').value,
-      conteudo: el.querySelector('.sec-content').value
-    });
-  });
-
-  const docRecord = {
-    patientId: Number(currentPatientId),
-    titulo: title,
-    tipo: document.getElementById('doc-type').value,
-    status: statusStr,
-    topicos: topicos,
-    dataCriacao: new Date().toISOString()
-  };
-  if (docId) docRecord.id = Number(docId);
-
-  try {
-    const savedId = await saveItem('documentos', docRecord);
-    document.getElementById('doc-id').value = savedId;
-    alert('✓ Documento salvo com sucesso.');
-    closeModal('modal-doc-builder');
-    loadProntuarioData(currentPatientId);
-  } catch (e) {
-    alert('⚠ Não foi possível salvar o documento. Tente novamente.');
-  }
+function removeDocSectionField(boxId) {
+  const el = document.getElementById(boxId);
+  if (el) el.remove();
 }
 
-/* 7, 8, 9. MODELOS DE DOCUMENTO (ESTRUTURA PURA) */
-async function saveCurrentDocAsModel() {
-  const title = prompt('Nome para o modelo de estrutura (Ex: Modelo - Relatório Psicológico):');
-  if (!title) return;
-
-  const topicos = [];
-  document.querySelectorAll('.doc-section-item').forEach(el => {
-    topicos.push({
-      titulo: el.querySelector('.sec-title').value,
-      conteudo: '' // SOMENTE ESTRUTURA, SEM CONTEÚDO OU PACIENTE
-    });
-  });
-
-  const modeloRecord = {
-    nomeModelo: title,
-    tipo: document.getElementById('doc-type').value,
-    topicos: topicos
-  };
-
-  try {
-    await saveItem('modelos', modeloRecord);
-    alert('✓ Modelo de estrutura salvo permanentemente com sucesso.');
-    loadModelTemplatesSelect();
-  } catch(e) {
-    alert('⚠ Não foi possível salvar o modelo.');
-  }
-}
-
-async function loadModelTemplatesSelect() {
-  const sel = document.getElementById('select-model-template');
-  sel.innerHTML = '<option value="">-- Usar modelo salvo --</option>';
-  const modelos = await getAll('modelos');
-  modelos.forEach(m => {
-    sel.innerHTML += `<option value="${m.id}">${m.nomeModelo}</option>`;
+async function loadModelsDropdown() {
+  const models = await getAll('modelos');
+  const select = document.getElementById('model-select-dropdown');
+  select.innerHTML = '<option value="">-- Selecione um modelo --</option>';
+  models.forEach(m => {
+    select.innerHTML += `<option value="${m.id}">${m.tituloModel || 'Modelo Sem Título'}</option>`;
   });
 }
 
 async function applySelectedModel() {
-  const modelId = document.getElementById('select-model-template').value;
+  const modelId = document.getElementById('model-select-dropdown').value;
   if (!modelId) return;
-  const modelo = await getById('modelos', modelId);
-  if (modelo) {
-    document.getElementById('doc-title').value = modelo.nomeModelo;
-    document.getElementById('doc-type').value = modelo.tipo;
-    document.getElementById('doc-sections-container').innerHTML = '';
-    sectionCount = 0;
-    modelo.topicos.forEach(t => addDocSection(t.titulo, ""));
-    alert('✓ Estrutura do modelo copiada sem dados do paciente anterior.');
+
+  const model = await getById('modelos', modelId);
+  if (!model) return;
+
+  document.getElementById('doc-title-input').value = model.tituloModel || '';
+  document.getElementById('doc-sections-container').innerHTML = '';
+  sectionCounter = 0;
+
+  if (model.estruturaTopicos) {
+    model.estruturaTopicos.forEach(tTitle => {
+      addDocSectionField(tTitle, '');
+    });
   }
 }
 
-/* 14. EXPORTAÇÃO PDF DOCUMENTO PERSONALIZADO */
-async function exportCustomDocPDF(docIdParam = null) {
-  const docId = docIdParam || document.getElementById('doc-id').value;
-  let docObj;
-  if (docId) {
-    docObj = await getById('documentos', docId);
-  } else {
-    const topicos = [];
-    document.querySelectorAll('.doc-section-item').forEach(el => {
-      topicos.push({ titulo: el.querySelector('.sec-title').value, conteudo: el.querySelector('.sec-content').value });
-    });
-    docObj = {
-      titulo: document.getElementById('doc-title').value,
-      tipo: document.getElementById('doc-type').value,
-      topicos: topicos
-    };
+async function saveCustomDoc(status = 'finalizado') {
+  if (!currentPatientId) return;
+  const id = document.getElementById('doc-id').value;
+  const title = document.getElementById('doc-title-input').value;
+
+  const container = document.getElementById('doc-sections-container');
+  const boxes = container.querySelectorAll('.doc-section-box');
+  
+  const topicos = [];
+  const estruturaTopicos = [];
+
+  boxes.forEach(b => {
+    const t = b.querySelector('.sec-title').value;
+    const c = b.querySelector('.sec-content').value;
+    topicos.push({ titulo: t, conteudo: c });
+    estruturaTopicos.push(t);
+  });
+
+  const docData = {
+    pacienteId: Number(currentPatientId),
+    titulo: title,
+    status: status,
+    topicos: topicos,
+    dataAtualizacao: new Date().toISOString()
+  };
+
+  if (id) docData.id = Number(id);
+  else docData.dataCriacao = new Date().toISOString();
+
+  try {
+    const savedId = await saveItem('documentos', docData);
+    document.getElementById('doc-id').value = savedId;
+
+    // Se a caixa de salvar modelo estiver marcada
+    if (document.getElementById('save-as-model-checkbox').checked) {
+      const modelData = {
+        tituloModel: title,
+        estruturaTopicos: estruturaTopicos,
+        dataCriacao: new Date().toISOString()
+      };
+      await saveItem('modelos', modelData);
+      alert("✓ Documento e Modelo salvos com sucesso.");
+    } else {
+      alert("✓ Documento salvo com sucesso.");
+    }
+
+    closeModal('modal-custom-doc');
+    loadProntuarioData(currentPatientId);
+  } catch(err) {
+    alert("⚠ Não foi possível salvar o documento. Tente novamente.");
+  }
+}
+
+function handleCustomDocSubmit(e) {
+  e.preventDefault();
+  saveCustomDoc('finalizado');
+}
+
+/* 14. EXPORTAÇÃO DO DOCUMENTO PERSONALIZADO EM PDF */
+async function generateCustomDocPDF(docId = null) {
+  const docs = await getAll('documentos');
+  const docObj = docId ? docs.find(d => d.id === Number(docId)) : null;
+
+  if (!docObj) {
+    alert("Documento não localizado.");
+    return;
   }
 
-  const patient = await getById('pacientes', currentPatientId);
-  const pName = patient ? (patient.nome || patient.name) : 'Paciente';
-
+  const patient = await getById('pacientes', docObj.pacienteId);
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p', 'mm', 'a4');
-  let currentY = 20;
+
+  const pageHeight = 297;
   const margin = 20;
   const contentWidth = 170;
+  let currentY = 20;
 
-  function checkPageBreak(needed) {
-    if (currentY + needed > 270) {
+  function checkPageBreak(heightNeeded) {
+    if (currentY + heightNeeded > pageHeight - margin) {
       doc.addPage();
-      currentY = 20;
+      currentY = margin;
+      return true;
     }
+    return false;
   }
 
-  // Cabeçalho Padrão
-  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
-  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" }); currentY += 5;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(120, 144, 156);
-  doc.text("CRP 22/07398", 105, currentY, { align: "center" }); currentY += 8;
+  // Cabeçalho
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(136, 14, 79);
+  doc.text((docObj.titulo || "DOCUMENTO CLÍNICO").toUpperCase(), 105, currentY, { align: "center" });
+  currentY += 6;
+  doc.setFontSize(9.5);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(120, 144, 156);
+  doc.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" });
+  currentY += 8;
+  doc.setDrawColor(216, 27, 96);
+  doc.setLineWidth(0.5);
+  doc.line(margin, currentY, 210 - margin, currentY);
+  currentY += 10;
 
-  doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.setTextColor(216, 27, 96);
-  doc.text(docObj.titulo.toUpperCase(), 105, currentY, { align: "center" }); currentY += 6;
-  doc.line(margin, currentY, 210 - margin, currentY); currentY += 8;
-
-  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-  doc.text(`Paciente: ${pName}`, margin, currentY); currentY += 8;
-
-  docObj.topicos.forEach(t => {
-    checkPageBreak(12);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(136, 14, 79);
-    doc.text(t.titulo, margin, currentY); currentY += 5;
-
-    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(55, 71, 79);
-    const lines = doc.splitTextToSize(t.conteudo || "Não informado.", contentWidth);
-    lines.forEach(line => {
-      checkPageBreak(5);
-      doc.text(line, margin, currentY, { align: "justify", maxWidth: contentWidth });
-      currentY += 4.5;
-    });
+  // Paciente
+  if (patient) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(55, 71, 79);
+    doc.text(`Paciente: ${patient.nome || ''}`, margin, currentY);
+    currentY += 5;
+    if (patient.idade) {
+      doc.text(`Idade: ${patient.idade} anos`, margin, currentY);
+      currentY += 5;
+    }
     currentY += 4;
-  });
+  }
+
+  if (docObj.topicos) {
+    docObj.topicos.forEach(t => {
+      checkPageBreak(12);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10.5);
+      doc.setTextColor(136, 14, 79);
+      doc.text(t.titulo, margin, currentY);
+      currentY += 5;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(55, 71, 79);
+
+      const lines = doc.splitTextToSize(t.conteudo || 'Sem informações registradas.', contentWidth);
+      lines.forEach(line => {
+        checkPageBreak(5);
+        doc.text(line, margin, currentY, { align: "justify", maxWidth: contentWidth });
+        currentY += 4.5;
+      });
+      currentY += 4;
+    });
+  }
 
   // Assinatura
-  checkPageBreak(30); currentY += 15;
-  doc.line(70, currentY, 140, currentY); currentY += 5;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" }); currentY += 4;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 144, 156);
-  doc.text("Psicóloga - CRP 22/07398", 105, currentY, { align: "center" });
+  checkPageBreak(35);
+  currentY += 15;
+  doc.setDrawColor(55, 71, 79);
+  doc.setLineWidth(0.3);
+  doc.line(60, currentY, 150, currentY);
+  currentY += 5;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  doc.setTextColor(120, 144, 156);
+  doc.text("CRP 22/07398", 105, currentY, { align: "center" });
 
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFontSize(8); doc.setTextColor(120, 144, 156);
-    doc.text(`Página ${i} de ${totalPages}`, 105, 287, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
   }
 
-  const dtStr = new Date().toISOString().substring(0,10);
-  doc.save(`${docObj.tipo.replace(/\s+/g,'_')}_${pName.replace(/\s+/g,'_')}_${dtStr}.pdf`);
+  const pNameClean = (patient ? patient.nome : 'Paciente').replace(/\s+/g, '_');
+  const typeClean = (docObj.titulo || 'Documento').replace(/\s+/g, '_');
+  const dateStr = new Date().toISOString().slice(0, 10);
+  doc.save(`${typeClean}_${pNameClean}_${dateStr}.pdf`);
 }
 
-/* 15, 16, 17, 18. BOTÃO "GERAR RELATÓRIO PSICOLÓGICO" AUTOMÁTICO */
-async function generateAutoReportDraft() {
+/* 15, 16, 17 e 18. GERAR RELATÓRIO PSICOLÓGICO AUTOMÁTICO */
+async function generateAutoReport() {
+  if (!currentPatientId) return;
+
   const patient = await getById('pacientes', currentPatientId);
-  if (!patient) return;
+  const anamneses = await getAll('anamneses');
+  const sessoes = await getAll('sessoes');
+  const evolucoes = await getAll('evolucoes');
 
-  const allSessions = await getAll('sessoes');
-  const allEvolutions = await getAll('evolucoes');
-  const allAnam = await getAll('anamnese');
+  const ana = anamneses.find(a => Number(a.pacienteId) === Number(currentPatientId));
+  const pSessoes = sessoes.filter(s => Number(s.pacienteId || s.patientId || s.pacienteld) === Number(currentPatientId));
+  const pEvolucoes = evolucoes.filter(e => Number(e.pacienteId || e.pacienteld) === Number(currentPatientId));
 
-  const pSessions = allSessions.filter(s => Number(s.pacienteld || s.patientId) === Number(currentPatientId));
-  const anam = allAnam.find(a => Number(a.patientId) === Number(currentPatientId));
+  alert("Rascunho gerado a partir dos registros do prontuário. Revise e edite antes de finalizar o documento.");
 
-  document.getElementById('doc-id').value = '';
-  document.getElementById('doc-title').value = 'RELATÓRIO PSICOLÓGICO';
-  document.getElementById('doc-type').value = 'Relatório Psicológico';
-  document.getElementById('doc-draft-notice').style.display = 'block';
+  await openNewDocModal();
+
+  document.getElementById('doc-title-input').value = "RELATÓRIO PSICOLÓGICO";
   document.getElementById('doc-sections-container').innerHTML = '';
-  sectionCount = 0;
+  sectionCounter = 0;
+
+  const notEnoughMsg = "Não há informações registradas suficientes para preencher este tópico.";
 
   // 1. Identificação
-  const idText = `Nome: ${patient.nome || patient.name}\nData de Nascimento: ${patient.dataNascimento || 'Não informado'}\nIdade: ${patient.idade || 'Não informado'}\nEscolaridade: ${patient.escolaridade || 'Não informado'}`;
-  addDocSection("1. Identificação", idText);
+  let idText = `Nome: ${patient ? patient.nome : ''}\nData de Nascimento: ${patient && patient.dataNascimento ? patient.dataNascimento : ''}\nIdade: ${patient && patient.idade ? patient.idade + ' anos' : ''}`;
+  addDocSectionField("1. Identificação", idText);
 
   // 2. Demanda
-  let demandaText = "Não há informações registradas suficientes para preencher este tópico.";
-  if (anam && anam.dados['anam-m2-a1']) {
-    demandaText = anam.dados['anam-m2-a1'];
-  }
-  addDocSection("2. Demanda", demandaText);
+  let demandaText = (ana && ana.dados && ana.dados['ana-q1']) ? ana.dados['ana-q1'] : notEnoughMsg;
+  addDocSectionField("2. Demanda", demandaText);
 
   // 3. Período de acompanhamento
-  let periodoText = "Não há sessões registradas.";
-  if (pSessions.length > 0) {
-    pSessions.sort((a,b) => new Date(a.dataHora||a.datetime) - new Date(b.dataHora||b.datetime));
-    const dInicio = new Date(pSessions[0].dataHora||pSessions[0].datetime).toLocaleDateString('pt-BR');
-    const dFim = new Date(pSessions[pSessions.length-1].dataHora||pSessions[pSessions.length-1].datetime).toLocaleDateString('pt-BR');
-    periodoText = `Atendimento realizado no período de ${dInicio} a ${dFim}, totalizando ${pSessions.length} sessões registradas.`;
+  let periodoText = notEnoughMsg;
+  if (pSessoes.length > 0) {
+    pSessoes.sort((a,b) => new Date(a.dataHora || a.datetime) - new Date(b.dataHora || b.datetime));
+    const inicio = new Date(pSessoes[0].dataHora || pSessoes[0].datetime).toLocaleDateString('pt-BR');
+    const fim = new Date(pSessoes[pSessoes.length - 1].dataHora || pSessoes[pSessoes.length - 1].datetime).toLocaleDateString('pt-BR');
+    periodoText = `Acompanhamento realizado no período de ${inicio} a ${fim}, totalizando ${pSessoes.length} sessões agendadas.`;
   }
-  addDocSection("3. Período de acompanhamento", periodoText);
+  addDocSectionField("3. Período de acompanhamento", periodoText);
 
   // 4. Procedimentos realizados
-  addDocSection("4. Procedimentos realizados", "Sessões de atendimento psicológico sob a perspectiva Analítico-Comportamental, entrevistas de anamnese e observação comportamental.");
+  let procText = pSessoes.length > 0 ? `Sessões individuais de atendimento psicológico sob a perspectiva Analítico-Comportamental.` : notEnoughMsg;
+  addDocSectionField("4. Procedimentos realizados", procText);
 
-  // 5 & 6. Aspectos e Evolução
-  let evoText = "";
-  pSessions.forEach(s => {
-    const evo = allEvolutions.find(e => Number(e.sessaold) === Number(s.id));
-    if (evo && (evo.descricao || evo.description)) {
-      evoText += `- ${new Date(s.dataHora||s.datetime).toLocaleDateString('pt-BR')}: ${evo.descricao || evo.description}\n`;
-    }
-  });
-  if (!evoText) evoText = "Não há informações registradas suficientes para preencher este tópico.";
-  addDocSection("5. Aspectos relevantes do acompanhamento", evoText);
-  addDocSection("6. Evolução", evoText ? "Progressos observados nos registros das sessões descritas acima." : "Não há informações registradas suficientes para preencher este tópico.");
+  // 5. Aspectos relevantes do acompanhamento
+  let aspText = pEvolucoes.length > 0 ? pEvolucoes.map(e => e.descricao).filter(Boolean).join('\n\n') : notEnoughMsg;
+  addDocSectionField("5. Aspectos relevantes do acompanhamento", aspText);
+
+  // 6. Evolução
+  let evoText = pEvolucoes.length > 0 ? pEvolucoes.map(e => e.analise).filter(Boolean).join('\n\n') : notEnoughMsg;
+  addDocSectionField("6. Evolução", evoText);
 
   // 7. Recursos e potencialidades
-  let recursosText = "Não há informações registradas suficientes para preencher este tópico.";
-  if (anam && anam.dados['anam-m8-1']) recursosText = anam.dados['anam-m8-1'];
-  addDocSection("7. Recursos e potencialidades", recursosText);
+  let recText = (ana && ana.dados && ana.dados['ana-q29']) ? ana.dados['ana-q29'] : notEnoughMsg;
+  addDocSectionField("7. Recursos e potencialidades", recText);
 
-  // 8 & 9. Encaminhamentos e Considerações Finais
-  addDocSection("8. Encaminhamentos", "Não há encaminhamentos registrados.");
-  addDocSection("9. Considerações finais", "Síntese elaborada com base nos registros do prontuário até a presente data.");
+  // 8. Encaminhamentos
+  addDocSectionField("8. Encaminhamentos", notEnoughMsg);
 
-  openModal('modal-doc-builder');
+  // 9. Considerações finais
+  addDocSectionField("9. Considerações finais", "Síntese dos atendimentos prestados com base nos dados do prontuário.");
 }
 
-/* 1. EXPORTAR PRONTUÁRIO COMPLETO CRONOLÓGICO */
-async function exportFullProntuario() {
+/* 1. EXPORTAR PRONTUÁRIO COMPLETO EM ORDEM CRONOLÓGICA */
+async function exportFullProntuarioPDF() {
+  if (!currentPatientId) return;
+
   const patient = await getById('pacientes', currentPatientId);
-  if (!patient) return;
-  const pName = patient.nome || patient.name || 'Paciente';
+  const anamneses = await getAll('anamneses');
+  const sessoes = await getAll('sessoes');
+  const evolucoes = await getAll('evolucoes');
+  const documentos = await getAll('documentos');
 
-  const allSessions = await getAll('sessoes');
-  const allEvolutions = await getAll('evolucoes');
-  const allAnam = await getAll('anamnese');
-  const allDocs = await getAll('documentos');
+  const pAna = anamneses.filter(a => Number(a.pacienteId) === Number(currentPatientId));
+  const pSess = sessoes.filter(s => Number(s.pacienteId || s.patientId || s.pacienteld) === Number(currentPatientId));
+  const pDocs = documentos.filter(d => Number(d.pacienteId) === Number(currentPatientId));
 
-  const pSessions = allSessions.filter(s => Number(s.pacienteld || s.patientId) === Number(currentPatientId));
-  const pAnam = allAnam.find(a => Number(a.patientId) === Number(currentPatientId));
-  const pDocs = allDocs.filter(d => Number(d.patientId) === Number(currentPatientId));
-
-  // Compilar todos os eventos com data para ordenação cronológica
+  // Coletar todos os itens do prontuário
   const timeline = [];
 
-  if (pAnam) {
-    timeline.push({ date: new Date(pAnam.dataAlteracao || 0), type: 'anamnese', data: pAnam });
-  }
+  pAna.forEach(a => {
+    timeline.push({
+      date: new Date(a.dataCriacao || a.dataAtualizacao || Date.now()),
+      title: 'ANAMNESE INICIAL',
+      content: a
+    });
+  });
 
-  pSessions.forEach(s => {
-    const evo = allEvolutions.find(e => Number(e.sessaold) === Number(s.id));
-    timeline.push({ date: new Date(s.dataHora || s.datetime), type: 'sessao', session: s, evo: evo });
+  pSess.forEach(s => {
+    const evo = evolucoes.find(e => Number(e.sessaold || e.sessaoId) === Number(s.id));
+    timeline.push({
+      date: new Date(s.dataHora || s.datetime),
+      title: `EVOLUÇÃO CLÍNICA - Sessão ${new Date(s.dataHora || s.datetime).toLocaleDateString('pt-BR')}`,
+      session: s,
+      evolution: evo
+    });
   });
 
   pDocs.forEach(d => {
-    timeline.push({ date: new Date(d.dataCriacao), type: 'doc', data: d });
+    timeline.push({
+      date: new Date(d.dataCriacao || d.dataAtualizacao || Date.now()),
+      title: d.titulo || 'DOCUMENTO CLÍNICO',
+      doc: d
+    });
   });
-
-  // Ordenar: Documento mais antigo primeiro; Documento mais recente por último.
-  timeline.sort((a,b) => a.date - b.date);
 
   if (timeline.length === 0) {
     alert("Não há documentos disponíveis para exportação deste paciente.");
     return;
   }
 
+  // Ordenar: Documento mais antigo primeiro; Documento mais recente por último
+  timeline.sort((a, b) => a.date - b.date);
+
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4');
-  let currentY = 20;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+
+  const pageHeight = 297;
   const margin = 20;
   const contentWidth = 170;
+  let currentY = 20;
 
-  function checkPageBreak(needed) {
-    if (currentY + needed > 270) {
-      doc.addPage();
-      currentY = 20;
+  function checkPageBreak(heightNeeded) {
+    if (currentY + heightNeeded > pageHeight - margin) {
+      pdf.addPage();
+      currentY = margin;
+      return true;
     }
+    return false;
   }
 
-  // Capa do Prontuário
-  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(136, 14, 79);
-  doc.text("PRONTUÁRIO PSICOLÓGICO INTEGRAL", 105, currentY, { align: "center" }); currentY += 8;
-  doc.setFontSize(10); doc.setTextColor(55, 71, 79);
-  doc.text(`Paciente: ${pName}`, 105, currentY, { align: "center" }); currentY += 5;
-  doc.text(`Daniele Sousa Santos – CRP 22/07398`, 105, currentY, { align: "center" }); currentY += 10;
-  doc.line(margin, currentY, 210 - margin, currentY); currentY += 10;
+  // Capa/Cabeçalho do Prontuário Exportado
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(16);
+  pdf.setTextColor(136, 14, 79);
+  pdf.text("PRONTUÁRIO PSICOLÓGICO COMPLETO", 105, currentY, { align: "center" });
+  currentY += 6;
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(120, 144, 156);
+  pdf.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" });
+  currentY += 8;
+  pdf.setDrawColor(216, 27, 96);
+  pdf.setLineWidth(0.5);
+  pdf.line(margin, currentY, 210 - margin, currentY);
+  currentY += 10;
 
-  timeline.forEach(item => {
-    checkPageBreak(20);
-    if (item.type === 'anamnese') {
-      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(216, 27, 96);
-      doc.text(`[${item.date.toLocaleDateString('pt-BR')}] ANAMNESE INICIAL`, margin, currentY); currentY += 6;
-      for (let k in item.data.dados) {
-        if (item.data.dados[k].trim()) {
-          checkPageBreak(8);
-          doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(55, 71, 79);
-          const lines = doc.splitTextToSize(`${k}: ${item.data.dados[k]}`, contentWidth);
-          lines.forEach(l => { checkPageBreak(4); doc.text(l, margin, currentY); currentY += 4; });
-        }
-      }
-      currentY += 6;
-    } else if (item.type === 'sessao') {
-      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(136, 14, 79);
-      doc.text(`[${item.date.toLocaleDateString('pt-BR')}] EVOLUÇÃO / SESSÃO (${item.session.status.toUpperCase()})`, margin, currentY); currentY += 6;
-      if (item.evo) {
-        doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(55, 71, 79);
-        const lines = doc.splitTextToSize(item.evo.descricao || item.evo.description || "Sem descrição", contentWidth);
-        lines.forEach(l => { checkPageBreak(4); doc.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth }); currentY += 4; });
-      }
-      currentY += 6;
-    } else if (item.type === 'doc') {
-      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(46, 125, 50);
-      doc.text(`[${item.date.toLocaleDateString('pt-BR')}] ${item.data.titulo.toUpperCase()}`, margin, currentY); currentY += 6;
-      item.data.topicos.forEach(t => {
-        checkPageBreak(8);
-        doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(55, 71, 79);
-        doc.text(t.titulo, margin, currentY); currentY += 4;
-        doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-        const lines = doc.splitTextToSize(t.conteudo || '', contentWidth);
-        lines.forEach(l => { checkPageBreak(4); doc.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth }); currentY += 4; });
+  if (patient) {
+    pdf.setFillColor(255, 245, 248);
+    pdf.setDrawColor(244, 143, 177);
+    pdf.roundedRect(margin, currentY, contentWidth, 22, 2, 2, 'FD');
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
+    pdf.setTextColor(136, 14, 79);
+    pdf.text(`PACIENTE: ${(patient.nome || '').toUpperCase()}`, margin + 5, currentY + 7);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.setTextColor(55, 71, 79);
+    pdf.text(`Contato: ${patient.telefone || ''} | Tipo: ${patient.tipo || ''}`, margin + 5, currentY + 14);
+    currentY += 28;
+  }
+
+  timeline.forEach((item, idx) => {
+    checkPageBreak(15);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(11);
+    pdf.setTextColor(216, 27, 96);
+    pdf.text(`[${idx + 1}] ${item.title} (${item.date.toLocaleDateString('pt-BR')})`, margin, currentY);
+    currentY += 4;
+    pdf.setDrawColor(244, 143, 177);
+    pdf.line(margin, currentY, 210 - margin, currentY);
+    currentY += 6;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.setTextColor(55, 71, 79);
+
+    if (item.evolution) {
+      const e = item.evolution;
+      const text = `Queixa: ${e.queixa || '-'}\nDemanda: ${e.demanda || '-'}\nDescrição: ${e.descricao || '-'}\nAnálise: ${e.analise || '-'}`;
+      const lines = pdf.splitTextToSize(text, contentWidth);
+      lines.forEach(l => {
+        checkPageBreak(5);
+        pdf.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth });
+        currentY += 4.5;
       });
-      currentY += 6;
+    } else if (item.doc) {
+      if (item.doc.topicos) {
+        item.doc.topicos.forEach(t => {
+          checkPageBreak(8);
+          pdf.setFont("helvetica", "bold");
+          pdf.text(t.titulo, margin, currentY);
+          currentY += 4;
+          pdf.setFont("helvetica", "normal");
+          const lines = pdf.splitTextToSize(t.conteudo || '-', contentWidth);
+          lines.forEach(l => {
+            checkPageBreak(5);
+            pdf.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth });
+            currentY += 4.5;
+          });
+        });
+      }
+    } else if (item.content && item.content.dados) {
+      pdf.text("Anamnese inicial salva no prontuário.", margin, currentY);
+      currentY += 5;
     }
+    currentY += 8;
   });
 
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8); doc.setTextColor(120, 144, 156);
-    doc.text(`Página ${i} de ${totalPages}`, 105, 287, { align: "center" });
+  const pageCount = pdf.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    pdf.setPage(i);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8);
+    pdf.setTextColor(150);
+    pdf.text(`Prontuário de ${patient ? patient.nome : ''} - Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
   }
 
-  doc.save(`Prontuario_${pName.replace(/\s+/g, '_')}.pdf`);
+  const pNameClean = (patient ? patient.nome : 'Paciente').replace(/\s+/g, '_');
+  pdf.save(`Prontuario_${pNameClean}.pdf`);
 }
 
-/* FUNÇÕES DE SUPORTE EXISTENTES */
+/* APAGAR SESSÃO / EVOLUÇÃO */
 async function deleteSession(sessionId) {
   if (confirm("Tem certeza que deseja excluir esta sessão e todo seu registro de evolução?")) {
     const evolutions = await getAll('evolucoes');
-    const evo = evolutions.find(e => Number(e.sessaold) === Number(sessionId));
+    const evo = evolutions.find(e => Number(e.sessaold || e.sessaoId) === Number(sessionId));
     if (evo) await deleteItem('evolucoes', evo.id);
     await deleteItem('sessoes', sessionId);
     loadProntuarioData(currentPatientId);
@@ -1870,75 +2139,264 @@ async function deleteSession(sessionId) {
   }
 }
 
+/* GERAÇÃO DE PDF DA SESSÃO COM TEXTO JUSTIFICADO */
 async function generatePDF(sessionId) {
   const session = await getById('sessoes', sessionId);
   if (!session) return;
-  const patient = await getById('pacientes', session.pacienteld || session.patientId);
+  const patient = await getById('pacientes', session.pacienteId || session.patientId || session.pacienteld);
   const evolutions = await getAll('evolucoes');
-  const evo = evolutions.find(e => Number(e.sessaold) === Number(sessionId));
-  if (!evo) { alert('Evolução clínica não encontrada.'); return; }
+  const evo = evolutions.find(e => Number(e.sessaold || e.sessaoId) === Number(sessionId));
+
+  if (!evo) {
+    alert('Evolução clínica não encontrada.');
+    return;
+  }
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p', 'mm', 'a4');
-  const pName = patient ? (patient.nome || patient.name) : '';
+
+  const pName = patient ? (patient.nome || patient.name || '') : '';
+  const pType = patient ? (patient.tipo || patient.type || '') : '';
+  const pPhone = patient ? (patient.telefone || patient.phone || '') : '';
+  const pGuardian = patient ? (patient.responsavel || patient.guardian || '') : '';
+  const pKinship = patient ? (patient.parentesco || patient.kinship || 'Resp.') : '';
+  const pGuardianPhone = patient ? (patient.telefoneResponsavel || patient.guardianPhone || 'N/A') : '';
+
   const dtStr = session.dataHora || session.datetime;
   const dateFormatted = new Date(dtStr).toLocaleString('pt-BR');
+  const mode = session.modalidade || session.mode || '';
+  const status = session.status || '';
 
+  const complaint = evo.queixa || evo.complaint || '';
+  const demand = evo.demanda || evo.demand || '';
+  const description = evo.descricao || evo.description || '';
+  const analysis = evo.analise || evo.analysis || '';
+
+  const pageHeight = 297;
+  const margin = 20;
+  const contentWidth = 170;
   let currentY = 20;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(136, 14, 79);
-  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" }); currentY += 6;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(120, 144, 156);
-  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" }); currentY += 8;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.setTextColor(216, 27, 96);
-  doc.text("RELATÓRIO DE EVOLUÇÃO PSICOLÓGICA", 105, currentY, { align: "center" }); currentY += 8;
-  doc.line(20, currentY, 190, currentY); currentY += 10;
 
-  doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(55, 71, 79);
-  doc.text(`Paciente: ${pName}`, 20, currentY); currentY += 5;
-  doc.text(`Data/Hora: ${dateFormatted}`, 20, currentY); currentY += 10;
+  function checkPageBreak(heightNeeded) {
+    if (currentY + heightNeeded > pageHeight - margin) {
+      doc.addPage();
+      currentY = margin;
+      return true;
+    }
+    return false;
+  }
 
-  const desc = evo.descricao || evo.description || '';
-  const lines = doc.splitTextToSize(desc, 170);
-  lines.forEach(line => {
+  // Cabeçalho
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.setTextColor(136, 14, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 6;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
+  currentY += 8;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(216, 27, 96);
+  doc.text("RELATÓRIO DE EVOLUÇÃO PSICOLÓGICA", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setDrawColor(216, 27, 96);
+  doc.setLineWidth(0.5);
+  doc.line(margin, currentY, 210 - margin, currentY);
+  currentY += 8;
+
+  // Box Identificação do Paciente
+  doc.setFillColor(255, 245, 248);
+  doc.setDrawColor(244, 143, 177);
+  let boxHeight = pType === 'Infantil' && pGuardian ? 34 : 26;
+  doc.roundedRect(margin, currentY, contentWidth, boxHeight, 2, 2, 'FD');
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(136, 14, 79);
+  doc.text("IDENTIFICAÇÃO DO PACIENTE", margin + 5, currentY + 6);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text(`Nome: ${pName}`, margin + 5, currentY + 12);
+  doc.text(`Contato: ${pPhone}`, margin + 5, currentY + 17);
+  doc.text(`Tipo: ${pType}`, margin + 5, currentY + 22);
+  if (pType === 'Infantil' && pGuardian) {
+    doc.text(`Responsável Legal: ${pGuardian} (${pKinship}) Tel: ${pGuardianPhone}`, margin + 5, currentY + 27);
+  }
+  currentY += boxHeight + 6;
+
+  // Box Dados da Sessão
+  doc.setFillColor(255, 245, 248);
+  doc.setDrawColor(244, 143, 177);
+  doc.roundedRect(margin, currentY, contentWidth, 26, 2, 2, 'FD');
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(136, 14, 79);
+  doc.text("DADOS DA SESSÃO", margin + 5, currentY + 6);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text(`Data/Hora: ${dateFormatted}`, margin + 5, currentY + 12);
+  doc.text(`Modalidade: ${mode}`, margin + 5, currentY + 17);
+  doc.text(`Status: ${status.toUpperCase()}`, margin + 5, currentY + 22);
+  currentY += 32;
+
+  // Título da Seção Clínica
+  checkPageBreak(15);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(136, 14, 79);
+  doc.text("REGISTRO CLÍNICO DA EVOLUÇÃO", margin, currentY);
+  currentY += 2;
+  doc.setDrawColor(216, 27, 96);
+  doc.setLineWidth(0.3);
+  doc.line(margin, currentY, 210 - margin, currentY);
+  currentY += 8;
+
+  function addClinicalSection(title, text) {
+    if (!text || !text.trim()) return;
+    checkPageBreak(12);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    doc.setTextColor(216, 27, 96);
+    doc.text(title, margin, currentY);
+    currentY += 5;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(55, 71, 79);
+
+    const lines = doc.splitTextToSize(text, contentWidth);
+    lines.forEach((line) => {
+      checkPageBreak(5);
+      doc.text(line, margin, currentY, { align: "justify", maxWidth: contentWidth });
+      currentY += 4.5;
+    });
+    currentY += 4;
+  }
+
+  addClinicalSection("1. Queixa Principal / Relato:", complaint);
+  addClinicalSection("2. Demanda Trabalhada:", demand);
+  addClinicalSection("3. Descrição Detalhada da Sessão:", description);
+  addClinicalSection("4. Análise Técnica e Evolução:", analysis);
+
+  // Assinatura
+  checkPageBreak(30);
+  currentY += 15;
+  doc.setDrawColor(55, 71, 79);
+  doc.setLineWidth(0.3);
+  doc.line(70, currentY, 140, currentY);
+  currentY += 5;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
+
+  const dateFileStr = (session.dataHora || session.datetime || '').substring(0, 10);
+  const fileName = `Evolucao_${pName.replace(/\s+/g, '_')}_${dateFileStr}.pdf`;
+  doc.save(fileName);
+}
+
+function generateSessionPDF(sessionId) {
+  generatePDF(sessionId);
+}
+
+/* GERAR PDF INDIVIDUAL DE FALTA */
+async function generateFaultPDF(sessionId) {
+  const session = await getById('sessoes', sessionId);
+  if (!session) return;
+  const patient = await getById('pacientes', session.pacienteId || session.patientId || session.pacienteld);
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+
+  const pName = patient ? (patient.nome || patient.name) : 'Paciente Não Encontrado';
+  const dtStr = session.dataHora || session.datetime;
+  const dt = new Date(dtStr);
+  const dateStr = dt.toLocaleDateString('pt-BR');
+  const timeStr = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const mode = session.modalidade || session.mode || '';
+  const reason = session.motivoFalta || 'Motivo não informado.';
+
+  let currentY = 25;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.setTextColor(136, 14, 79);
+  doc.text("REGISTRO DE FALTA", 105, currentY, { align: "center" });
+  currentY += 10;
+
+  doc.setFontSize(11);
+  doc.setTextColor(55, 71, 79);
+  doc.text("Dados da psicóloga", 20, currentY);
+  currentY += 6;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text("Daniele Sousa Santos", 20, currentY);
+  currentY += 5;
+  doc.text("Psicóloga", 20, currentY);
+  currentY += 5;
+  doc.text("CRP 22/07398", 20, currentY);
+  currentY += 10;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.text("Dados do paciente", 20, currentY);
+  currentY += 6;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text(`Nome completo: ${pName}`, 20, currentY);
+  currentY += 5;
+  doc.text(`Data da falta: ${dateStr}`, 20, currentY);
+  currentY += 5;
+  doc.text(`Horário agendado: ${timeStr}`, 20, currentY);
+  currentY += 5;
+  doc.text(`Modalidade: ${mode}`, 20, currentY);
+  currentY += 10;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.text("Motivo da falta", 20, currentY);
+  currentY += 6;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+
+  const lines = doc.splitTextToSize(reason, 170);
+  lines.forEach((line) => {
     doc.text(line, 20, currentY, { align: "justify", maxWidth: 170 });
     currentY += 5;
   });
 
-  currentY += 20;
-  doc.line(70, currentY, 140, currentY); currentY += 5;
-  doc.text("Daniele Sousa Santos - CRP: 22/07398", 105, currentY, { align: "center" });
+  currentY += 5;
+  doc.setFont("helvetica", "bold");
+  doc.text("Status: Falta", 20, currentY);
 
-  const dateFileStr = (session.dataHora || session.datetime || '').substring(0, 10);
-  doc.save(`Evolucao_${pName.replace(/\s+/g, '_')}_${dateFileStr}.pdf`);
+  currentY += 35;
+  doc.setDrawColor(55, 71, 79);
+  doc.setLineWidth(0.3);
+  doc.line(70, currentY, 140, currentY);
+  currentY += 5;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
+
+  const fileName = `Registro_Falta_${pName.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '-')}.pdf`;
+  doc.save(fileName);
 }
 
-function generateSessionPDF(sessionId) { generatePDF(sessionId); }
-
-async function generateFaultPDF(sessionId) {
-  const session = await getById('sessoes', sessionId);
-  if (!session) return;
-  const patient = await getById('pacientes', session.pacienteld || session.patientId);
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4');
-  const pName = patient ? (patient.nome || patient.name) : 'Paciente';
-  const dtStr = session.dataHora || session.datetime;
-  const dt = new Date(dtStr);
-
-  let currentY = 25;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(136, 14, 79);
-  doc.text("REGISTRO DE FALTA", 105, currentY, { align: "center" }); currentY += 15;
-  doc.setFontSize(10); doc.setTextColor(55, 71, 79);
-  doc.text(`Paciente: ${pName}`, 20, currentY); currentY += 5;
-  doc.text(`Data: ${dt.toLocaleDateString('pt-BR')}`, 20, currentY); currentY += 5;
-  doc.text(`Motivo: ${session.motivoFalta || 'Não informado'}`, 20, currentY); currentY += 20;
-
-  doc.line(70, currentY, 140, currentY); currentY += 5;
-  doc.text("Daniele Sousa Santos - CRP 22/07398", 105, currentY, { align: "center" });
-
-  doc.save(`Registro_Falta_${pName.replace(/\s+/g, '_')}.pdf`);
-}
-
-/* FINANCEIRO LOGIC */
+/* FINANCEIRO MENSAL */
 function initFinanceView() {
   const now = new Date();
   const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -1949,23 +2407,34 @@ function initFinanceView() {
 async function renderFinancialReport() {
   const selectedMonth = document.getElementById('finance-month-select').value;
   if (!selectedMonth) return;
+
   const sessions = await getAll('sessoes');
   const patients = await getAll('pacientes');
+
   const monthSessions = sessions.filter(s => (s.dataHora || s.datetime || '').startsWith(selectedMonth) && s.status !== 'falta');
-  let totalGross = 0, totalReceived = 0, totalPending = 0;
+
+  let totalGross = 0;
+  let totalReceived = 0;
+  let totalPending = 0;
+
   const tbody = document.getElementById('finance-table-body');
   tbody.innerHTML = '';
+
   monthSessions.forEach(s => {
-    const patient = patients.find(p => Number(p.id) === Number(s.pacienteld || s.patientId));
+    const patient = patients.find(p => Number(p.id) === Number(s.pacienteId || s.patientId || s.pacienteld));
     const val = parseFloat(s.valor || s.value) || 0;
     totalGross += val;
+
     const isPaid = (s.pagamentoStatus || s.paymentStatus) === 'pago';
-    if (isPaid) totalReceived += val; else totalPending += val;
+    if (isPaid) totalReceived += val;
+    else totalPending += val;
+
     const dtStr = s.dataHora || s.datetime;
     const dt = new Date(dtStr).toLocaleString('pt-BR');
     const pName = patient ? (patient.nome || patient.name) : 'Paciente Não Encontrado';
     const sStatus = s.status || '';
     const pStatus = s.pagamentoStatus || s.paymentStatus || 'pendente';
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${dt}</td>
@@ -1980,9 +2449,11 @@ async function renderFinancialReport() {
       </td>`;
     tbody.appendChild(tr);
   });
+
   document.getElementById('fin-total-gross').innerText = totalGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   document.getElementById('fin-total-received').innerText = totalReceived.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   document.getElementById('fin-total-pending').innerText = totalPending.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
   const adimplenceRate = totalGross > 0 ? Math.round((totalReceived / totalGross) * 100) : 0;
   document.getElementById('fin-adimplence').innerText = `${adimplenceRate}%`;
 }
@@ -1990,30 +2461,37 @@ async function renderFinancialReport() {
 async function togglePaymentStatusFromFinance(sessionId) {
   const session = await getById('sessoes', sessionId);
   if (!session) return;
+
   const currentP = session.pagamentoStatus || session.paymentStatus;
   const newP = currentP === 'pago' ? 'pendente' : 'pago';
+
   session.pagamentoStatus = newP;
   session.paymentStatus = newP;
+
   await saveItem('sessoes', session);
   renderFinancialReport();
   loadDashboardData();
 }
 
-/* RELATÓRIO FALTAS LOGIC */
+/* RELATÓRIO DE FALTAS LOGIC */
 async function initFaultsView() {
   const patients = await getAll('pacientes');
   const select = document.getElementById('fault-report-patient');
   select.innerHTML = '<option value="">Todos os Pacientes</option>';
+
   patients.forEach(p => {
     select.innerHTML += `<option value="${p.id}">${p.nome || p.name}</option>`;
   });
+
   const now = new Date();
   const year = now.getFullYear();
   const firstDay = new Date(year, 0, 1);
   const weekNum = Math.ceil((((now - firstDay) / 86400000) + firstDay.getDay() + 1) / 7);
+
   document.getElementById('fault-report-week').value = `${year}-W${String(weekNum).padStart(2, '0')}`;
   document.getElementById('fault-report-month').value = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   document.getElementById('fault-report-year').value = year;
+
   renderFaultsReport();
 }
 
@@ -2027,9 +2505,13 @@ function toggleFaultPeriodInputs() {
 async function getFilteredFaults() {
   const periodType = document.getElementById('fault-report-period-type').value;
   const patientId = document.getElementById('fault-report-patient').value;
+
   const allSessions = await getAll('sessoes');
   let faults = allSessions.filter(s => s.status === 'falta');
-  if (patientId) faults = faults.filter(s => Number(s.pacienteld || s.patientId) === Number(patientId));
+
+  if (patientId) {
+    faults = faults.filter(s => Number(s.pacienteId || s.patientId || s.pacienteld) === Number(patientId));
+  }
 
   if (periodType === 'semana') {
     const weekVal = document.getElementById('fault-report-week').value;
@@ -2045,11 +2527,16 @@ async function getFilteredFaults() {
     }
   } else if (periodType === 'mes') {
     const monthVal = document.getElementById('fault-report-month').value;
-    if (monthVal) faults = faults.filter(s => (s.dataHora || s.datetime || '').startsWith(monthVal));
+    if (monthVal) {
+      faults = faults.filter(s => (s.dataHora || s.datetime || '').startsWith(monthVal));
+    }
   } else if (periodType === 'ano') {
     const yearVal = document.getElementById('fault-report-year').value;
-    if (yearVal) faults = faults.filter(s => (s.dataHora || s.datetime || '').startsWith(yearVal));
+    if (yearVal) {
+      faults = faults.filter(s => (s.dataHora || s.datetime || '').startsWith(yearVal));
+    }
   }
+
   faults.sort((a, b) => new Date(a.dataHora || a.datetime) - new Date(b.dataHora || b.datetime));
   return faults;
 }
@@ -2057,20 +2544,24 @@ async function getFilteredFaults() {
 async function renderFaultsReport() {
   const faults = await getFilteredFaults();
   const patients = await getAll('pacientes');
+
   const tbody = document.getElementById('faults-report-table-body');
   tbody.innerHTML = '';
+
   if (faults.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Nenhuma falta encontrada para este filtro.</td></tr>';
     return;
   }
+
   faults.forEach(f => {
-    const patient = patients.find(p => Number(p.id) === Number(f.pacienteld || f.patientId));
+    const patient = patients.find(p => Number(p.id) === Number(f.pacienteId || f.patientId || f.pacienteld));
     const pName = patient ? (patient.nome || patient.name) : 'Paciente Não Encontrado';
     const dt = new Date(f.dataHora || f.datetime);
     const dateStr = dt.toLocaleDateString('pt-BR');
     const timeStr = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     const mode = f.modalidade || f.mode || '-';
     const reason = f.motivoFalta || 'Não informado';
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${dateStr}</td>
@@ -2086,21 +2577,35 @@ async function downloadFaultsReportPDF() {
   const faults = await getFilteredFaults();
   const patients = await getAll('pacientes');
   const periodType = document.getElementById('fault-report-period-type').value;
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p', 'mm', 'a4');
   let currentY = 20;
 
-  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
-  doc.text(`RELATÓRIO ${periodType.toUpperCase()} DE FALTAS`, 105, currentY, { align: "center" }); currentY += 8;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-  doc.text("Psicóloga: Daniele Sousa Santos - CRP: 22/07398", 20, currentY); currentY += 10;
-  doc.line(20, currentY, 190, currentY); currentY += 10;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(136, 14, 79);
+  doc.text(`RELATÓRIO ${periodType.toUpperCase()} DE FALTAS`, 105, currentY, { align: "center" });
+  currentY += 8;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text("Psicóloga: Daniele Sousa Santos", 20, currentY);
+  currentY += 5;
+  doc.text("CRP: 22/07398", 20, currentY);
+  currentY += 8;
+
+  doc.setDrawColor(216, 27, 96);
+  doc.setLineWidth(0.4);
+  doc.line(20, currentY, 190, currentY);
+  currentY += 10;
 
   if (faults.length === 0) {
     doc.text("Nenhuma falta registrada no período.", 20, currentY);
   } else {
     faults.forEach(f => {
-      const patient = patients.find(p => Number(p.id) === Number(f.pacienteld || f.patientId));
+      const patient = patients.find(p => Number(p.id) === Number(f.pacienteId || f.patientId || f.pacienteld));
       const pName = patient ? (patient.nome || patient.name) : 'Paciente Desconhecido';
       const dt = new Date(f.dataHora || f.datetime);
       const dateStr = dt.toLocaleDateString('pt-BR');
@@ -2108,29 +2613,58 @@ async function downloadFaultsReportPDF() {
       const mode = f.modalidade || f.mode || '-';
       const reason = f.motivoFalta || 'Não informado.';
 
-      if (currentY > 260) { doc.addPage(); currentY = 20; }
+      if (currentY > 260) {
+        doc.addPage();
+        currentY = 20;
+      }
+
       doc.setFont("helvetica", "bold");
-      doc.text(`Paciente: ${pName}`, 20, currentY); currentY += 5;
+      doc.text(`Paciente: ${pName}`, 20, currentY);
+      currentY += 5;
       doc.setFont("helvetica", "normal");
-      doc.text(`Data: ${dateStr} Horário: ${timeStr} Modalidade: ${mode}`, 20, currentY); currentY += 5;
+      doc.text(`Data: ${dateStr} Horário: ${timeStr} Modalidade: ${mode}`, 20, currentY);
+      currentY += 5;
+
       const lines = doc.splitTextToSize(`Motivo: ${reason}`, 170);
-      lines.forEach(line => { doc.text(line, 20, currentY, { align: "justify", maxWidth: 170 }); currentY += 5; });
+      lines.forEach(line => {
+        doc.text(line, 20, currentY, { align: "justify", maxWidth: 170 });
+        currentY += 5;
+      });
       currentY += 4;
     });
   }
 
-  currentY += 15;
-  doc.line(70, currentY, 140, currentY); currentY += 5;
-  doc.text("Daniele Sousa Santos - CRP: 22/07398", 105, currentY, { align: "center" });
+  if (currentY > 250) {
+    doc.addPage();
+    currentY = 30;
+  } else {
+    currentY += 15;
+  }
+
+  doc.setDrawColor(55, 71, 79);
+  doc.setLineWidth(0.3);
+  doc.line(70, currentY, 140, currentY);
+  currentY += 5;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9.5);
+  doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8.5);
+  doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
 
   doc.save(`Relatorio_Faltas_${periodType}.pdf`);
 }
 
+/* CONTROLE DE EXIBIÇÃO DE CAMPOS NA SESSÃO */
 function toggleSessionStatusFields() {
   const status = document.getElementById('session-status').value;
   const valGroup = document.getElementById('group-session-value');
   const payGroup = document.getElementById('group-session-payment');
   const faultGroup = document.getElementById('group-session-fault-reason');
+
   const valInput = document.getElementById('session-value');
   const paySelect = document.getElementById('session-payment-status');
   const faultInput = document.getElementById('session-fault-reason');
@@ -2152,9 +2686,11 @@ function toggleSessionStatusFields() {
   }
 }
 
+/* MODAIS DE SESSÃO, EVOLUÇÃO E RECIBOS */
 function openSessionModal(sessionId = null) {
   document.getElementById('form-session').reset();
   document.getElementById('session-id').value = '';
+
   if (sessionId) {
     getById('sessoes', sessionId).then(s => {
       document.getElementById('session-id').value = s.id;
@@ -2180,13 +2716,16 @@ async function handleSessionSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('session-id').value;
   const status = document.getElementById('session-status').value;
+
   const sessionData = {
+    pacienteId: Number(currentPatientId),
     pacienteld: Number(currentPatientId),
     patientId: Number(currentPatientId),
     dataHora: document.getElementById('session-datetime').value,
     modalidade: document.getElementById('session-mode').value,
     status: status
   };
+
   if (status === 'falta') {
     sessionData.motivoFalta = document.getElementById('session-fault-reason').value;
     sessionData.valor = 0;
@@ -2195,12 +2734,14 @@ async function handleSessionSubmit(e) {
     sessionData.valor = parseFloat(document.getElementById('session-value').value);
     sessionData.pagamentoStatus = document.getElementById('session-payment-status').value;
   }
+
   if (id) {
     const existing = await getById('sessoes', id);
     sessionData.id = Number(id);
     if (existing && existing.recibo) sessionData.recibo = existing.recibo;
     if (existing && existing.receipt) sessionData.receipt = existing.receipt;
   }
+
   await saveItem('sessoes', sessionData);
   closeModal('modal-session');
   loadProntuarioData(currentPatientId);
@@ -2211,6 +2752,7 @@ function openEvolutionModal(sessionId, evolutionId = null) {
   document.getElementById('form-evolution').reset();
   document.getElementById('evolution-id').value = '';
   document.getElementById('evolution-session-id').value = sessionId;
+
   if (evolutionId) {
     getById('evolucoes', evolutionId).then(e => {
       if (e) {
@@ -2231,15 +2773,20 @@ async function handleEvolutionSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('evolution-id').value;
   const sessionId = document.getElementById('evolution-session-id').value;
+
   const evoData = {
     sessaold: Number(sessionId),
+    sessaoId: Number(sessionId),
+    pacienteId: Number(currentPatientId),
     pacienteld: Number(currentPatientId),
     queixa: document.getElementById('evo-complaint').value,
     demanda: document.getElementById('evo-demand').value,
     descricao: document.getElementById('evo-description').value,
     analise: document.getElementById('evo-analysis').value
   };
+
   if (id) evoData.id = Number(id);
+
   await saveItem('evolucoes', evoData);
   closeModal('modal-evolution');
   loadProntuarioData(currentPatientId);
@@ -2248,10 +2795,13 @@ async function handleEvolutionSubmit(e) {
 async function openReceiptModal(sessionId) {
   document.getElementById('form-receipt').reset();
   document.getElementById('receipt-session-id').value = sessionId;
+
   const statusDiv = document.getElementById('receipt-current-status');
   const btnRemove = document.getElementById('btn-remove-receipt');
+
   const session = await getById('sessoes', sessionId);
   const rec = session ? (session.recibo || session.receipt) : null;
+
   if (rec) {
     statusDiv.innerHTML = `<p style="color: var(--success-color);">Recibo Anexado: <strong>${rec.nome || rec.name}</strong></p>`;
     btnRemove.style.display = 'inline-block';
@@ -2259,6 +2809,7 @@ async function openReceiptModal(sessionId) {
     statusDiv.innerHTML = '<p style="color: var(--text-muted);">Nenhum recibo anexado.</p>';
     btnRemove.style.display = 'none';
   }
+
   openModal('modal-receipt');
 }
 
@@ -2266,9 +2817,11 @@ async function handleReceiptSubmit(e) {
   e.preventDefault();
   const sessionId = document.getElementById('receipt-session-id').value;
   const fileInput = document.getElementById('receipt-file');
+
   if (fileInput.files.length > 0) {
     const file = fileInput.files[0];
     const reader = new FileReader();
+
     reader.onload = async function(event) {
       const session = await getById('sessoes', sessionId);
       session.recibo = { nome: file.name, tipo: file.type, conteudo: event.target.result };
@@ -2276,6 +2829,7 @@ async function handleReceiptSubmit(e) {
       closeModal('modal-receipt');
       loadProntuarioData(currentPatientId);
     };
+
     reader.readAsDataURL(file);
   } else {
     closeModal('modal-receipt');
@@ -2303,29 +2857,35 @@ function openMonthlySummaryModal() {
 async function generateMonthlySummary() {
   const monthVal = document.getElementById('summary-month-select').value;
   if (!monthVal || !currentPatientId) return;
+
   const allSessions = await getAll('sessoes');
-  const patientSessions = allSessions.filter(s => Number(s.pacienteld || s.patientId) === Number(currentPatientId) && (s.dataHora || s.datetime || '').startsWith(monthVal));
+  const patientSessions = allSessions.filter(s =>
+    Number(s.pacienteId || s.patientId || s.pacienteld) === Number(currentPatientId) && (s.dataHora || s.datetime || '').startsWith(monthVal)
+  );
+
   let totalSessions = patientSessions.length;
   let realizadas = 0, canceladas = 0, faltas = 0;
   let valorTotal = 0, valorPago = 0;
+
   patientSessions.forEach(s => {
     if (s.status === 'realizada') realizadas++;
     if (s.status === 'cancelada') canceladas++;
     if (s.status === 'falta') faltas++;
+
     if (s.status !== 'falta') {
       const v = parseFloat(s.valor || s.value) || 0;
       valorTotal += v;
       if ((s.pagamentoStatus || s.paymentStatus) === 'pago') valorPago += v;
     }
   });
+
   document.getElementById('summary-results').innerHTML = `
     <p><strong>Total de Sessões no Mês:</strong> ${totalSessions}</p>
     <p><strong>Realizadas:</strong> ${realizadas} | <strong>Canceladas:</strong> ${canceladas} | <strong>Faltas:</strong> ${faltas}</p>
     <hr style="margin: 10px 0; border-color: var(--light-pink);">
     <p><strong>Faturado:</strong> ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
     <p><strong>Pago:</strong> ${valorPago.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-    <p><strong>Pendente:</strong> ${(valorTotal - valorPago).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-  `;
+    <p><strong>Pendente:</strong> ${(valorTotal - valorPago).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>`;
 }
 </script>
 </body>
