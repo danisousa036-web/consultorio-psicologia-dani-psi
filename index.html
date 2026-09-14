@@ -28,104 +28,301 @@
   --shadow-sm: 0 2px 8px rgba(216, 27, 96, 0.08);
   --shadow-md: 0 4px 15px rgba(216, 27, 96, 0.12);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
-
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  display: flex;
+  min-height: 100vh;
+}
 /* Sidebar Navegação */
 .sidebar {
-  width: 260px; background: linear-gradient(180deg, var(--dark-pink) 0%, #4a0072 100%);
-  color: white; padding: 25px 20px; display: flex; flex-direction: column; gap: 25px;
+  width: 260px;
+  background: linear-gradient(180deg, var(--dark-pink) 0%, #4a0072 100%);
+  color: white;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
   box-shadow: 4px 0 15px rgba(0,0,0,0.1);
 }
-.sidebar-header { text-align: center; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
-.sidebar-header h2 { font-size: 1.2rem; font-weight: 600; letter-spacing: 0.5px; }
-.sidebar-header p { font-size: 0.75rem; opacity: 0.8; margin-top: 4px; }
-.nav-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-.nav-links button {
-  width: 100%; padding: 12px 16px; background: transparent; border: none;
-  color: rgba(255,255,255,0.85); text-align: left; font-size: 0.95rem; font-weight: 500;
-  cursor: pointer; border-radius: 8px; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px;
+.sidebar-header {
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.nav-links button:hover, .nav-links button.active { background: rgba(255, 255, 255, 0.2); color: white; transform: translateX(4px); }
-
+.sidebar-header h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.sidebar-header p {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.nav-links button {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.85);
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-links button:hover, .nav-links button.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: translateX(4px);
+}
 /* Área Principal */
-.main-content { flex: 1; padding: 35px; overflow-y: auto; }
-.header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.header-actions h1 { color: var(--dark-pink); font-size: 1.8rem; font-weight: 600; }
-
+.main-content {
+  flex: 1;
+  padding: 35px;
+  overflow-y: auto;
+}
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.header-actions h1 {
+  color: var(--dark-pink);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
 /* Botões Globais */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-pink) 100%);
-  color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;
-  font-weight: 500; box-shadow: var(--shadow-sm); transition: all 0.2s ease;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
 .btn-secondary {
-  background-color: var(--light-pink); color: var(--dark-pink); border: 1px solid var(--border-color);
-  padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s;
+  background-color: var(--light-pink);
+  color: var(--dark-pink);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 .btn-secondary:hover { background-color: var(--soft-pink); }
-.btn-danger { background-color: var(--danger-color); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: opacity 0.2s;
+}
+.btn-danger:hover { opacity: 0.9; }
 .btn-pdf {
-  background: linear-gradient(135deg, #8e24aa 0%, #ab47bc 100%); color: white; border: none;
-  padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(142, 36, 170, 0.2);
+  background: linear-gradient(135deg, #8e24aa 0%, #ab47bc 100%);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 5px rgba(142, 36, 170, 0.2);
 }
-.btn-back { background-color: #eceff1; color: var(--text-main); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; }
-
+.btn-back {
+  background-color: #eceff1;
+  color: var(--text-main);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
 /* Cards e Dashboard */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
-.card {
-  background: var(--card-bg); padding: 22px; border-radius: 12px; box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(244, 143, 177, 0.3); transition: transform 0.2s, box-shadow 0.2s;
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
 }
-.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-.card h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 10px; }
-.card .value { font-size: 1.8rem; font-weight: 700; color: var(--dark-pink); }
-
+.card {
+  background: var(--card-bg);
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(244, 143, 177, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.card h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.card .value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--dark-pink);
+}
 /* Tabelas */
-.table-container { background: white; border-radius: 12px; box-shadow: var(--shadow-sm); overflow: hidden; border: 1px solid rgba(244, 143, 177, 0.2); margin-bottom: 25px; }
+.table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border: 1px solid rgba(244, 143, 177, 0.2);
+  margin-bottom: 25px;
+}
 table { width: 100%; border-collapse: collapse; }
-th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--light-pink); }
-th { font-size: 0.92rem; background-color: var(--light-pink); color: var(--dark-pink); font-weight: 600; }
+th, td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--light-pink);
+}
+th {
+  font-size: 0.92rem;
+  background-color: var(--light-pink);
+  color: var(--dark-pink);
+  font-weight: 600;
+}
 tr:hover { background-color: #fff8fa; }
-
-/* Badges */
-.badge { padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; display: inline-block; }
+/* Badges e Status */
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-block;
+}
 .badge-active { background-color: #e8f5e9; color: var(--success-color); }
 .badge-inactive { background-color: #ffebee; color: var(--danger-color); }
 .badge-paid { background-color: #e8f5e9; color: var(--success-color); }
 .badge-pending { background-color: #fff3e0; color: var(--warning-color); }
 .badge-falta { background-color: #fbe9e7; color: #d84315; }
-
 .view-section { display: none; }
 .view-section.active { display: block; }
-.filter-bar { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
-
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
 /* Modal */
 .modal {
-  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(55, 71, 79, 0.5); backdrop-filter: blur(3px);
-  justify-content: center; align-items: center; z-index: 1000;
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(55, 71, 79, 0.5);
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 .modal.active { display: flex; }
 .modal-content {
-  background: white; padding: 30px; border-radius: 16px; max-width: 750px; width: 90%;
-  max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-top: 5px solid var(--primary-pink);
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 750px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  border-top: 5px solid var(--primary-pink);
 }
-.modal-content h2 { color: var(--dark-pink); margin-bottom: 20px; font-size: 1.4rem; }
+.modal-content h2 {
+  color: var(--dark-pink);
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
 .form-group { margin-bottom: 16px; }
-.form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.88rem; color: var(--text-main); }
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 0.88rem;
+  color: var(--text-main);
+}
 .form-group input, .form-group select, .form-group textarea {
-  width: 100%; padding: 10px 14px; border: 1px solid #ffcdd2; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
 }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  border-color: var(--primary-pink); box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
 }
 .form-row { display: flex; gap: 15px; }
 .form-row .form-group { flex: 1; }
-.action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.doc-section-item { background: #fafafa; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
+.action-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+/* Toast Notification */
+#toast {
+  visibility: hidden;
+  min-width: 280px;
+  background-color: var(--dark-pink);
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 14px 20px;
+  position: fixed;
+  z-index: 2000;
+  right: 30px;
+  bottom: 30px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: opacity 0.3s, visibility 0.3s;
+  opacity: 0;
+}
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+}
+#toast.error {
+  background-color: var(--danger-color);
+}
 
 @media (max-width: 768px) {
   body { flex-direction: column; }
@@ -135,7 +332,6 @@ tr:hover { background-color: #fff8fa; }
 </style>
 </head>
 <body>
-
 <div class="sidebar">
   <div class="sidebar-header">
     <h2>Daniele Sousa Santos</h2>
@@ -175,14 +371,13 @@ tr:hover { background-color: #fff8fa; }
         <div class="value" id="dash-month-pending" style="color: var(--warning-color);">R$ 0,00</div>
       </div>
     </div>
-
     <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: var(--shadow-sm);">
       <h2 style="color: var(--dark-pink); margin-bottom: 15px; font-size: 1.2rem;">Ações Rápidas</h2>
       <div style="display: flex; gap: 12px; flex-wrap: wrap;">
         <button class="btn-primary" onclick="openPatientModal()">+ Cadastrar Novo Paciente</button>
         <button class="btn-secondary" onclick="navigateTo('pacientes')">Ver Todos os Pacientes</button>
         <button class="btn-secondary" onclick="navigateTo('financeiro')">Ver Relatório Financeiro</button>
-        <button class="btn-secondary" onclick="navigateTo('faltas')">Relatório de Faltas</button>
+        <button class="btn-secondary" onclick="navigateTo('faltas')">📋 Relatório de Faltas</button>
       </div>
     </div>
   </div>
@@ -203,8 +398,8 @@ tr:hover { background-color: #fff8fa; }
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Idade</th>
-            <th>Contato / Resp.</th>
+            <th>Tipo</th>
+            <th>Contato</th>
             <th>Status</th>
             <th>Ações</th>
           </tr>
@@ -223,38 +418,39 @@ tr:hover { background-color: #fff8fa; }
           <p id="pront-patient-details" style="color: var(--text-muted); margin-top: 5px; font-size: 0.9rem;"></p>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn-secondary" onclick="openAnamneseModal()">📋 Anamnese Inicial</button>
           <button class="btn-secondary" onclick="openMonthlySummaryModal()">Resumo Mensal</button>
           <button class="btn-primary" onclick="openSessionModal()">+ Registrar Sessão</button>
         </div>
       </div>
     </div>
 
-    <!-- PAINEL DE DOCUMENTOS E PRONTUÁRIO -->
+    <!-- DOCUMENTOS E PRONTUÁRIO -->
+    <h3 style="color: var(--dark-pink); margin-bottom: 15px; font-size: 1.1rem;">Área de Documentos & Prontuário</h3>
     <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: var(--shadow-sm); margin-bottom: 25px;">
-      <h3 style="color: var(--dark-pink); margin-bottom: 15px; font-size: 1.1rem;">📁 Documentos e Prontuário</h3>
-      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
-        <button class="btn-secondary" onclick="openAnamneseModal()">📝 Anamnese Inicial</button>
-        <button class="btn-secondary" onclick="openDocConstructorModal()">➕ Adicionar Novo Documento</button>
-        <button class="btn-secondary" onclick="openGenerateReportModal()">📑 Gerar Relatório Psicológico</button>
-        <button class="btn-pdf" onclick="exportFullProntuario()">📄 Exportar Prontuário</button>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+        <button class="btn-primary" onclick="openCustomDocumentModal()">+ Adicionar Novo Documento Customizado</button>
+        <button class="btn-secondary" onclick="openTemplatesModal()">⚙️ Modelos/Templates</button>
+        <button class="btn-secondary" onclick="generatePsychologicalReportDraft()">📝 Gerar Relatório Psicológico</button>
+        <button class="btn-pdf" onclick="exportFullProntuarioPDF()">📄 Exportar Prontuário Completo</button>
       </div>
 
-      <div class="table-container" style="margin-bottom:0;">
+      <div class="table-container" style="margin-bottom: 0;">
         <table>
           <thead>
             <tr>
-              <th>Documento</th>
-              <th>Data</th>
-              <th>Status</th>
+              <th>Data Criada</th>
+              <th>Título do Documento</th>
+              <th>Tipo</th>
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody id="patient-docs-table-body"></tbody>
+          <tbody id="documents-table-body"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Histórico Geral de Sessões -->
+    <!-- Histórico Geral -->
     <h3 style="color: var(--dark-pink); margin-bottom: 15px; font-size: 1.1rem;">Histórico de Sessões e Evoluções Clínicas</h3>
     <div class="filter-bar">
       <label style="font-size: 0.9rem; font-weight: 500;">Filtrar Mês:</label>
@@ -278,7 +474,7 @@ tr:hover { background-color: #fff8fa; }
       </table>
     </div>
 
-    <!-- Histórico de Faltas -->
+    <!-- Histórico de Faltas no Prontuário -->
     <h3 style="color: var(--dark-pink); margin-top: 35px; margin-bottom: 15px; font-size: 1.1rem;">Histórico de Faltas</h3>
     <div class="filter-bar">
       <select id="faults-month-filter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px;">
@@ -419,24 +615,28 @@ tr:hover { background-color: #fff8fa; }
     <form id="form-patient" onsubmit="handlePatientSubmit(event)">
       <input type="hidden" id="patient-id">
       <div class="form-group">
-        <label>Nome do Paciente *</label>
+        <label>Nome Completo *</label>
         <input type="text" id="patient-name" required>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Idade *</label>
-          <input type="number" id="patient-age" required min="0" onchange="toggleInfantFieldsByAge()">
+          <input type="number" id="patient-age" min="0" max="120" required>
         </div>
         <div class="form-group">
-          <label>É Criança ou Adolescente? *</label>
-          <select id="patient-is-child" required onchange="toggleInfantFieldsByAge()">
-            <option value="nao">Não (Adulto)</option>
-            <option value="sim">Sim (Criança / Adolescente)</option>
+          <label>Tipo de Atendimento *</label>
+          <select id="patient-type" required onchange="toggleInfantFields()">
+            <option value="Adulto">Adulto</option>
+            <option value="Infantil">Infantil/Adolescente</option>
           </select>
         </div>
       </div>
+      <div class="form-group">
+        <label>Telefone / WhatsApp *</label>
+        <input type="text" id="patient-phone" required>
+      </div>
       <div id="infant-fields" style="display: none; background: var(--light-pink); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <h4 style="color: var(--dark-pink); margin-bottom: 10px;">Dados do Responsável</h4>
+        <h4 style="color: var(--dark-pink); margin-bottom: 10px;">Dados do Responsável Legal</h4>
         <div class="form-group">
           <label>Nome do Responsável *</label>
           <input type="text" id="patient-guardian">
@@ -445,9 +645,9 @@ tr:hover { background-color: #fff8fa; }
           <div class="form-group">
             <label>Parentesco *</label>
             <select id="patient-kinship">
-              <option value="Pai">Pai</option>
               <option value="Mãe">Mãe</option>
-              <option value="Outros">Outros</option>
+              <option value="Pai">Pai</option>
+              <option value="Outro">Outro</option>
             </select>
           </div>
           <div class="form-group">
@@ -461,6 +661,102 @@ tr:hover { background-color: #fff8fa; }
         <button type="submit" class="btn-primary">Salvar Paciente</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- MODAL ANAMNESE -->
+<div id="modal-anamnese" class="modal">
+  <div class="modal-content">
+    <h2>Anamnese Inicial</h2>
+    <form id="form-anamnese" onsubmit="handleAnamneseSubmit(event)">
+      <input type="hidden" id="anamnese-id">
+      <div class="form-group">
+        <label>Queixa Principal e Histórico de Sintomas</label>
+        <textarea id="anam-queixa" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Histórico Familiar e Social</label>
+        <textarea id="anam-familiar" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Histórico Médico e Tratamentos Anteriores</label>
+        <textarea id="anam-medico" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Observações e Hipóteses Clínicas</label>
+        <textarea id="anam-observacoes" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Status do Documento</label>
+        <select id="anam-status">
+          <option value="rascunho">Rascunho</option>
+          <option value="finalizado">Finalizado</option>
+        </select>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+        <button type="button" class="btn-back" onclick="closeModal('modal-anamnese')">Voltar</button>
+        <button type="button" class="btn-pdf" onclick="generateAnamnesePDF()">📄 Exportar PDF</button>
+        <button type="submit" class="btn-primary">Salvar Anamnese</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL NOVO DOCUMENTO CUSTOMIZADO -->
+<div id="modal-custom-doc" class="modal">
+  <div class="modal-content">
+    <h2 id="modal-doc-title">Elaborar Documento Clínico</h2>
+    <form id="form-custom-doc" onsubmit="handleCustomDocSubmit(event)">
+      <input type="hidden" id="custom-doc-id">
+      <div class="form-group">
+        <label>Título do Documento *</label>
+        <input type="text" id="doc-title" placeholder="Ex: Declaração de Acompanhamento" required>
+      </div>
+      <div class="form-group">
+        <label>Selecione um Modelo/Template (Opcional)</label>
+        <select id="doc-template-select" onchange="applyTemplateToDocument()">
+          <option value="">Sem modelo (Documento em Branco)</option>
+        </select>
+      </div>
+      
+      <div id="doc-sections-container">
+        <!-- Seções dinâmicas -->
+      </div>
+      
+      <button type="button" class="btn-secondary" onclick="addDocumentSection()" style="margin-bottom: 20px;">+ Adicionar Seção</button>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <button type="button" class="btn-secondary" onclick="saveAsTemplateModal()">💾 Salvar Estrutura como Modelo</button>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn-back" onclick="closeModal('modal-custom-doc')">Voltar</button>
+          <button type="button" class="btn-pdf" onclick="exportCustomDocumentPDF()">📄 Exportar PDF</button>
+          <button type="submit" class="btn-primary">Salvar Documento</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL MODELOS / TEMPLATES -->
+<div id="modal-templates" class="modal">
+  <div class="modal-content">
+    <h2>Modelos e Templates Salvos</h2>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Modelos armazenam apenas a estrutura e títulos das seções, sem dados de pacientes.</p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome do Modelo</th>
+            <th>Qtd de Seções</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="templates-table-body"></tbody>
+      </table>
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+      <button type="button" class="btn-back" onclick="closeModal('modal-templates')">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -509,7 +805,7 @@ tr:hover { background-color: #fff8fa; }
         <textarea id="session-fault-reason" rows="3" placeholder="Informe o motivo do não comparecimento..."></textarea>
       </div>
       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-        <button type="button" class="btn-back" onclick="closeModal('modal-session')">Cancelar</button>
+        <button type="button" class="btn-back" onclick="closeModal('modal-session')">Voltar</button>
         <button type="submit" class="btn-primary">Salvar Sessão</button>
       </div>
     </form>
@@ -523,6 +819,10 @@ tr:hover { background-color: #fff8fa; }
     <form id="form-evolution" onsubmit="handleEvolutionSubmit(event)">
       <input type="hidden" id="evolution-id">
       <input type="hidden" id="evolution-session-id">
+      <div class="form-group">
+        <label>Objetivo</label>
+        <input type="text" id="evo-objective">
+      </div>
       <div class="form-group">
         <label>Queixa Principal / Relato</label>
         <textarea id="evo-complaint" rows="2"></textarea>
@@ -539,8 +839,16 @@ tr:hover { background-color: #fff8fa; }
         <label>Análise Técnica e Evolução</label>
         <textarea id="evo-analysis" rows="3"></textarea>
       </div>
+      <div class="form-group">
+        <label>Planejamento para Próxima Sessão</label>
+        <textarea id="evo-planning" rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Procedimentos Adotados</label>
+        <textarea id="evo-procedures" rows="2"></textarea>
+      </div>
       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-        <button type="button" class="btn-back" onclick="closeModal('modal-evolution')">Cancelar</button>
+        <button type="button" class="btn-back" onclick="closeModal('modal-evolution')">Voltar</button>
         <button type="submit" class="btn-primary">Salvar Evolução</button>
       </div>
     </form>
@@ -555,11 +863,11 @@ tr:hover { background-color: #fff8fa; }
       <input type="hidden" id="receipt-session-id">
       <div class="form-group">
         <label>Anexar Comprovante / Recibo (PDF ou Imagem)</label>
-        <input type="file" id="receipt-file" accept=".pdf, .jpg, .jpeg, .png">
+        <input type="file" id="receipt-file" accept=".pdf,.jpg,.jpeg,.png">
       </div>
       <div id="receipt-current-status" style="margin-bottom: 15px;"></div>
       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-        <button type="button" class="btn-back" onclick="closeModal('modal-receipt')">Cancelar</button>
+        <button type="button" class="btn-back" onclick="closeModal('modal-receipt')">Voltar</button>
         <button type="button" id="btn-remove-receipt" class="btn-danger" style="display:none;" onclick="removeReceipt()">Remover</button>
         <button type="submit" class="btn-primary">Salvar</button>
       </div>
@@ -584,235 +892,24 @@ tr:hover { background-color: #fff8fa; }
   </div>
 </div>
 
-<!-- MODAL ANAMNESE INICIAL -->
-<div id="modal-anamnese" class="modal">
-  <div class="modal-content" style="max-width: 850px;">
-    <h2>ANAMNESE INICIAL DO ADOLESCENTE</h2>
-    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Perspectiva Analítico-Comportamental | Daniele Sousa Santos – CRP 22/07398</p>
-    
-    <form id="form-anamnese" onsubmit="handleAnamneseSubmit(event)">
-      <input type="hidden" id="anamnese-id">
-      <input type="hidden" id="anamnese-status-val" value="Rascunho">
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">1. Identificação</h4>
-      <div class="form-row">
-        <div class="form-group"><label>Nome</label><input type="text" id="anam-nome" readonly></div>
-        <div class="form-group"><label>Idade</label><input type="text" id="anam-idade" readonly></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Data de Nascimento</label><input type="date" id="anam-dob"></div>
-        <div class="form-group"><label>Escolaridade</label><input type="text" id="anam-escolaridade"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Com quem mora</label><input type="text" id="anam-mora"></div>
-        <div class="form-group"><label>Responsável</label><input type="text" id="anam-responsavel"></div>
-      </div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">2. Motivo da busca</h4>
-      <label style="font-weight:600; font-size:0.85rem;">Ao adolescente:</label>
-      <div class="form-group"><label>O que fez você vir para a terapia?</label><textarea id="anam-a1" rows="2"></textarea></div>
-      <div class="form-group"><label>Tem alguma coisa que você gostaria que fosse diferente na sua vida hoje?</label><textarea id="anam-a2" rows="2"></textarea></div>
-      <div class="form-group"><label>O que mais tem sido difícil ultimamente?</label><textarea id="anam-a3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você espera conseguir com a terapia?</label><textarea id="anam-a4" rows="2"></textarea></div>
-      <label style="font-weight:600; font-size:0.85rem;">Aos responsáveis:</label>
-      <div class="form-group"><label>O que levou vocês a procurarem atendimento?</label><textarea id="anam-r1" rows="2"></textarea></div>
-      <div class="form-group"><label>Quando começaram a perceber essa dificuldade?</label><textarea id="anam-r2" rows="2"></textarea></div>
-      <div class="form-group"><label>Em quais situações ela costuma aparecer mais?</label><textarea id="anam-r3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que vocês costumam fazer quando isso acontece?</label><textarea id="anam-r4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">3. Rotina e vida atual</h4>
-      <div class="form-group"><label>Como costuma ser um dia normal para você?</label><textarea id="anam-rot1" rows="2"></textarea></div>
-      <div class="form-group"><label>Como estão escola, estudos e notas?</label><textarea id="anam-rot2" rows="2"></textarea></div>
-      <div class="form-group"><label>Como estão sono, alimentação e atividades de lazer?</label><textarea id="anam-rot3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você gosta de fazer no seu tempo livre?</label><textarea id="anam-rot4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">4. Família</h4>
-      <div class="form-group"><label>Como é sua relação com as pessoas que moram com você?</label><textarea id="anam-fam1" rows="2"></textarea></div>
-      <div class="form-group"><label>Com quem você costuma conversar quando precisa de ajuda?</label><textarea id="anam-fam2" rows="2"></textarea></div>
-      <div class="form-group"><label>O que costuma gerar conflitos em casa?</label><textarea id="anam-fam3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que acontece depois desses conflitos?</label><textarea id="anam-fam4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">5. Amigos e relacionamentos</h4>
-      <div class="form-group"><label>Como estão suas amizades atualmente?</label><textarea id="anam-rel1" rows="2"></textarea></div>
-      <div class="form-group"><label>Você sente que consegue ser você mesmo com seus amigos?</label><textarea id="anam-rel2" rows="2"></textarea></div>
-      <div class="form-group"><label>Tem acontecido alguma situação difícil com amigos ou colegas?</label><textarea id="anam-rel3" rows="2"></textarea></div>
-      <div class="form-group"><label>Como estão seus relacionamentos afetivos, se houver?</label><textarea id="anam-rel4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">6. Situações difíceis</h4>
-      <div class="form-group"><label>Qual situação tem sido mais difícil para você ultimamente?</label><textarea id="anam-sit1" rows="2"></textarea></div>
-      <div class="form-group"><label>O que costuma acontecer antes dessa situação?</label><textarea id="anam-sit2" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você geralmente faz quando isso acontece?</label><textarea id="anam-sit3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que acontece depois?</label><textarea id="anam-sit4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">7. Saúde e histórico</h4>
-      <div class="form-group"><label>Já fez terapia ou algum outro acompanhamento psicológico?</label><textarea id="anam-sau1" rows="2"></textarea></div>
-      <div class="form-group"><label>Já realizou acompanhamento médico relacionado à demanda?</label><textarea id="anam-sau2" rows="2"></textarea></div>
-      <div class="form-group"><label>Usa alguma medicação?</label><textarea id="anam-sau3" rows="2"></textarea></div>
-      <div class="form-group"><label>Houve alguma mudança importante na família, escola ou rotina recentemente?</label><textarea id="anam-sau4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">8. Pontos fortes e recursos</h4>
-      <div class="form-group"><label>O que você acha que faz bem?</label><textarea id="anam-rec1" rows="2"></textarea></div>
-      <div class="form-group"><label>O que costuma te ajudar quando está passando por uma situação difícil?</label><textarea id="anam-rec2" rows="2"></textarea></div>
-      <div class="form-group"><label>Quais pessoas são importantes para você?</label><textarea id="anam-rec3" rows="2"></textarea></div>
-      <div class="form-group"><label>O que você gostaria de aprender ou melhorar?</label><textarea id="anam-rec4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">9. Segurança</h4>
-      <div class="form-group"><label>Já teve pensamentos de se machucar ou de não querer estar vivo?</label><textarea id="anam-seg1" rows="2"></textarea></div>
-      <div class="form-group"><label>Já aconteceu de se machucar de propósito?</label><textarea id="anam-seg2" rows="2"></textarea></div>
-      <div class="form-group"><label>Existe alguma situação atual em que você não se sente seguro?</label><textarea id="anam-seg3" rows="2"></textarea></div>
-      <div class="form-group"><label>Há algo que você tenha medo de contar para alguém?</label><textarea id="anam-seg4" rows="2"></textarea></div>
-
-      <h4 style="color: var(--dark-pink); margin: 15px 0 10px 0;">10. Registro do psicólogo</h4>
-      <div class="form-group"><label>Principais demandas:</label><textarea id="anam-psi1" rows="2"></textarea></div>
-      <div class="form-group"><label>Comportamentos-alvo identificados:</label><textarea id="anam-psi2" rows="2"></textarea></div>
-      <div class="form-group"><label>Situações/antecedentes relevantes:</label><textarea id="anam-psi3" rows="2"></textarea></div>
-      <div class="form-group"><label>Consequências observadas:</label><textarea id="anam-psi4" rows="2"></textarea></div>
-      <div class="form-group"><label>Repertórios e potencialidades:</label><textarea id="anam-psi5" rows="2"></textarea></div>
-      <div class="form-group"><label>Hipóteses funcionais iniciais:</label><textarea id="anam-psi6" rows="2"></textarea></div>
-      <div class="form-group"><label>Pontos a investigar nas próximas sessões:</label><textarea id="anam-psi7" rows="2"></textarea></div>
-
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
-        <button type="button" class="btn-back" onclick="closeModal('modal-anamnese')">Cancelar</button>
-        <button type="button" class="btn-secondary" onclick="saveAnamneseDraft()">Salvar Rascunho</button>
-        <button type="submit" class="btn-primary">Finalizar Anamnese</button>
-        <button type="button" class="btn-pdf" onclick="exportAnamnesePDF()">📄 Exportar PDF</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL CONSTRUTOR DE DOCUMENTO -->
-<div id="modal-doc-constructor" class="modal">
-  <div class="modal-content" style="max-width: 800px;">
-    <h2>➕ Construtor de Documento Clínico</h2>
-    
-    <div style="background:var(--light-pink); padding: 12px; border-radius:8px; margin-bottom: 15px; display:flex; gap:10px; align-items:center;">
-      <label style="font-weight:600;">📋 Usar Modelo Existente:</label>
-      <select id="select-doc-template" style="flex:1;" onchange="loadSelectedTemplate()"></select>
-    </div>
-
-    <form id="form-doc-constructor" onsubmit="handleDocConstructorSubmit(event)">
-      <input type="hidden" id="doc-id">
-      <div class="form-group">
-        <label>Título do Documento *</label>
-        <input type="text" id="doc-title" placeholder="Ex: Relatório Psicológico, Declaração, etc." required>
-      </div>
-
-      <div id="doc-sections-container"></div>
-
-      <button type="button" class="btn-secondary" onclick="addDocSection()" style="margin-bottom: 20px;">+ Adicionar Seção / Tópico</button>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-        <label style="font-size:0.9rem; font-weight:600; cursor:pointer;">
-          <input type="checkbox" id="chk-save-template"> ☑ Salvar estrutura como modelo reutilizável
-        </label>
-        <div style="display: flex; gap: 10px;">
-          <button type="button" class="btn-back" onclick="closeModal('modal-doc-constructor')">Cancelar</button>
-          <button type="submit" class="btn-primary">💾 Salvar Documento</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL GERAR RELATÓRIO PSICOLÓGICO AUTOMÁTICO -->
-<div id="modal-generate-report" class="modal">
-  <div class="modal-content" style="max-width: 800px;">
-    <h2>📑 Gerar Relatório Psicológico</h2>
-    <p style="background: #e3f2fd; color: #0d47a1; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px;">
-      Rascunho gerado a partir dos registros do prontuário. Revise e edite antes de finalizar o documento.
-    </p>
-
-    <form id="form-generate-report" onsubmit="handleFinalizeReport(event)">
-      <div id="report-draft-fields"></div>
-
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-        <button type="button" class="btn-back" onclick="closeModal('modal-generate-report')">Cancelar</button>
-        <button type="submit" class="btn-primary">💾 Salvar Rascunho / Documento</button>
-      </div>
-    </form>
-  </div>
-</div>
+<!-- TOAST FOR MESSAGES -->
+<div id="toast"></div>
 
 <script>
-/* ESTADO GLOBAL E BANCO DE DADOS INDEXEDDB */
+/* TOAST NOTIFICATION */
+function showToast(message, isError = false) {
+  const toast = document.getElementById('toast');
+  toast.innerText = message;
+  toast.className = isError ? 'show error' : 'show';
+  setTimeout(() => {
+    toast.className = toast.className.replace('show', '');
+  }, 3500);
+}
+
+/* NAV & ESTADO GLOBAL */
 const navigationHistory = [];
 let currentPatientId = null;
-let db;
 
-const request = indexedDB.open('PsicoGestaoRosaDB_v3', 3);
-
-request.onupgradeneeded = function(e) {
-  db = e.target.result;
-  if (!db.objectStoreNames.contains('pacientes')) {
-    db.createObjectStore('pacientes', { keyPath: 'id', autoIncrement: true });
-  }
-  if (!db.objectStoreNames.contains('sessoes')) {
-    const sessoesStore = db.createObjectStore('sessoes', { keyPath: 'id', autoIncrement: true });
-    sessoesStore.createIndex('pacienteld', 'pacienteld', { unique: false });
-  }
-  if (!db.objectStoreNames.contains('evolucoes')) {
-    const evolucoesStore = db.createObjectStore('evolucoes', { keyPath: 'id', autoIncrement: true });
-    evolucoesStore.createIndex('sessaold', 'sessaold', { unique: true });
-    evolucoesStore.createIndex('pacienteld', 'pacienteld', { unique: false });
-  }
-  if (!db.objectStoreNames.contains('anamneses')) {
-    const anamStore = db.createObjectStore('anamneses', { keyPath: 'id', autoIncrement: true });
-    anamStore.createIndex('pacienteld', 'pacienteld', { unique: true });
-  }
-  if (!db.objectStoreNames.contains('documentos')) {
-    const docStore = db.createObjectStore('documentos', { keyPath: 'id', autoIncrement: true });
-    docStore.createIndex('pacienteld', 'pacienteld', { unique: false });
-  }
-  if (!db.objectStoreNames.contains('modelos')) {
-    db.createObjectStore('modelos', { keyPath: 'id', autoIncrement: true });
-  }
-};
-
-request.onsuccess = function(e) {
-  db = e.target.result;
-  loadDashboardData();
-  populateTemplateSelect();
-};
-
-function dbTransaction(storeName, mode) {
-  return db.transaction([storeName], mode).objectStore(storeName);
-}
-
-function getAll(storeName) {
-  return new Promise((resolve) => {
-    const store = dbTransaction(storeName, 'readonly');
-    const req = store.getAll();
-    req.onsuccess = () => resolve(req.result || []);
-  });
-}
-
-function getById(storeName, id) {
-  return new Promise((resolve) => {
-    const store = dbTransaction(storeName, 'readonly');
-    const req = store.get(Number(id));
-    req.onsuccess = () => resolve(req.result);
-  });
-}
-
-function saveItem(storeName, item) {
-  return new Promise((resolve, reject) => {
-    const store = dbTransaction(storeName, 'readwrite');
-    const req = item.id ? store.put(item) : store.add(item);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-function deleteItem(storeName, id) {
-  return new Promise((resolve) => {
-    const store = dbTransaction(storeName, 'readwrite');
-    const req = store.delete(Number(id));
-    req.onsuccess = () => resolve(true);
-  });
-}
-
-/* NAVEGAÇÃO */
 function navigateTo(viewId, isBack = false, state = {}) {
   const currentView = document.querySelector('.view-section.active');
   const currentViewId = currentView ? currentView.id.replace('view-', '') : 'dashboard';
@@ -820,17 +917,19 @@ function navigateTo(viewId, isBack = false, state = {}) {
     navigationHistory.push({ view: currentViewId, patientId: currentPatientId });
   }
   if (state.patientId !== undefined) currentPatientId = state.patientId;
+
   document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-links button').forEach(el => el.classList.remove('active'));
-  
+
   const targetView = document.getElementById(`view-${viewId}`);
   if (targetView) targetView.classList.add('active');
+
   const navBtn = document.getElementById(`nav-${viewId}`);
   if (navBtn) navBtn.classList.add('active');
-  
+
   const backBtn = document.getElementById('btn-global-back');
   backBtn.style.display = navigationHistory.length > 0 ? 'inline-flex' : 'none';
-  
+
   const titleMap = {
     'dashboard': 'Dashboard',
     'pacientes': 'Gestão de Pacientes',
@@ -839,6 +938,7 @@ function navigateTo(viewId, isBack = false, state = {}) {
     'faltas': 'Relatório de Faltas'
   };
   document.getElementById('page-title').innerText = titleMap[viewId] || '';
+
   if (viewId === 'dashboard') loadDashboardData();
   if (viewId === 'pacientes') renderPatientsList();
   if (viewId === 'prontuario' && currentPatientId) loadProntuarioData(currentPatientId);
@@ -856,19 +956,100 @@ function goBack() {
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+/* DATABASE INDEXEDDB (INCREMENTAL AMPIATION) */
+let db;
+const request = indexedDB.open('PsicoGestaoRosaDB', 3);
+
+request.onupgradeneeded = function(e) {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains('pacientes')) {
+    db.createObjectStore('pacientes', { keyPath: 'id', autoIncrement: true });
+  }
+  if (!db.objectStoreNames.contains('sessoes')) {
+    const sessoesStore = db.createObjectStore('sessoes', { keyPath: 'id', autoIncrement: true });
+    sessoesStore.createIndex('patientId', 'patientId', { unique: false });
+    sessoesStore.createIndex('pacienteId', 'pacienteId', { unique: false });
+  }
+  if (!db.objectStoreNames.contains('evolucoes')) {
+    const evolucoesStore = db.createObjectStore('evolucoes', { keyPath: 'id', autoIncrement: true });
+    evolucoesStore.createIndex('sessaoId', 'sessaoId', { unique: true });
+    evolucoesStore.createIndex('pacienteId', 'pacienteId', { unique: false });
+  }
+  if (!db.objectStoreNames.contains('anamneses')) {
+    const anamStore = db.createObjectStore('anamneses', { keyPath: 'id', autoIncrement: true });
+    anamStore.createIndex('pacienteId', 'pacienteId', { unique: true });
+  }
+  if (!db.objectStoreNames.contains('documentos')) {
+    const docStore = db.createObjectStore('documentos', { keyPath: 'id', autoIncrement: true });
+    docStore.createIndex('pacienteId', 'pacienteId', { unique: false });
+  }
+  if (!db.objectStoreNames.contains('modelos')) {
+    db.createObjectStore('modelos', { keyPath: 'id', autoIncrement: true });
+  }
+};
+
+request.onsuccess = function(e) {
+  db = e.target.result;
+  loadDashboardData();
+};
+
+function dbTransaction(storeName, mode) {
+  return db.transaction([storeName], mode).objectStore(storeName);
+}
+
+function getAll(storeName) {
+  return new Promise((resolve, reject) => {
+    const store = dbTransaction(storeName, 'readonly');
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function getById(storeName, id) {
+  return new Promise((resolve, reject) => {
+    const store = dbTransaction(storeName, 'readonly');
+    const req = store.get(Number(id));
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function saveItem(storeName, item) {
+  return new Promise((resolve, reject) => {
+    const store = dbTransaction(storeName, 'readwrite');
+    const req = item.id ? store.put(item) : store.add(item);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function deleteItem(storeName, id) {
+  return new Promise((resolve, reject) => {
+    const store = dbTransaction(storeName, 'readwrite');
+    const req = store.delete(Number(id));
+    req.onsuccess = () => resolve(true);
+    req.onerror = () => reject(req.error);
+  });
+}
+
 /* DASHBOARD LOGIC */
 async function loadDashboardData() {
   if (!db) return;
   const patients = await getAll('pacientes');
   const sessions = await getAll('sessoes');
+
   document.getElementById('dash-active-patients').innerText = patients.filter(p => p.status === 'ativo').length;
+
   const now = new Date();
   const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   const monthSessions = sessions.filter(s => (s.dataHora || s.datetime || '').startsWith(currentMonthStr));
+
   document.getElementById('dash-month-sessions').innerText = monthSessions.length;
-  
+
   let totalReceived = 0;
   let totalPending = 0;
+
   monthSessions.forEach(s => {
     if (s.status === 'falta') return;
     const val = parseFloat(s.valor || s.value) || 0;
@@ -876,16 +1057,17 @@ async function loadDashboardData() {
     if (isPaid) totalReceived += val;
     else totalPending += val;
   });
+
   document.getElementById('dash-month-revenue').innerText = totalReceived.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   document.getElementById('dash-month-pending').innerText = totalPending.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-/* PACIENTES LOGIC - APENAS NOME, IDADE, E RESPONSÁVEL SE CRIANÇA/ADOLESCENTE */
-function toggleInfantFieldsByAge() {
-  const isChild = document.getElementById('patient-is-child').value;
+/* PACIENTES LOGIC */
+function toggleInfantFields() {
+  const type = document.getElementById('patient-type').value;
   const infantDiv = document.getElementById('infant-fields');
   const reqs = infantDiv.querySelectorAll('input, select');
-  if (isChild === 'sim') {
+  if (type === 'Infantil') {
     infantDiv.style.display = 'block';
     reqs.forEach(r => r.required = true);
   } else {
@@ -898,19 +1080,20 @@ function openPatientModal(patientId = null) {
   document.getElementById('form-patient').reset();
   document.getElementById('patient-id').value = '';
   document.getElementById('modal-patient-title').innerText = 'Cadastrar Paciente';
-  toggleInfantFieldsByAge();
-  
+  toggleInfantFields();
+
   if (patientId) {
     getById('pacientes', patientId).then(p => {
       document.getElementById('patient-id').value = p.id;
       document.getElementById('patient-name').value = p.nome || p.name || '';
-      document.getElementById('patient-age').value = p.idade || '';
-      document.getElementById('patient-is-child').value = p.isChild ? 'sim' : 'nao';
-      toggleInfantFieldsByAge();
-      if (p.isChild) {
-        document.getElementById('patient-guardian').value = p.responsavel || '';
-        document.getElementById('patient-kinship').value = p.parentesco || 'Mãe';
-        document.getElementById('patient-guardian-phone').value = p.telefoneResponsavel || '';
+      document.getElementById('patient-age').value = p.idade || p.age || '';
+      document.getElementById('patient-type').value = p.tipo || p.type || 'Adulto';
+      document.getElementById('patient-phone').value = p.telefone || p.phone || '';
+      toggleInfantFields();
+      if ((p.tipo || p.type) === 'Infantil') {
+        document.getElementById('patient-guardian').value = p.responsavel || p.guardian || '';
+        document.getElementById('patient-kinship').value = p.parentesco || p.kinship || 'Mãe';
+        document.getElementById('patient-guardian-phone').value = p.telefoneResponsavel || p.guardianPhone || '';
       }
       document.getElementById('modal-patient-title').innerText = 'Editar Paciente';
       openModal('modal-patient');
@@ -923,36 +1106,47 @@ function openPatientModal(patientId = null) {
 async function handlePatientSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('patient-id').value;
-  const isChildBool = document.getElementById('patient-is-child').value === 'sim';
+  const type = document.getElementById('patient-type').value;
   
   const patientData = {
     nome: document.getElementById('patient-name').value,
-    idade: document.getElementById('patient-age').value,
-    isChild: isChildBool,
+    idade: Number(document.getElementById('patient-age').value),
+    tipo: type,
+    telefone: document.getElementById('patient-phone').value,
     status: 'ativo'
   };
-  
-  if (isChildBool) {
-    patientData.responsavel = document.getElementById('patient-guardian').value;
-    patientData.parentesco = document.getElementById('patient-kinship').value;
-    patientData.telefoneResponsavel = document.getElementById('patient-guardian-phone').value;
-  }
-  
+
   if (id) {
     const existing = await getById('pacientes', id);
     patientData.id = Number(id);
     patientData.status = existing ? existing.status : 'ativo';
   }
-  
+
+  if (type === 'Infantil') {
+    patientData.responsavel = document.getElementById('patient-guardian').value;
+    patientData.parentesco = document.getElementById('patient-kinship').value;
+    patientData.telefoneResponsavel = document.getElementById('patient-guardian-phone').value;
+  }
+
   try {
-    const savedId = await saveItem('pacientes', patientData);
-    alert("✓ Paciente salvo com sucesso.");
+    await saveItem('pacientes', patientData);
+    showToast(id ? "Paciente atualizado com sucesso." : "Paciente salvo com sucesso.");
     closeModal('modal-patient');
     if (document.getElementById('view-pacientes').classList.contains('active')) renderPatientsList();
-    if (document.getElementById('view-prontuario').classList.contains('active')) loadProntuarioData(savedId || patientData.id);
+    if (document.getElementById('view-prontuario').classList.contains('active')) loadProntuarioData(patientData.id);
     loadDashboardData();
   } catch (err) {
-    alert("⚠ Não foi possível salvar o paciente. Tente novamente.");
+    showToast("Não foi possível salvar. Tente novamente.", true);
+  }
+}
+
+async function togglePatientStatus(id, newStatus) {
+  const patient = await getById('pacientes', id);
+  if (patient) {
+    patient.status = newStatus || (patient.status === 'ativo' ? 'inativo' : 'ativo');
+    await saveItem('pacientes', patient);
+    renderPatientsList();
+    loadDashboardData();
   }
 }
 
@@ -960,50 +1154,37 @@ async function renderPatientsList() {
   const patients = await getAll('pacientes');
   const filter = document.getElementById('patient-status-filter').value;
   const searchQuery = document.getElementById('patient-search-input').value.toLowerCase();
+
   const tbody = document.getElementById('patients-table-body');
   tbody.innerHTML = '';
-  
+
   const filtered = patients.filter(p => {
     const matchesStatus = filter === 'todos' ? true : p.status === filter;
     const pName = (p.nome || p.name || '').toLowerCase();
     const matchesSearch = pName.includes(searchQuery);
     return matchesStatus && matchesSearch;
   });
-  
+
   filtered.forEach(p => {
     const tr = document.createElement('tr');
     const pName = p.nome || p.name || '';
-    const pAge = p.idade ? `${p.idade} anos` : '-';
-    let pContact = '-';
-    if (p.isChild) {
-      pContact = `Resp: ${p.responsavel || ''} (${p.parentesco || ''}) - Tel: ${p.telefoneResponsavel || ''}`;
-    }
-    
+    const pType = p.tipo || p.type || '';
+    const pPhone = p.telefone || p.phone || '';
     tr.innerHTML = `
-      <td><strong>${pName}</strong></td>
-      <td>${pAge}</td>
-      <td>${pContact}</td>
+      <td><strong>${pName}</strong> ${p.idade ? `(${p.idade} anos)` : ''}</td>
+      <td>${pType}</td>
+      <td>${pPhone}</td>
       <td><span class="badge ${p.status === 'ativo' ? 'badge-active' : 'badge-inactive'}">${p.status.toUpperCase()}</span></td>
       <td>
         <button class="btn-primary" onclick="openProntuario(${p.id})">Prontuário</button>
         <button class="btn-secondary" onclick="openPatientModal(${p.id})">Editar</button>
-        ${p.status === 'ativo'
+        ${p.status === 'ativo' 
           ? `<button class="btn-danger" onclick="togglePatientStatus(${p.id}, 'inativo')">Inativar</button>`
           : `<button class="btn-secondary" onclick="togglePatientStatus(${p.id}, 'ativo')">Reativar</button>`
         }
       </td>`;
     tbody.appendChild(tr);
   });
-}
-
-async function togglePatientStatus(id, newStatus) {
-  const patient = await getById('pacientes', id);
-  if (patient) {
-    patient.status = newStatus;
-    await saveItem('pacientes', patient);
-    renderPatientsList();
-    loadDashboardData();
-  }
 }
 
 /* PRONTUÁRIO LOGIC */
@@ -1014,34 +1195,36 @@ function openProntuario(patientId) {
 async function loadProntuarioData(patientId, monthFilter = null) {
   const patient = await getById('pacientes', patientId);
   if (!patient) return;
-  
+
   const pName = patient.nome || patient.name || '';
-  const pAge = patient.idade ? `${patient.idade} anos` : '';
-  document.getElementById('pront-patient-name').innerText = `${pName} ${pAge ? '('+pAge+')' : ''}`;
-  
-  let details = '';
-  if (patient.isChild) {
-    details = `Responsável: ${patient.responsavel || ''} (${patient.parentesco || ''}) | Tel Resp: ${patient.telefoneResponsavel || ''}`;
-  } else {
-    details = `Adulto | Idade: ${patient.idade || 'Não informada'}`;
+  const pType = patient.tipo || patient.type || '';
+  const pPhone = patient.telefone || patient.phone || '';
+  document.getElementById('pront-patient-name').innerText = `${pName} (${pType})`;
+
+  let details = `Tel: ${pPhone}`;
+  if (patient.idade) details += ` | Idade: ${patient.idade} anos`;
+  if (pType === 'Infantil') {
+    const pResp = patient.responsavel || patient.guardian || '';
+    const pKin = patient.parentesco || patient.kinship || '';
+    const pRespTel = patient.telefoneResponsavel || patient.guardianPhone || '';
+    details += ` | Resp: ${pResp} (${pKin}) - Tel Resp: ${pRespTel}`;
   }
   document.getElementById('pront-patient-details').innerText = details;
-  
-  // Carregar Sessões
+
   const allSessions = await getAll('sessoes');
   const allEvolutions = await getAll('evolucoes');
-  let patientSessions = allSessions.filter(s => Number(s.pacienteld || s.patientId) === Number(patientId));
-  
+
+  let patientSessions = allSessions.filter(s => Number(s.pacienteId || s.patientId) === Number(patientId));
   if (monthFilter) {
     patientSessions = patientSessions.filter(s => (s.dataHora || s.datetime || '').startsWith(monthFilter));
   }
   patientSessions.sort((a, b) => new Date(b.dataHora || b.datetime) - new Date(a.dataHora || a.datetime));
-  
+
   const tbody = document.getElementById('prontuario-table-body');
   tbody.innerHTML = '';
-  
+
   patientSessions.forEach(s => {
-    const evo = allEvolutions.find(e => Number(e.sessaold) === Number(s.id));
+    const evo = allEvolutions.find(e => Number(e.sessaoId) === Number(s.id));
     const dtStr = s.dataHora || s.datetime;
     const dt = new Date(dtStr).toLocaleString('pt-BR');
     const isFalta = s.status === 'falta';
@@ -1049,25 +1232,32 @@ async function loadProntuarioData(patientId, monthFilter = null) {
     const val = isFalta ? '-' : valNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     const payStatus = isFalta ? 'N/A' : (s.pagamentoStatus || s.paymentStatus || 'pendente');
     const mode = s.modalidade || s.mode || '';
-    
+
     let evoCol = '';
     if (isFalta) {
       evoCol = `<strong>FALTA REGISTRADA</strong><br><span style="font-size:0.85rem; color:var(--text-muted);">Motivo: ${s.motivoFalta || 'Não informado'}</span><br>
-      <button class="btn-pdf" style="margin-top:4px;" onclick="generateFaultPDF(${s.id})">📄 Gerar PDF Falta</button>`;
+      <button class="btn-pdf" style="margin-top:4px;" onclick="generateFaultPDF(${s.id})">📄 Gerar registro de falta em PDF</button>`;
     } else {
       evoCol = evo
         ? `<button class="btn-secondary" onclick="openEvolutionModal(${s.id}, ${evo.id})">Editar Evolução</button>
            <button class="btn-pdf" onclick="generateSessionPDF(${s.id})">PDF Sessão</button>`
         : `<button class="btn-primary" onclick="openEvolutionModal(${s.id})">+ Evolução</button>`;
     }
-    
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${dt}</td>
       <td>${mode}</td>
-      <td><strong>${val}</strong><br><span class="badge ${isFalta ? 'badge-falta' : (payStatus === 'pago' ? 'badge-paid' : 'badge-pending')}">${isFalta ? 'FALTA' : payStatus.toUpperCase()}</span></td>
+      <td>
+        <strong>${val}</strong><br>
+        <span class="badge ${isFalta ? 'badge-falta' : (payStatus === 'pago' ? 'badge-paid' : 'badge-pending')}">${isFalta ? 'FALTA' : payStatus.toUpperCase()}</span>
+      </td>
       <td><div class="action-btns">${evoCol}</div></td>
-      <td>${isFalta ? '-' : ((s.recibo || s.receipt) ? `<button class="btn-secondary" onclick="openReceiptModal(${s.id})">Ver Comprovante</button>` : `<button class="btn-secondary" style="border-style:dashed;" onclick="openReceiptModal(${s.id})">+ Anexar</button>`)}</td>
+      <td>
+        ${isFalta ? '-' : ((s.recibo || s.receipt)
+          ? `<button class="btn-secondary" onclick="openReceiptModal(${s.id})">Ver Comprovante</button>`
+          : `<button class="btn-secondary" style="border-style:dashed;" onclick="openReceiptModal(${s.id})">+ Anexar</button>`)}
+      </td>
       <td>
         <div class="action-btns">
           <button class="btn-secondary" onclick="openSessionModal(${s.id})">Editar Sessão</button>
@@ -1076,45 +1266,9 @@ async function loadProntuarioData(patientId, monthFilter = null) {
       </td>`;
     tbody.appendChild(tr);
   });
-  
-  loadPatientDocumentsList(patientId);
-  renderPatientFaultsHistory();
-}
 
-async function loadPatientDocumentsList(patientId) {
-  const docs = await getAll('documentos');
-  const anamneses = await getAll('anamneses');
-  const patientDocs = docs.filter(d => Number(d.pacienteld) === Number(patientId));
-  const patientAnam = anamneses.find(a => Number(a.pacienteld) === Number(patientId));
-  
-  const tbody = document.getElementById('patient-docs-table-body');
-  tbody.innerHTML = '';
-  
-  if (patientAnam) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><strong>Anamnese Inicial do Adolescente</strong></td>
-      <td>${patientAnam.dataFinalizada || patientAnam.dataCriacao || '-'}</td>
-      <td><span class="badge ${patientAnam.status === 'Finalizada' ? 'badge-active' : 'badge-pending'}">${patientAnam.status || 'Rascunho'}</span></td>
-      <td>
-        <button class="btn-secondary" onclick="openAnamneseModal()">Visualizar / Editar</button>
-        <button class="btn-pdf" onclick="exportAnamnesePDF()">📄 PDF</button>
-      </td>`;
-    tbody.appendChild(tr);
-  }
-  
-  patientDocs.forEach(d => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><strong>${d.titulo}</strong></td>
-      <td>${d.dataCriacao || '-'}</td>
-      <td><span class="badge badge-active">${d.status || 'Salvo'}</span></td>
-      <td>
-        <button class="btn-secondary" onclick="openDocConstructorModal(${d.id})">Editar</button>
-        <button class="btn-pdf" onclick="exportCustomDocPDF(${d.id})">📄 PDF</button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
+  renderPatientFaultsHistory();
+  renderPatientDocumentsList();
 }
 
 function filterPatientHistory() {
@@ -1127,587 +1281,511 @@ function resetPatientHistory() {
   if (currentPatientId) loadProntuarioData(currentPatientId);
 }
 
-/* 📝 ANAMNESE INICIAL LOGIC */
+/* HISTÓRICO DE FALTAS NO PRONTUÁRIO */
+async function renderPatientFaultsHistory() {
+  if (!currentPatientId) return;
+  const monthFilter = document.getElementById('faults-month-filter').value;
+  const yearFilter = document.getElementById('faults-year-filter').value;
+
+  const allSessions = await getAll('sessoes');
+  let faults = allSessions.filter(s => Number(s.pacienteId || s.patientId) === Number(currentPatientId) && s.status === 'falta');
+
+  faults = faults.filter(s => {
+    const dtStr = s.dataHora || s.datetime || '';
+    if (!dtStr) return false;
+    const dateObj = new Date(dtStr);
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const y = String(dateObj.getFullYear());
+    const matchesMonth = monthFilter ? m === monthFilter : true;
+    const matchesYear = yearFilter ? y === yearFilter : true;
+    return matchesMonth && matchesYear;
+  });
+
+  faults.sort((a, b) => new Date(b.dataHora || b.datetime) - new Date(a.dataHora || a.datetime));
+
+  const tbody = document.getElementById('patient-faults-table-body');
+  tbody.innerHTML = '';
+
+  if (faults.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Nenhuma falta registrada para o filtro selecionado.</td></tr>';
+    return;
+  }
+
+  faults.forEach(f => {
+    const dt = new Date(f.dataHora || f.datetime);
+    const dateStr = dt.toLocaleDateString('pt-BR');
+    const timeStr = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const mode = f.modalidade || f.mode || '-';
+    const reason = f.motivoFalta || 'Não informado';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${dateStr}</td>
+      <td>${timeStr}</td>
+      <td>${mode}</td>
+      <td>${reason}</td>
+      <td>
+        <button class="btn-secondary" onclick="openSessionModal(${f.id})">Ver registro</button>
+        <button class="btn-pdf" onclick="generateFaultPDF(${f.id})">Gerar PDF</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ANAMNESE INICIAL LOGIC */
 async function openAnamneseModal() {
   if (!currentPatientId) return;
-  const patient = await getById('pacientes', currentPatientId);
-  const anamneses = await getAll('anamneses');
-  const anam = anamneses.find(a => Number(a.pacienteld) === Number(currentPatientId));
-  
   document.getElementById('form-anamnese').reset();
-  document.getElementById('anam-nome').value = patient ? (patient.nome || patient.name) : '';
-  document.getElementById('anam-idade').value = patient ? (patient.idade ? `${patient.idade} anos` : '') : '';
-  document.getElementById('anam-responsavel').value = patient && patient.isChild ? (patient.responsavel || '') : '';
-  
+  document.getElementById('anamnese-id').value = '';
+
+  const anamneses = await getAll('anamneses');
+  const anam = anamneses.find(a => Number(a.pacienteId) === Number(currentPatientId));
+
   if (anam) {
     document.getElementById('anamnese-id').value = anam.id;
-    document.getElementById('anamnese-status-val').value = anam.status || 'Rascunho';
-    
-    // Preencher campos
-    for (const key in anam.dados) {
-      const field = document.getElementById(`anam-${key}`);
-      if (field) field.value = anam.dados[key] || '';
-    }
-  } else {
-    document.getElementById('anamnese-id').value = '';
-    document.getElementById('anamnese-status-val').value = 'Rascunho';
+    document.getElementById('anam-queixa').value = anam.queixa || '';
+    document.getElementById('anam-familiar').value = anam.historicoFamiliar || '';
+    document.getElementById('anam-medico').value = anam.historicoMedico || '';
+    document.getElementById('anam-observacoes').value = anam.observacoes || '';
+    document.getElementById('anam-status').value = anam.status || 'rascunho';
   }
   openModal('modal-anamnese');
 }
 
-function getAnamneseFormData() {
-  const keys = [
-    'dob', 'escolaridade', 'mora', 'responsavel', 'a1', 'a2', 'a3', 'a4', 'r1', 'r2', 'r3', 'r4',
-    'rot1', 'rot2', 'rot3', 'rot4', 'fam1', 'fam2', 'fam3', 'fam4', 'rel1', 'rel2', 'rel3', 'rel4',
-    'sit1', 'sit2', 'sit3', 'sit4', 'sau1', 'sau2', 'sau3', 'sau4', 'rec1', 'rec2', 'rec3', 'rec4',
-    'seg1', 'seg2', 'seg3', 'seg4', 'psi1', 'psi2', 'psi3', 'psi4', 'psi5', 'psi6', 'psi7'
-  ];
-  const dados = {};
-  keys.forEach(k => {
-    const el = document.getElementById(`anam-${k}`);
-    if (el) dados[k] = el.value;
-  });
-  return dados;
-}
-
-async function saveAnamneseDraft() {
-  await saveAnamnese('Rascunho');
-}
-
 async function handleAnamneseSubmit(e) {
   e.preventDefault();
-  await saveAnamnese('Finalizada');
-}
-
-async function saveAnamnese(status) {
+  if (!currentPatientId) return;
   const id = document.getElementById('anamnese-id').value;
-  const now = new Date().toLocaleDateString('pt-BR');
-  
-  const record = {
-    pacienteld: Number(currentPatientId),
-    status: status,
-    dataFinalizada: now,
-    dados: getAnamneseFormData()
+
+  const data = {
+    pacienteId: Number(currentPatientId),
+    queixa: document.getElementById('anam-queixa').value,
+    historicoFamiliar: document.getElementById('anam-familiar').value,
+    historicoMedico: document.getElementById('anam-medico').value,
+    observacoes: document.getElementById('anam-observacoes').value,
+    status: document.getElementById('anam-status').value,
+    dataAtualizacao: new Date().toISOString()
   };
-  
-  if (id) record.id = Number(id);
-  
+
+  if (id) data.id = Number(id);
+
   try {
-    await saveItem('anamneses', record);
-    alert(`✓ Anamnese salva como ${status} com sucesso!`);
+    await saveItem('anamneses', data);
+    showToast("Anamnese salva com sucesso.");
     closeModal('modal-anamnese');
-    loadProntuarioData(currentPatientId);
+    renderPatientDocumentsList();
   } catch (err) {
-    alert("⚠ Não foi possível salvar a anamnese.");
+    showToast("Não foi possível salvar. Tente novamente.", true);
   }
 }
 
-async function exportAnamnesePDF() {
-  const patient = await getById('pacientes', currentPatientId);
-  const pName = patient ? (patient.nome || patient.name) : 'Paciente';
-  const dados = getAnamneseFormData();
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4');
-  
-  let currentY = 20;
-  const pageHeight = 297;
-  const margin = 15;
-  const contentWidth = 180;
-  
-  function checkBreak(needed) {
-    if (currentY + needed > pageHeight - margin) {
-      doc.addPage();
-      currentY = margin;
-      return true;
-    }
-    return false;
-  }
-  
-  // Cabeçalho
-  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
-  doc.text("ANAMNESE INICIAL DO ADOLESCENTE", 105, currentY, { align: "center" });
-  currentY += 6;
-  doc.setFontSize(10); doc.setTextColor(120, 144, 156);
-  doc.text("Perspectiva Analítico-Comportamental", 105, currentY, { align: "center" });
-  currentY += 5;
-  doc.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" });
-  currentY += 8;
-  doc.line(margin, currentY, 210 - margin, currentY);
-  currentY += 8;
-  
-  const sections = [
-    { title: "1. Identificação", items: [
-      ["Nome", pName], ["Idade", patient ? patient.idade : ''], ["Data de Nascimento", dados.dob],
-      ["Escolaridade", dados.escolaridade], ["Com quem mora", dados.mora], ["Responsável", dados.responsavel]
-    ]},
-    { title: "2. Motivo da busca", items: [
-      ["Ao adolescente - O que fez vir à terapia?", dados.a1], ["Gostaria que fosse diferente", dados.a2],
-      ["O que tem sido difícil", dados.a3], ["Expectativa com a terapia", dados.a4],
-      ["Aos responsáveis - Motivo da busca", dados.r1], ["Início da dificuldade", dados.r2],
-      ["Situações frequentes", dados.r3], ["Ação dos responsáveis", dados.r4]
-    ]},
-    { title: "3. Rotina e vida atual", items: [
-      ["Dia normal", dados.rot1], ["Escola e notas", dados.rot2], ["Sono, alimentação e lazer", dados.rot3], ["Tempo livre", dados.rot4]
-    ]},
-    { title: "4. Família", items: [
-      ["Relação familiar", dados.fam1], ["Conversa sobre ajuda", dados.fam2], ["Conflitos em casa", dados.fam3], ["Após os conflitos", dados.fam4]
-    ]},
-    { title: "5. Amigos e relacionamentos", items: [
-      ["Amizades", dados.rel1], ["Consegue ser você mesmo", dados.rel2], ["Situações difíceis com amigos", dados.rel3], ["Relacionamentos afetivos", dados.rel4]
-    ]},
-    { title: "6. Situações difíceis", items: [
-      ["Situação mais difícil", dados.sit1], ["O que acontece antes", dados.sit2], ["O que faz quando acontece", dados.sit3], ["O que acontece depois", dados.sit4]
-    ]},
-    { title: "7. Saúde e histórico", items: [
-      ["Terapia anterior", dados.sau1], ["Acompanhamento médico", dados.sau2], ["Medicação", dados.sau3], ["Mudanças recentes", dados.sau4]
-    ]},
-    { title: "8. Pontos fortes e recursos", items: [
-      ["O que faz bem", dados.rec1], ["O que ajuda no momento difícil", dados.rec2], ["Pessoas importantes", dados.rec3], ["Gostaria de melhorar", dados.rec4]
-    ]},
-    { title: "9. Segurança", items: [
-      ["Ideação de se machucar/viver", dados.seg1], ["Autolesão intencional", dados.seg2], ["Insegurança atual", dados.seg3], ["Medo de contar", dados.seg4]
-    ]},
-    { title: "10. Registro do psicólogo", items: [
-      ["Principais demandas", dados.psi1], ["Comportamentos-alvo", dados.psi2], ["Antecedentes relevantes", dados.psi3],
-      ["Consequências observadas", dados.psi4], ["Repertórios e potencialidades", dados.psi5],
-      ["Hipóteses funcionais", dados.psi6], ["A investigar", dados.psi7]
-    ]}
-  ];
-
-  sections.forEach(sec => {
-    checkBreak(10);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(136, 14, 79);
-    doc.text(sec.title, margin, currentY);
-    currentY += 6;
-    
-    sec.items.forEach(([label, val]) => {
-      checkBreak(8);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(216, 27, 96);
-      doc.text(`${label}:`, margin, currentY);
-      currentY += 4;
-      doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(55, 71, 79);
-      const txt = val || 'Não informado.';
-      const lines = doc.splitTextToSize(txt, contentWidth);
-      lines.forEach(l => {
-        checkBreak(5);
-        doc.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth });
-        currentY += 4.5;
-      });
-      currentY += 2;
-    });
-    currentY += 4;
-  });
-
-  // Assinatura
-  checkBreak(25);
-  currentY += 10;
-  doc.line(70, currentY, 140, currentY);
-  currentY += 5;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
-  currentY += 4;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 144, 156);
-  doc.text("CRP 22/07398", 105, currentY, { align: "center" });
-
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8); doc.setTextColor(150);
-    doc.text(`Página ${i} de ${totalPages}`, 195, 290, { align: "right" });
-  }
-
-  const dtStr = new Date().toISOString().substring(0, 10);
-  doc.save(`Anamnese_Inicial_${pName.replace(/\s+/g, '_')}_${dtStr}.pdf`);
-}
-
-/* ➕ CONSTRUTOR DE DOCUMENTOS & MODELOS */
-let sectionCount = 0;
-
-async function openDocConstructorModal(docId = null) {
-  document.getElementById('form-doc-constructor').reset();
-  document.getElementById('doc-id').value = '';
-  document.getElementById('doc-sections-container').innerHTML = '';
-  sectionCount = 0;
-  
-  await populateTemplateSelect();
-
-  if (docId) {
-    const doc = await getById('documentos', docId);
-    if (doc) {
-      document.getElementById('doc-id').value = doc.id;
-      document.getElementById('doc-title').value = doc.titulo;
-      doc.secoes.forEach(s => addDocSection(s.titulo, s.conteudo));
-    }
-  } else {
-    addDocSection("Identificação", "");
-    addDocSection("Descrição da demanda", "");
-  }
-  openModal('modal-doc-constructor');
-}
-
-function addDocSection(title = '', content = '') {
-  sectionCount++;
-  const container = document.getElementById('doc-sections-container');
-  const div = document.createElement('div');
-  div.className = 'doc-section-item';
-  div.id = `sec-item-${sectionCount}`;
-  div.innerHTML = `
-    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-      <label style="font-weight:600;">Tópico / Seção ${sectionCount}</label>
-      <button type="button" class="btn-danger" onclick="removeDocSection('${div.id}')">Remover Tópico</button>
-    </div>
-    <div class="form-group">
-      <input type="text" class="sec-title" placeholder="Título do Tópico" value="${title}" required>
-    </div>
-    <div class="form-group">
-      <textarea class="sec-content" rows="3" placeholder="Conteúdo do tópico...">${content}</textarea>
-    </div>`;
-  container.appendChild(div);
-}
-
-function removeDocSection(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
-
-async function populateTemplateSelect() {
-  const modelos = await getAll('modelos');
-  const sel = document.getElementById('select-doc-template');
-  sel.innerHTML = '<option value="">-- Selecione um modelo salvo para carregar estrutura --</option>';
-  modelos.forEach(m => {
-    sel.innerHTML += `<option value="${m.id}">${m.titulo}</option>`;
-  });
-}
-
-async function loadSelectedTemplate() {
-  const templateId = document.getElementById('select-doc-template').value;
-  if (!templateId) return;
-  const m = await getById('modelos', templateId);
-  if (m) {
-    document.getElementById('doc-title').value = m.titulo;
-    document.getElementById('doc-sections-container').innerHTML = '';
-    sectionCount = 0;
-    m.topicos.forEach(t => addDocSection(t, ''));
-  }
-}
-
-async function handleDocConstructorSubmit(e) {
-  e.preventDefault();
-  const id = document.getElementById('doc-id').value;
-  const title = document.getElementById('doc-title').value;
-  const saveTemplate = document.getElementById('chk-save-template').checked;
-  
-  const sectionElems = document.querySelectorAll('.doc-section-item');
-  const secoes = [];
-  const topicosApenas = [];
-  
-  sectionElems.forEach(sec => {
-    const t = sec.querySelector('.sec-title').value;
-    const c = sec.querySelector('.sec-content').value;
-    secoes.push({ titulo: t, conteudo: c });
-    topicosApenas.push(t);
-  });
-
-  // Salvar modelo se selecionado
-  if (saveTemplate) {
-    await saveItem('modelos', {
-      titulo: `Modelo - ${title}`,
-      topicos: topicosApenas
-    });
-    alert("✓ Estrutura salva como modelo com sucesso!");
-  }
-
-  const docRecord = {
-    pacienteld: Number(currentPatientId),
-    titulo: title,
-    secoes: secoes,
-    dataCriacao: new Date().toLocaleDateString('pt-BR'),
-    status: 'Finalizado'
-  };
-
-  if (id) docRecord.id = Number(id);
-
-  try {
-    await saveItem('documentos', docRecord);
-    alert("✓ Documento salvo com sucesso.");
-    closeModal('modal-doc-constructor');
-    loadProntuarioData(currentPatientId);
-  } catch (err) {
-    alert("⚠ Não foi possível salvar o documento. Tente novamente.");
-  }
-}
-
-async function exportCustomDocPDF(docId) {
-  const docData = await getById('documentos', docId);
-  const patient = await getById('pacientes', currentPatientId);
-  if (!docData) return;
-  
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4');
-  let currentY = 20;
-  const pageHeight = 297; const margin = 15; const contentWidth = 180;
-  
-  function checkBreak(needed) {
-    if (currentY + needed > pageHeight - margin) {
-      doc.addPage();
-      currentY = margin;
-      return true;
-    }
-    return false;
-  }
-
-  // Cabeçalho
-  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
-  doc.text(docData.titulo.toUpperCase(), 105, currentY, { align: "center" });
-  currentY += 6;
-  doc.setFontSize(10); doc.setTextColor(120, 144, 156);
-  doc.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" });
-  currentY += 8;
-  doc.line(margin, currentY, 210 - margin, currentY);
-  currentY += 8;
-
-  doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(136, 14, 79);
-  doc.text(`Paciente: ${patient ? (patient.nome || patient.name) : ''}`, margin, currentY);
-  currentY += 8;
-
-  docData.secoes.forEach(sec => {
-    checkBreak(10);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(216, 27, 96);
-    doc.text(sec.titulo, margin, currentY);
-    currentY += 5;
-    doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-    const lines = doc.splitTextToSize(sec.conteudo || 'Não preenchido.', contentWidth);
-    lines.forEach(l => {
-      checkBreak(5);
-      doc.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth });
-      currentY += 4.5;
-    });
-    currentY += 4;
-  });
-
-  checkBreak(25);
-  currentY += 10;
-  doc.line(70, currentY, 140, currentY);
-  currentY += 5;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
-  currentY += 4;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 144, 156);
-  doc.text("CRP 22/07398", 105, currentY, { align: "center" });
-
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8); doc.setTextColor(150);
-    doc.text(`Página ${i} de ${totalPages}`, 195, 290, { align: "right" });
-  }
-
-  const dtStr = new Date().toISOString().substring(0, 10);
-  const pName = patient ? (patient.nome || patient.name) : 'Paciente';
-  doc.save(`${docData.titulo.replace(/\s+/g, '_')}_${pName.replace(/\s+/g, '_')}_${dtStr}.pdf`);
-}
-
-/* 📑 GERAR RELATÓRIO PSICOLÓGICO AUTOMÁTICO */
-async function openGenerateReportModal() {
+async function generateAnamnesePDF() {
   if (!currentPatientId) return;
   const patient = await getById('pacientes', currentPatientId);
   const anamneses = await getAll('anamneses');
-  const evolucoes = await getAll('evolucoes');
-  const sessoes = await getAll('sessoes');
-  
-  const patientAnam = anamneses.find(a => Number(a.pacienteld) === Number(currentPatientId));
-  const patientEvos = evolucoes.filter(e => Number(e.pacienteld) === Number(currentPatientId));
-  const patientSess = sessoes.filter(s => Number(s.pacienteld || s.patientId) === Number(currentPatientId));
+  const anam = anamneses.find(a => Number(a.pacienteId) === Number(currentPatientId));
 
-  const draftContainer = document.getElementById('report-draft-fields');
-  draftContainer.innerHTML = '';
-
-  const reportTopics = [
-    { id: 'rep-ident', label: '1. Identificação', auto: `Nome: ${patient ? (patient.nome || patient.name) : ''}\nIdade: ${patient ? (patient.idade ? patient.idade + ' anos' : 'Não informada') : ''}` },
-    { id: 'rep-demanda', label: '2. Demanda', auto: patientAnam ? (patientAnam.dados.a1 || patientAnam.dados.r1 || 'Síntese baseada na anamnese.') : 'Não há informações registradas suficientes para preencher este tópico.' },
-    { id: 'rep-periodo', label: '3. Período de acompanhamento', auto: patientSess.length > 0 ? `Atendimentos registrados no período entre ${patientSess[patientSess.length-1].dataHora?.substring(0,10)} e ${patientSess[0].dataHora?.substring(0,10)}.` : 'Não há informações registradas suficientes para preencher este tópico.' },
-    { id: 'rep-proced', label: '4. Procedimentos realizados', auto: `Sessões individuais de psicoterapia analítico-comportamental (${patientSess.length} encontros registrados).` },
-    { id: 'rep-aspectos', label: '5. Aspectos relevantes do acompanhamento', auto: patientEvos.map(e => e.descricao).join('\n---\n') || 'Não há informações registradas suficientes para preencher este tópico.' },
-    { id: 'rep-evolucao', label: '6. Evolução', auto: patientEvos.map(e => e.analise).join('\n---\n') || 'Não há informações registradas suficientes para preencher este tópico.' },
-    { id: 'rep-recursos', label: '7. Recursos e potencialidades', auto: patientAnam ? (patientAnam.dados.rec1 || 'Recursos identificados no acompanhamento.') : 'Não há informações registradas suficientes para preencher este tópico.' },
-    { id: 'rep-encaminhamentos', label: '8. Encaminhamentos', auto: 'Não há encaminhamentos registrados até o momento.' },
-    { id: 'rep-consideracoes', label: '9. Considerações finais', auto: 'Síntese do processo psicoterápico desenvolvida com base nos registros clínicos.' }
-  ];
-
-  reportTopics.forEach(top => {
-    const div = document.createElement('div');
-    div.className = 'form-group';
-    div.innerHTML = `
-      <label>${top.label}</label>
-      <textarea id="${top.id}" rows="3">${top.auto}</textarea>`;
-    draftContainer.appendChild(div);
-  });
-
-  openModal('modal-generate-report');
-}
-
-async function handleFinalizeReport(e) {
-  e.preventDefault();
-  const secoes = [
-    { titulo: '1. Identificação', conteudo: document.getElementById('rep-ident').value },
-    { titulo: '2. Demanda', conteudo: document.getElementById('rep-demanda').value },
-    { titulo: '3. Período de acompanhamento', conteudo: document.getElementById('rep-periodo').value },
-    { titulo: '4. Procedimentos realizados', conteudo: document.getElementById('rep-proced').value },
-    { titulo: '5. Aspectos relevantes do acompanhamento', conteudo: document.getElementById('rep-aspectos').value },
-    { titulo: '6. Evolução', conteudo: document.getElementById('rep-evolucao').value },
-    { titulo: '7. Recursos e potencialidades', conteudo: document.getElementById('rep-recursos').value },
-    { titulo: '8. Encaminhamentos', conteudo: document.getElementById('rep-encaminhamentos').value },
-    { titulo: '9. Considerações finais', conteudo: document.getElementById('rep-consideracoes').value }
-  ];
-
-  const docRecord = {
-    pacienteld: Number(currentPatientId),
-    titulo: 'Relatório Psicológico',
-    secoes: secoes,
-    dataCriacao: new Date().toLocaleDateString('pt-BR'),
-    status: 'Finalizado'
-  };
-
-  try {
-    await saveItem('documentos', docRecord);
-    alert("✓ Relatório Psicológico gerado e salvo com sucesso!");
-    closeModal('modal-generate-report');
-    loadProntuarioData(currentPatientId);
-  } catch (err) {
-    alert("⚠ Não foi possível salvar o relatório.");
-  }
-}
-
-/* 📄 EXPORTAR PRONTUÁRIO COMPLETO */
-async function exportFullProntuario() {
-  if (!currentPatientId) return;
-  const patient = await getById('pacientes', currentPatientId);
-  const pName = patient ? (patient.nome || patient.name) : 'Paciente';
-  
-  const anamneses = await getAll('anamneses');
-  const evolucoes = await getAll('evolucoes');
-  const documentos = await getAll('documentos');
-  const sessoes = await getAll('sessoes');
-
-  const patientAnam = anamneses.find(a => Number(a.pacienteld) === Number(currentPatientId));
-  const patientEvos = evolucoes.filter(e => Number(e.pacienteld) === Number(currentPatientId));
-  const patientDocs = documentos.filter(d => Number(d.pacienteld) === Number(currentPatientId));
-  const patientSess = sessoes.filter(s => Number(s.pacienteld || s.patientId) === Number(currentPatientId));
-
-  if (!patientAnam && patientEvos.length === 0 && patientDocs.length === 0) {
-    alert("Não há documentos disponíveis para exportação deste paciente.");
+  if (!patient || !anam) {
+    alert("Preencha e salve a Anamnese antes de exportar.");
     return;
   }
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p', 'mm', 'a4');
   let currentY = 20;
-  const pageHeight = 297; const margin = 15; const contentWidth = 180;
 
-  function checkBreak(needed) {
-    if (currentY + needed > pageHeight - margin) {
-      doc.addPage();
-      currentY = margin;
-      return true;
-    }
-    return false;
-  }
-
-  // Capa / Cabeçalho do Prontuário
-  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(136, 14, 79);
-  doc.text("PRONTUÁRIO PSICOLÓGICO COMPLETO", 105, currentY, { align: "center" });
-  currentY += 6;
-  doc.setFontSize(10); doc.setTextColor(120, 144, 156);
-  doc.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" });
+  // Header
+  doc.setFont("helvetica", "bold"); doc.setFontSize(15); doc.setTextColor(136, 14, 79);
+  doc.text("ANAMNESE INICIAL PSICOLÓGICA", 105, currentY, { align: "center" });
   currentY += 8;
-  doc.line(margin, currentY, 210 - margin, currentY);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos – CRP 22/07398", 105, currentY, { align: "center" });
+  currentY += 10;
+  doc.setDrawColor(216, 27, 96); doc.line(20, currentY, 190, currentY);
   currentY += 10;
 
-  doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(55, 71, 79);
-  doc.text(`Paciente: ${pName}`, margin, currentY); currentY += 5;
-  doc.text(`Idade: ${patient.idade ? patient.idade + ' anos' : 'Não informada'}`, margin, currentY); currentY += 10;
+  // Paciente Info
+  doc.setFont("helvetica", "bold"); doc.text("Identificação do Paciente", 20, currentY); currentY += 6;
+  doc.setFont("helvetica", "normal");
+  doc.text(`Nome: ${patient.nome || ''}`, 20, currentY); currentY += 5;
+  if (patient.idade) { doc.text(`Idade: ${patient.idade} anos`, 20, currentY); currentY += 5; }
+  doc.text(`Tipo: ${patient.tipo || ''}`, 20, currentY); currentY += 8;
 
-  // 1. Anamnese
-  if (patientAnam) {
-    checkBreak(15);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(136, 14, 79);
-    doc.text("1. ANAMNESE INICIAL", margin, currentY); currentY += 6;
-    doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-    doc.text(`Status: ${patientAnam.status} - Data: ${patientAnam.dataFinalizada || patientAnam.dataCriacao}`, margin, currentY);
-    currentY += 8;
-  }
-
-  // 2. Evoluções em Ordem Cronológica
-  if (patientEvos.length > 0) {
-    checkBreak(15);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(136, 14, 79);
-    doc.text("2. EVOLUÇÕES CLÍNICAS (Ordem Cronológica)", margin, currentY); currentY += 8;
-
-    // Ordenar do mais antigo para o mais recente
-    patientEvos.sort((a,b) => a.id - b.id);
-
-    patientEvos.forEach(e => {
-      const sess = patientSess.find(s => Number(s.id) === Number(e.sessaold));
-      checkBreak(12);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(216, 27, 96);
-      doc.text(`Sessão: ${sess ? sess.dataHora : 'Data N/I'}`, margin, currentY); currentY += 5;
-      
-      doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(55, 71, 79);
-      const txt = `Descrição: ${e.descricao}\nAnálise: ${e.analise || 'Sem análise'}`;
-      const lines = doc.splitTextToSize(txt, contentWidth);
-      lines.forEach(l => {
-        checkBreak(5);
-        doc.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth });
-        currentY += 4.5;
-      });
-      currentY += 4;
+  function addBlock(title, text) {
+    if (!text) return;
+    if (currentY > 250) { doc.addPage(); currentY = 20; }
+    doc.setFont("helvetica", "bold"); doc.text(title, 20, currentY); currentY += 5;
+    doc.setFont("helvetica", "normal");
+    const lines = doc.splitTextToSize(text, 170);
+    lines.forEach(l => {
+      if (currentY > 270) { doc.addPage(); currentY = 20; }
+      doc.text(l, 20, currentY, { align: "justify", maxWidth: 170 });
+      currentY += 5;
     });
+    currentY += 4;
   }
 
-  // 3. Documentos Personalizados
-  if (patientDocs.length > 0) {
-    checkBreak(15);
-    doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(136, 14, 79);
-    doc.text("3. DOCUMENTOS E RELATÓRIOS VINCULADOS", margin, currentY); currentY += 8;
+  addBlock("1. Queixa Principal e Histórico de Sintomas:", anam.queixa);
+  addBlock("2. Histórico Familiar e Social:", anam.historicoFamiliar);
+  addBlock("3. Histórico Médico e Tratamentos Anteriores:", anam.historicoMedico);
+  addBlock("4. Observações e Hipóteses Clínicas:", anam.observacoes);
 
-    patientDocs.forEach(d => {
-      checkBreak(10);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(216, 27, 96);
-      doc.text(d.titulo, margin, currentY); currentY += 5;
-      
-      d.secoes.forEach(sec => {
-        checkBreak(8);
-        doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
-        doc.text(sec.titulo, margin, currentY); currentY += 4;
-        doc.setFont("helvetica", "normal"); doc.setFontSize(9);
-        const lines = doc.splitTextToSize(sec.conteudo, contentWidth);
-        lines.forEach(l => {
-          checkBreak(5);
-          doc.text(l, margin, currentY, { align: "justify", maxWidth: contentWidth });
-          currentY += 4.5;
-        });
-        currentY += 2;
-      });
-      currentY += 4;
-    });
-  }
+  // Sign & Page count
+  if (currentY > 240) { doc.addPage(); currentY = 30; } else { currentY += 15; }
+  doc.line(70, currentY, 140, currentY); currentY += 5;
+  doc.setFont("helvetica", "bold"); doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" }); currentY += 4;
+  doc.setFont("helvetica", "normal"); doc.text("CRP 22/07398", 105, currentY, { align: "center" });
 
-  // Numeração das páginas
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     doc.setFontSize(8); doc.setTextColor(150);
-    doc.text(`Página ${i} de ${totalPages}`, 195, 290, { align: "right" });
+    doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
   }
 
-  doc.save(`Prontuario_${pName.replace(/\s+/g, '_')}.pdf`);
+  const dateStr = new Date().toISOString().substring(0, 10);
+  doc.save(`Anamnese_Inicial_${(patient.nome || '').replace(/\s+/g, '_')}_${dateStr}.pdf`);
 }
 
-/* OUTROS MODAIS E SESSÃO */
+/* ÁREA DE DOCUMENTOS CUSTOMIZADOS */
+function addDocumentSection(title = '', content = '') {
+  const container = document.getElementById('doc-sections-container');
+  const secId = Date.now() + Math.random().toString(36).substr(2, 4);
+  const div = document.createElement('div');
+  div.className = 'card doc-section-item';
+  div.style.marginBottom = '15px';
+  div.innerHTML = `
+    <div class="form-group">
+      <label>Título da Seção / Tópico</label>
+      <input type="text" class="sec-title" value="${title}" placeholder="Ex: Procedimentos Realizados">
+    </div>
+    <div class="form-group">
+      <label>Conteúdo da Seção</label>
+      <textarea class="sec-content" rows="3" placeholder="Digite o conteúdo...">${content}</textarea>
+    </div>
+    <button type="button" class="btn-danger" onclick="this.parentElement.remove()">Remover Seção</button>
+  `;
+  container.appendChild(div);
+}
+
+async function openCustomDocumentModal(docId = null) {
+  if (!currentPatientId) return;
+  document.getElementById('form-custom-doc').reset();
+  document.getElementById('custom-doc-id').value = '';
+  document.getElementById('doc-sections-container').innerHTML = '';
+
+  await loadTemplatesDropdown();
+
+  if (docId) {
+    const docItem = await getById('documentos', docId);
+    if (docItem) {
+      document.getElementById('custom-doc-id').value = docItem.id;
+      document.getElementById('doc-title').value = docItem.titulo || '';
+      if (docItem.secoes && docItem.secoes.length > 0) {
+        docItem.secoes.forEach(s => addDocumentSection(s.titulo, s.conteudo));
+      }
+    }
+  } else {
+    addDocumentSection('1. Identificação', '');
+    addDocumentSection('2. Descrição Clínica', '');
+  }
+  openModal('modal-custom-doc');
+}
+
+async function loadTemplatesDropdown() {
+  const select = document.getElementById('doc-template-select');
+  select.innerHTML = '<option value="">Sem modelo (Documento em Branco)</option>';
+  const templates = await getAll('modelos');
+  templates.forEach(t => {
+    select.innerHTML += `<option value="${t.id}">${t.nomeModelo}</option>`;
+  });
+}
+
+async function applyTemplateToDocument() {
+  const templateId = document.getElementById('doc-template-select').value;
+  if (!templateId) return;
+  const tmpl = await getById('modelos', templateId);
+  if (tmpl && tmpl.secoes) {
+    document.getElementById('doc-sections-container').innerHTML = '';
+    tmpl.secoes.forEach(s => addDocumentSection(s.titulo, ''));
+  }
+}
+
+async function handleCustomDocSubmit(e) {
+  e.preventDefault();
+  if (!currentPatientId) return;
+  const id = document.getElementById('custom-doc-id').value;
+  
+  const sections = [];
+  document.querySelectorAll('.doc-section-item').forEach(el => {
+    sections.push({
+      titulo: el.querySelector('.sec-title').value,
+      conteudo: el.querySelector('.sec-content').value
+    });
+  });
+
+  const docData = {
+    pacienteId: Number(currentPatientId),
+    titulo: document.getElementById('doc-title').value,
+    tipo: 'Documento Clínico',
+    secoes: sections,
+    dataCriacao: new Date().toISOString()
+  };
+
+  if (id) docData.id = Number(id);
+
+  try {
+    await saveItem('documentos', docData);
+    showToast("Documento salvo com sucesso.");
+    closeModal('modal-custom-doc');
+    renderPatientDocumentsList();
+  } catch (err) {
+    showToast("Não foi possível salvar. Tente novamente.", true);
+  }
+}
+
+async function exportCustomDocumentPDF() {
+  if (!currentPatientId) return;
+  const patient = await getById('pacientes', currentPatientId);
+  const title = document.getElementById('doc-title').value || 'Documento Clínico';
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  let currentY = 20;
+
+  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
+  doc.text(title.toUpperCase(), 105, currentY, { align: "center" });
+  currentY += 8;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
+  doc.text(`Paciente: ${patient ? patient.nome : ''}`, 20, currentY); currentY += 5;
+  doc.text("Daniele Sousa Santos – CRP 22/07398", 20, currentY); currentY += 8;
+  doc.setDrawColor(216, 27, 96); doc.line(20, currentY, 190, currentY); currentY += 10;
+
+  document.querySelectorAll('.doc-section-item').forEach(el => {
+    const secTitle = el.querySelector('.sec-title').value;
+    const secContent = el.querySelector('.sec-content').value;
+
+    if (currentY > 250) { doc.addPage(); currentY = 20; }
+    if (secTitle) {
+      doc.setFont("helvetica", "bold"); doc.text(secTitle, 20, currentY); currentY += 5;
+    }
+    if (secContent) {
+      doc.setFont("helvetica", "normal");
+      const lines = doc.splitTextToSize(secContent, 170);
+      lines.forEach(l => {
+        if (currentY > 270) { doc.addPage(); currentY = 20; }
+        doc.text(l, 20, currentY, { align: "justify", maxWidth: 170 });
+        currentY += 5;
+      });
+    }
+    currentY += 4;
+  });
+
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i); doc.setFontSize(8); doc.setTextColor(150);
+    doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
+  }
+
+  doc.save(`${title.replace(/\s+/g, '_')}_${patient ? patient.nome.replace(/\s+/g, '_') : ''}.pdf`);
+}
+
+/* MODELOS / TEMPLATES */
+async function saveAsTemplateModal() {
+  const nomeModelo = prompt("Informe o nome para este modelo de documento:");
+  if (!nomeModelo) return;
+
+  const sections = [];
+  document.querySelectorAll('.doc-section-item').forEach(el => {
+    sections.push({
+      titulo: el.querySelector('.sec-title').value
+    });
+  });
+
+  try {
+    await saveItem('modelos', { nomeModelo, secoes: sections });
+    showToast("Modelo salvo com sucesso.");
+  } catch (e) {
+    showToast("Não foi possível salvar. Tente novamente.", true);
+  }
+}
+
+async function openTemplatesModal() {
+  const tbody = document.getElementById('templates-table-body');
+  tbody.innerHTML = '';
+  const templates = await getAll('modelos');
+
+  if (templates.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhum modelo cadastrado.</td></tr>';
+  } else {
+    templates.forEach(t => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.nomeModelo}</td>
+        <td>${t.secoes ? t.secoes.length : 0} seções</td>
+        <td><button class="btn-danger" onclick="deleteTemplate(${t.id})">Excluir</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+  openModal('modal-templates');
+}
+
+async function deleteTemplate(id) {
+  if (confirm("Excluir este modelo?")) {
+    await deleteItem('modelos', id);
+    openTemplatesModal();
+  }
+}
+
+/* RENDER DOCUMENTOS LIST */
+async function renderPatientDocumentsList() {
+  if (!currentPatientId) return;
+  const docs = await getAll('documentos');
+  const patientDocs = docs.filter(d => Number(d.pacienteId) === Number(currentPatientId));
+  const tbody = document.getElementById('documents-table-body');
+  tbody.innerHTML = '';
+
+  const anamneses = await getAll('anamneses');
+  const anam = anamneses.find(a => Number(a.pacienteId) === Number(currentPatientId));
+
+  if (anam) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${new Date(anam.dataAtualizacao || Date.now()).toLocaleDateString('pt-BR')}</td>
+      <td><strong>Anamnese Inicial</strong></td>
+      <td>Anamnese</td>
+      <td>
+        <button class="btn-secondary" onclick="openAnamneseModal()">Editar</button>
+        <button class="btn-pdf" onclick="generateAnamnesePDF()">PDF</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  patientDocs.forEach(d => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${new Date(d.dataCriacao).toLocaleDateString('pt-BR')}</td>
+      <td><strong>${d.titulo}</strong></td>
+      <td>${d.tipo}</td>
+      <td>
+        <button class="btn-secondary" onclick="openCustomDocumentModal(${d.id})">Editar</button>
+        <button class="btn-danger" onclick="deleteDocument(${d.id})">Excluir</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function deleteDocument(docId) {
+  if (confirm("Deseja excluir este documento?")) {
+    await deleteItem('documentos', docId);
+    renderPatientDocumentsList();
+  }
+}
+
+/* RELATÓRIO PSICOLÓGICO (RASCUNHO A PARTIR DO HISTÓRICO REAL) */
+async function generatePsychologicalReportDraft() {
+  if (!currentPatientId) return;
+  const patient = await getById('pacientes', currentPatientId);
+  const evolutions = await getAll('evolucoes');
+  const patientEvos = evolutions.filter(e => Number(e.pacienteId) === Number(currentPatientId));
+
+  document.getElementById('form-custom-doc').reset();
+  document.getElementById('custom-doc-id').value = '';
+  document.getElementById('doc-title').value = `Relatório Psicológico - ${patient ? patient.nome : ''}`;
+  document.getElementById('doc-sections-container').innerHTML = '';
+
+  addDocumentSection('1. Identificação do Paciente', `Nome: ${patient ? patient.nome : ''}\nIdade: ${patient && patient.idade ? patient.idade + ' anos' : 'Não informada'}`);
+  addDocumentSection('2. Demanda e Contexto Clínico', patientEvos.map(e => e.demanda).filter(Boolean).join('\n') || 'Sessões registradas no prontuário.');
+  addDocumentSection('3. Análise da Evolução', patientEvos.map(e => e.analise).filter(Boolean).join('\n') || 'Evolução clínica conforme acompanhamento.');
+  addDocumentSection('4. Conclusão e Encaminhamentos', 'Rascunho gerado para revisão profissional.');
+
+  openModal('modal-custom-doc');
+}
+
+/* EXPORTAR PRONTUÁRIO COMPLETO */
+async function exportFullProntuarioPDF() {
+  if (!currentPatientId) return;
+  const patient = await getById('pacientes', currentPatientId);
+  const allSessions = await getAll('sessoes');
+  const allEvolutions = await getAll('evolucoes');
+  const anamneses = await getAll('anamneses');
+
+  const pSessions = allSessions.filter(s => Number(s.pacienteId || s.patientId) === Number(currentPatientId));
+  pSessions.sort((a, b) => new Date(a.dataHora || a.datetime) - new Date(b.dataHora || b.datetime)); // Cronológico do mais antigo para mais recente
+
+  const anam = anamneses.find(a => Number(a.pacienteId) === Number(currentPatientId));
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  let currentY = 20;
+
+  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(136, 14, 79);
+  doc.text("PRONTUÁRIO PSICOLÓGICO COMPLETO", 105, currentY, { align: "center" });
+  currentY += 8;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(55, 71, 79);
+  doc.text(`Paciente: ${patient ? patient.nome : ''}`, 20, currentY); currentY += 5;
+  doc.text("Daniele Sousa Santos – CRP 22/07398", 20, currentY); currentY += 8;
+  doc.setDrawColor(216, 27, 96); doc.line(20, currentY, 190, currentY); currentY += 10;
+
+  if (anam) {
+    doc.setFont("helvetica", "bold"); doc.text("1. ANAMNESE INICIAL", 20, currentY); currentY += 6;
+    doc.setFont("helvetica", "normal");
+    const anamLines = doc.splitTextToSize(`Queixa: ${anam.queixa || ''}\nHistórico Familiar: ${anam.historicoFamiliar || ''}\nHistórico Médico: ${anam.historicoMedico || ''}`, 170);
+    anamLines.forEach(l => {
+      if (currentY > 270) { doc.addPage(); currentY = 20; }
+      doc.text(l, 20, currentY, { align: "justify", maxWidth: 170 });
+      currentY += 5;
+    });
+    currentY += 6;
+  }
+
+  doc.setFont("helvetica", "bold"); doc.text("2. REGISTROS CRONOLÓGICOS DE SESSÕES", 20, currentY); currentY += 8;
+
+  pSessions.forEach((s, idx) => {
+    const evo = allEvolutions.find(e => Number(e.sessaoId) === Number(s.id));
+    const dt = new Date(s.dataHora || s.datetime).toLocaleString('pt-BR');
+
+    if (currentY > 250) { doc.addPage(); currentY = 20; }
+    doc.setFont("helvetica", "bold");
+    doc.text(`Sessão #${idx + 1} - Data: ${dt} (${s.modalidade || ''}) - Status: ${s.status}`, 20, currentY);
+    currentY += 5;
+
+    doc.setFont("helvetica", "normal");
+    let contentStr = '';
+    if (s.status === 'falta') {
+      contentStr = `Falta registrada. Motivo: ${s.motivoFalta || 'Não informado'}`;
+    } else if (evo) {
+      contentStr = `Objetivo: ${evo.objetivo || evo.objective || 'N/A'}\nQueixa: ${evo.queixa || evo.complaint || 'N/A'}\nDemanda: ${evo.demanda || evo.demand || 'N/A'}\nDescrição: ${evo.descricao || evo.description || ''}\nAnálise: ${evo.analise || evo.analysis || ''}\nPlanejamento: ${evo.planejamento || evo.planning || 'N/A'}`;
+    } else {
+      contentStr = "Sem evolução registrada para esta sessão.";
+    }
+
+    const lines = doc.splitTextToSize(contentStr, 170);
+    lines.forEach(l => {
+      if (currentY > 270) { doc.addPage(); currentY = 20; }
+      doc.text(l, 20, currentY, { align: "justify", maxWidth: 170 });
+      currentY += 5;
+    });
+    currentY += 4;
+  });
+
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i); doc.setFontSize(8); doc.setTextColor(150);
+    doc.text(`Página ${i} de ${pageCount}`, 105, 290, { align: "center" });
+  }
+
+  doc.save(`Prontuario_${(patient ? patient.nome : 'Paciente').replace(/\s+/g, '_')}.pdf`);
+}
+
+/* APAGAR SESSÃO / EVOLUÇÃO */
 async function deleteSession(sessionId) {
-  if (confirm("Tem certeza que deseja excluir esta sessão e seu registro de evolução?")) {
+  if (confirm("Tem certeza que deseja excluir esta sessão e todo seu registro de evolução?")) {
     const evolutions = await getAll('evolucoes');
-    const evo = evolutions.find(e => Number(e.sessaold) === Number(sessionId));
+    const evo = evolutions.find(e => Number(e.sessaoId) === Number(sessionId));
     if (evo) await deleteItem('evolucoes', evo.id);
     await deleteItem('sessoes', sessionId);
     loadProntuarioData(currentPatientId);
@@ -1715,90 +1793,470 @@ async function deleteSession(sessionId) {
   }
 }
 
+/* GERAÇÃO DE PDF DA SESSÃO COM TEXTO JUSTIFICADO */
 async function generatePDF(sessionId) {
   const session = await getById('sessoes', sessionId);
   if (!session) return;
-  const patient = await getById('pacientes', session.pacienteld || session.patientId);
+  const patient = await getById('pacientes', session.pacienteId || session.patientId);
   const evolutions = await getAll('evolucoes');
-  const evo = evolutions.find(e => Number(e.sessaold) === Number(sessionId));
-  if (!evo) { alert('Evolução clínica não encontrada.'); return; }
+  const evo = evolutions.find(e => Number(e.sessaoId) === Number(sessionId));
+
+  if (!evo) {
+    alert('Evolução clínica não encontrada.');
+    return;
+  }
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p', 'mm', 'a4');
-  const pName = patient ? (patient.nome || patient.name) : '';
-  const pAge = patient && patient.idade ? `${patient.idade} anos` : '';
+  const pName = patient ? (patient.nome || patient.name || '') : '';
+  const pType = patient ? (patient.tipo || patient.type || '') : '';
+  const pPhone = patient ? (patient.telefone || patient.phone || '') : '';
+  const pGuardian = patient ? (patient.responsavel || patient.guardian || '') : '';
+  const pKinship = patient ? (patient.parentesco || patient.kinship || 'Resp.') : '';
+  const pGuardianPhone = patient ? (patient.telefoneResponsavel || patient.guardianPhone || 'N/A') : '';
+
   const dtStr = session.dataHora || session.datetime;
   const dateFormatted = new Date(dtStr).toLocaleString('pt-BR');
-  
+  const mode = session.modalidade || session.mode || '';
+  const status = session.status || '';
+
+  const complaint = evo.queixa || evo.complaint || '';
+  const demand = evo.demanda || evo.demand || '';
+  const description = evo.descricao || evo.description || '';
+  const analysis = evo.analise || evo.analysis || '';
+
+  const pageHeight = 297;
+  const margin = 20;
+  const contentWidth = 170;
   let currentY = 20;
-  
-  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
-  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" }); currentY += 5;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(120, 144, 156);
-  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" }); currentY += 8;
-  doc.line(15, currentY, 195, currentY); currentY += 8;
 
+  function checkPageBreak(heightNeeded) {
+    if (currentY + heightNeeded > pageHeight - margin) {
+      doc.addPage();
+      currentY = margin;
+      return true;
+    }
+    return false;
+  }
+
+  // Cabeçalho
+  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(136, 14, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 6;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
+  currentY += 8;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.setTextColor(216, 27, 96);
+  doc.text("RELATÓRIO DE EVOLUÇÃO PSICOLÓGICA", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setDrawColor(216, 27, 96); doc.setLineWidth(0.5);
+  doc.line(margin, currentY, 210 - margin, currentY);
+  currentY += 8;
+
+  // Box Identificação do Paciente
+  doc.setFillColor(255, 245, 248); doc.setDrawColor(244, 143, 177);
+  let boxHeight = pType === 'Infantil' && pGuardian ? 34 : 26;
+  doc.roundedRect(margin, currentY, contentWidth, boxHeight, 2, 2, 'FD');
   doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(136, 14, 79);
-  doc.text(`Paciente: ${pName} (${pAge})`, 15, currentY); currentY += 5;
-  doc.text(`Data da Sessão: ${dateFormatted}`, 15, currentY); currentY += 10;
+  doc.text("IDENTIFICAÇÃO DO PACIENTE", margin + 5, currentY + 6);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
+  doc.text(`Nome: ${pName}`, margin + 5, currentY + 12);
+  doc.text(`Contato: ${pPhone}`, margin + 5, currentY + 17);
+  doc.text(`Tipo: ${pType}`, margin + 5, currentY + 22);
+  if (pType === 'Infantil' && pGuardian) {
+    doc.text(`Responsável Legal: ${pGuardian} (${pKinship}) Tel: ${pGuardianPhone}`, margin + 5, currentY + 27);
+  }
+  currentY += boxHeight + 6;
 
-  doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(216, 27, 96);
-  doc.text("Descrição da Sessão:", 15, currentY); currentY += 5;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(55, 71, 79);
-  let lines = doc.splitTextToSize(evo.descricao || '', 180);
-  lines.forEach(l => { doc.text(l, 15, currentY, { align: "justify", maxWidth: 180 }); currentY += 4.5; });
+  // Box Dados da Sessão
+  doc.setFillColor(255, 245, 248); doc.setDrawColor(244, 143, 177);
+  doc.roundedRect(margin, currentY, contentWidth, 26, 2, 2, 'FD');
+  doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(136, 14, 79);
+  doc.text("DADOS DA SESSÃO", margin + 5, currentY + 6);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
+  doc.text(`Data/Hora: ${dateFormatted}`, margin + 5, currentY + 12);
+  doc.text(`Modalidade: ${mode}`, margin + 5, currentY + 17);
+  doc.text(`Status: ${status.toUpperCase()}`, margin + 5, currentY + 22);
+  currentY += 32;
 
+  // Título da Seção Clínica
+  checkPageBreak(15);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(136, 14, 79);
+  doc.text("REGISTRO CLÍNICO DA EVOLUÇÃO", margin, currentY);
+  currentY += 2;
+  doc.setDrawColor(216, 27, 96); doc.setLineWidth(0.3);
+  doc.line(margin, currentY, 210 - margin, currentY);
+  currentY += 8;
+
+  function addClinicalSection(title, text) {
+    if (!text || !text.trim()) return;
+    checkPageBreak(12);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(216, 27, 96);
+    doc.text(title, margin, currentY);
+    currentY += 5;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(55, 71, 79);
+    const lines = doc.splitTextToSize(text, contentWidth);
+    lines.forEach((line) => {
+      checkPageBreak(5);
+      doc.text(line, margin, currentY, { align: "justify", maxWidth: contentWidth });
+      currentY += 4.5;
+    });
+    currentY += 4;
+  }
+
+  addClinicalSection("1. Queixa Principal / Relato:", complaint);
+  addClinicalSection("2. Demanda Trabalhada:", demand);
+  addClinicalSection("3. Descrição Detalhada da Sessão:", description);
+  addClinicalSection("4. Análise Técnica e Evolução:", analysis);
+
+  checkPageBreak(30);
+  currentY += 15;
+  doc.setDrawColor(55, 71, 79); doc.setLineWidth(0.3);
+  doc.line(70, currentY, 140, currentY);
   currentY += 5;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(216, 27, 96);
-  doc.text("Análise Técnica:", 15, currentY); currentY += 5;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9);
-  lines = doc.splitTextToSize(evo.analise || '', 180);
-  lines.forEach(l => { doc.text(l, 15, currentY, { align: "justify", maxWidth: 180 }); currentY += 4.5; });
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
 
   const dateFileStr = (session.dataHora || session.datetime || '').substring(0, 10);
-  doc.save(`Evolucao_${pName.replace(/\s+/g, '_')}_${dateFileStr}.pdf`);
+  const fileName = `Evolucao_${pName.replace(/\s+/g, '_')}_${dateFileStr}.pdf`;
+  doc.save(fileName);
 }
 
-function generateSessionPDF(sessionId) { generatePDF(sessionId); }
+function generateSessionPDF(sessionId) {
+  generatePDF(sessionId);
+}
 
+/* GERAR PDF INDIVIDUAL DE FALTA */
 async function generateFaultPDF(sessionId) {
   const session = await getById('sessoes', sessionId);
   if (!session) return;
-  const patient = await getById('pacientes', session.pacienteld || session.patientId);
+  const patient = await getById('pacientes', session.pacienteId || session.patientId);
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('p', 'mm', 'a4');
-  const pName = patient ? (patient.nome || patient.name) : '';
+
+  const pName = patient ? (patient.nome || patient.name) : 'Paciente Não Encontrado';
   const dtStr = session.dataHora || session.datetime;
-  const dateStr = new Date(dtStr).toLocaleDateString('pt-BR');
+  const dt = new Date(dtStr);
+  const dateStr = dt.toLocaleDateString('pt-BR');
+  const timeStr = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const mode = session.modalidade || session.mode || '';
+  const reason = session.motivoFalta || 'Motivo não informado.';
 
   let currentY = 25;
-  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
-  doc.text("REGISTRO DE FALTA", 105, currentY, { align: "center" }); currentY += 10;
-  doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(55, 71, 79);
-  doc.text(`Psicóloga: Daniele Sousa Santos - CRP 22/07398`, 20, currentY); currentY += 6;
-  doc.text(`Paciente: ${pName}`, 20, currentY); currentY += 6;
-  doc.text(`Data da falta: ${dateStr}`, 20, currentY); currentY += 6;
-  doc.text(`Motivo: ${session.motivoFalta || 'Não informado.'}`, 20, currentY);
 
-  doc.save(`Falta_${pName.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '-')}.pdf`);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(136, 14, 79);
+  doc.text("REGISTRO DE FALTA", 105, currentY, { align: "center" });
+  currentY += 10;
+
+  doc.setFontSize(11); doc.setTextColor(55, 71, 79);
+  doc.text("Dados da psicóloga", 20, currentY); currentY += 6;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+  doc.text("Daniele Sousa Santos", 20, currentY); currentY += 5;
+  doc.text("Psicóloga", 20, currentY); currentY += 5;
+  doc.text("CRP 22/07398", 20, currentY); currentY += 10;
+
+  doc.setFont("helvetica", "bold"); doc.setFontSize(11);
+  doc.text("Dados do paciente", 20, currentY); currentY += 6;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+  doc.text(`Nome completo: ${pName}`, 20, currentY); currentY += 5;
+  doc.text(`Data da falta: ${dateStr}`, 20, currentY); currentY += 5;
+  doc.text(`Horário agendado: ${timeStr}`, 20, currentY); currentY += 5;
+  doc.text(`Modalidade: ${mode}`, 20, currentY); currentY += 10;
+
+  doc.setFont("helvetica", "bold"); doc.setFontSize(11);
+  doc.text("Motivo da falta", 20, currentY); currentY += 6;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+
+  const lines = doc.splitTextToSize(reason, 170);
+  lines.forEach((line) => {
+    doc.text(line, 20, currentY, { align: "justify", maxWidth: 170 });
+    currentY += 5;
+  });
+  currentY += 5;
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Status: Falta", 20, currentY);
+
+  currentY += 35;
+  doc.setDrawColor(55, 71, 79); doc.setLineWidth(0.3);
+  doc.line(70, currentY, 140, currentY);
+  currentY += 5;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" });
+  currentY += 4;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
+
+  const fileName = `Registro_Falta_${pName.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '-')}.pdf`;
+  doc.save(fileName);
 }
 
-/* SESSÃO & EVOLUÇÃO FORMS */
+/* FINANCEIRO MENSAL */
+function initFinanceView() {
+  const now = new Date();
+  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  document.getElementById('finance-month-select').value = currentMonthStr;
+  renderFinancialReport();
+}
+
+async function renderFinancialReport() {
+  const selectedMonth = document.getElementById('finance-month-select').value;
+  if (!selectedMonth) return;
+
+  const sessions = await getAll('sessoes');
+  const patients = await getAll('pacientes');
+
+  const monthSessions = sessions.filter(s => (s.dataHora || s.datetime || '').startsWith(selectedMonth) && s.status !== 'falta');
+
+  let totalGross = 0;
+  let totalReceived = 0;
+  let totalPending = 0;
+
+  const tbody = document.getElementById('finance-table-body');
+  tbody.innerHTML = '';
+
+  monthSessions.forEach(s => {
+    const patient = patients.find(p => Number(p.id) === Number(s.pacienteId || s.patientId));
+    const val = parseFloat(s.valor || s.value) || 0;
+    totalGross += val;
+
+    const isPaid = (s.pagamentoStatus || s.paymentStatus) === 'pago';
+    if (isPaid) totalReceived += val;
+    else totalPending += val;
+
+    const dtStr = s.dataHora || s.datetime;
+    const dt = new Date(dtStr).toLocaleString('pt-BR');
+    const pName = patient ? (patient.nome || patient.name) : 'Paciente Não Encontrado';
+    const sStatus = s.status || '';
+    const pStatus = s.pagamentoStatus || s.paymentStatus || 'pendente';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${dt}</td>
+      <td><strong>${pName}</strong></td>
+      <td>${val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+      <td>${sStatus.toUpperCase()}</td>
+      <td><span class="badge ${pStatus === 'pago' ? 'badge-paid' : 'badge-pending'}">${pStatus.toUpperCase()}</span></td>
+      <td>
+        <button class="btn-secondary" onclick="togglePaymentStatusFromFinance(${s.id})">
+          Alternar para ${pStatus === 'pago' ? 'Pendente' : 'Pago'}
+        </button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('fin-total-gross').innerText = totalGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  document.getElementById('fin-total-received').innerText = totalReceived.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  document.getElementById('fin-total-pending').innerText = totalPending.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  const adimplenceRate = totalGross > 0 ? Math.round((totalReceived / totalGross) * 100) : 0;
+  document.getElementById('fin-adimplence').innerText = `${adimplenceRate}%`;
+}
+
+async function togglePaymentStatusFromFinance(sessionId) {
+  const session = await getById('sessoes', sessionId);
+  if (!session) return;
+  const currentP = session.pagamentoStatus || session.paymentStatus;
+  const newP = currentP === 'pago' ? 'pendente' : 'pago';
+  session.pagamentoStatus = newP;
+  session.paymentStatus = newP;
+  await saveItem('sessoes', session);
+  renderFinancialReport();
+  loadDashboardData();
+}
+
+/* RELATÓRIO DE FALTAS LOGIC */
+async function initFaultsView() {
+  const patients = await getAll('pacientes');
+  const select = document.getElementById('fault-report-patient');
+  select.innerHTML = '<option value="">Todos os Pacientes</option>';
+  patients.forEach(p => {
+    select.innerHTML += `<option value="${p.id}">${p.nome || p.name}</option>`;
+  });
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const firstDay = new Date(year, 0, 1);
+  const weekNum = Math.ceil((((now - firstDay) / 86400000) + firstDay.getDay() + 1) / 7);
+
+  document.getElementById('fault-report-week').value = `${year}-W${String(weekNum).padStart(2, '0')}`;
+  document.getElementById('fault-report-month').value = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  document.getElementById('fault-report-year').value = year;
+
+  renderFaultsReport();
+}
+
+function toggleFaultPeriodInputs() {
+  const type = document.getElementById('fault-report-period-type').value;
+  document.getElementById('group-fault-week').style.display = type === 'semana' ? 'block' : 'none';
+  document.getElementById('group-fault-month').style.display = type === 'mes' ? 'block' : 'none';
+  document.getElementById('group-fault-year').style.display = type === 'ano' ? 'block' : 'none';
+}
+
+async function getFilteredFaults() {
+  const periodType = document.getElementById('fault-report-period-type').value;
+  const patientId = document.getElementById('fault-report-patient').value;
+
+  const allSessions = await getAll('sessoes');
+  let faults = allSessions.filter(s => s.status === 'falta');
+
+  if (patientId) {
+    faults = faults.filter(s => Number(s.pacienteId || s.patientId) === Number(patientId));
+  }
+
+  if (periodType === 'semana') {
+    const weekVal = document.getElementById('fault-report-week').value;
+    if (weekVal) {
+      const [y, w] = weekVal.split('-W');
+      faults = faults.filter(s => {
+        const dt = new Date(s.dataHora || s.datetime);
+        const year = dt.getFullYear();
+        const firstDay = new Date(year, 0, 1);
+        const weekNum = Math.ceil((((dt - firstDay) / 86400000) + firstDay.getDay() + 1) / 7);
+        return String(year) === y && String(weekNum).padStart(2, '0') === w;
+      });
+    }
+  } else if (periodType === 'mes') {
+    const monthVal = document.getElementById('fault-report-month').value;
+    if (monthVal) {
+      faults = faults.filter(s => (s.dataHora || s.datetime || '').startsWith(monthVal));
+    }
+  } else if (periodType === 'ano') {
+    const yearVal = document.getElementById('fault-report-year').value;
+    if (yearVal) {
+      faults = faults.filter(s => (s.dataHora || s.datetime || '').startsWith(yearVal));
+    }
+  }
+
+  faults.sort((a, b) => new Date(a.dataHora || a.datetime) - new Date(b.dataHora || b.datetime));
+  return faults;
+}
+
+async function renderFaultsReport() {
+  const faults = await getFilteredFaults();
+  const patients = await getAll('pacientes');
+
+  const tbody = document.getElementById('faults-report-table-body');
+  tbody.innerHTML = '';
+
+  if (faults.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Nenhuma falta encontrada para este filtro.</td></tr>';
+    return;
+  }
+
+  faults.forEach(f => {
+    const patient = patients.find(p => Number(p.id) === Number(f.pacienteId || f.patientId));
+    const pName = patient ? (patient.nome || patient.name) : 'Paciente Não Encontrado';
+    const dt = new Date(f.dataHora || f.datetime);
+    const dateStr = dt.toLocaleDateString('pt-BR');
+    const timeStr = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const mode = f.modalidade || f.mode || '-';
+    const reason = f.motivoFalta || 'Não informado';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${dateStr}</td>
+      <td>${timeStr}</td>
+      <td><strong>${pName}</strong></td>
+      <td>${mode}</td>
+      <td>${reason}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+async function downloadFaultsReportPDF() {
+  const faults = await getFilteredFaults();
+  const patients = await getAll('pacientes');
+  const periodType = document.getElementById('fault-report-period-type').value;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  let currentY = 20;
+
+  doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(136, 14, 79);
+  doc.text(`RELATÓRIO ${periodType.toUpperCase()} DE FALTAS`, 105, currentY, { align: "center" });
+  currentY += 8;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
+  doc.text("Psicóloga: Daniele Sousa Santos", 20, currentY); currentY += 5;
+  doc.text("CRP: 22/07398", 20, currentY); currentY += 8;
+  doc.setDrawColor(216, 27, 96); doc.setLineWidth(0.4);
+  doc.line(20, currentY, 190, currentY); currentY += 10;
+
+  if (faults.length === 0) {
+    doc.text("Nenhuma falta registrada no período.", 20, currentY);
+  } else {
+    faults.forEach(f => {
+      const patient = patients.find(p => Number(p.id) === Number(f.pacienteId || f.patientId));
+      const pName = patient ? (patient.nome || patient.name) : 'Paciente Desconhecido';
+      const dt = new Date(f.dataHora || f.datetime);
+      const dateStr = dt.toLocaleDateString('pt-BR');
+      const timeStr = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const mode = f.modalidade || f.mode || '-';
+      const reason = f.motivoFalta || 'Não informado.';
+
+      if (currentY > 260) { doc.addPage(); currentY = 20; }
+      doc.setFont("helvetica", "bold");
+      doc.text(`Paciente: ${pName}`, 20, currentY); currentY += 5;
+      doc.setFont("helvetica", "normal");
+      doc.text(`Data: ${dateStr} Horário: ${timeStr} Modalidade: ${mode}`, 20, currentY); currentY += 5;
+
+      const lines = doc.splitTextToSize(`Motivo: ${reason}`, 170);
+      lines.forEach(line => {
+        doc.text(line, 20, currentY, { align: "justify", maxWidth: 170 });
+        currentY += 5;
+      });
+      currentY += 4;
+    });
+  }
+
+  if (currentY > 250) { doc.addPage(); currentY = 30; } else { currentY += 15; }
+  doc.setDrawColor(55, 71, 79); doc.setLineWidth(0.3);
+  doc.line(70, currentY, 140, currentY); currentY += 5;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(55, 71, 79);
+  doc.text("Daniele Sousa Santos", 105, currentY, { align: "center" }); currentY += 4;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(120, 144, 156);
+  doc.text("Psicóloga - CRP: 22/07398", 105, currentY, { align: "center" });
+
+  doc.save(`Relatorio_Faltas_${periodType}.pdf`);
+}
+
+/* CONTROLE DE EXIBIÇÃO DE CAMPOS NA SESSÃO */
 function toggleSessionStatusFields() {
   const status = document.getElementById('session-status').value;
   const valGroup = document.getElementById('group-session-value');
   const payGroup = document.getElementById('group-session-payment');
   const faultGroup = document.getElementById('group-session-fault-reason');
+
+  const valInput = document.getElementById('session-value');
+  const paySelect = document.getElementById('session-payment-status');
+  const faultInput = document.getElementById('session-fault-reason');
+
   if (status === 'falta') {
-    valGroup.style.display = 'none'; payGroup.style.display = 'none'; faultGroup.style.display = 'block';
+    valGroup.style.display = 'none';
+    payGroup.style.display = 'none';
+    faultGroup.style.display = 'block';
+    valInput.required = false;
+    paySelect.required = false;
+    faultInput.required = true;
   } else {
-    valGroup.style.display = 'block'; payGroup.style.display = 'block'; faultGroup.style.display = 'none';
+    valGroup.style.display = 'block';
+    payGroup.style.display = 'block';
+    faultGroup.style.display = 'none';
+    valInput.required = true;
+    paySelect.required = true;
+    faultInput.required = false;
   }
 }
 
+/* MODAIS DE SESSÃO, EVOLUÇÃO E RECIBOS */
 function openSessionModal(sessionId = null) {
   document.getElementById('form-session').reset();
   document.getElementById('session-id').value = '';
+
   if (sessionId) {
     getById('sessoes', sessionId).then(s => {
       document.getElementById('session-id').value = s.id;
@@ -1824,31 +2282,39 @@ async function handleSessionSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('session-id').value;
   const status = document.getElementById('session-status').value;
+
   const sessionData = {
-    pacienteld: Number(currentPatientId),
+    pacienteId: Number(currentPatientId),
+    patientId: Number(currentPatientId),
     dataHora: document.getElementById('session-datetime').value,
     modalidade: document.getElementById('session-mode').value,
     status: status
   };
-  
+
   if (status === 'falta') {
     sessionData.motivoFalta = document.getElementById('session-fault-reason').value;
-    sessionData.valor = 0; sessionData.pagamentoStatus = 'N/A';
+    sessionData.valor = 0;
+    sessionData.pagamentoStatus = 'N/A';
   } else {
-    sessionData.valor = parseFloat(document.getElementById('session-value').value) || 0;
+    sessionData.valor = parseFloat(document.getElementById('session-value').value);
     sessionData.pagamentoStatus = document.getElementById('session-payment-status').value;
   }
 
-  if (id) sessionData.id = Number(id);
+  if (id) {
+    const existing = await getById('sessoes', id);
+    sessionData.id = Number(id);
+    if (existing && existing.recibo) sessionData.recibo = existing.recibo;
+    if (existing && existing.receipt) sessionData.receipt = existing.receipt;
+  }
 
   try {
     await saveItem('sessoes', sessionData);
-    alert("✓ Sessão salva com sucesso.");
+    showToast(id ? "Sessão atualizada com sucesso." : "Sessão salva com sucesso.");
     closeModal('modal-session');
     loadProntuarioData(currentPatientId);
     loadDashboardData();
   } catch (err) {
-    alert("⚠ Erro ao salvar sessão.");
+    showToast("Não foi possível salvar. Tente novamente.", true);
   }
 }
 
@@ -1856,15 +2322,18 @@ function openEvolutionModal(sessionId, evolutionId = null) {
   document.getElementById('form-evolution').reset();
   document.getElementById('evolution-id').value = '';
   document.getElementById('evolution-session-id').value = sessionId;
-  
+
   if (evolutionId) {
     getById('evolucoes', evolutionId).then(e => {
       if (e) {
         document.getElementById('evolution-id').value = e.id;
-        document.getElementById('evo-complaint').value = e.queixa || '';
-        document.getElementById('evo-demand').value = e.demanda || '';
-        document.getElementById('evo-description').value = e.descricao || '';
-        document.getElementById('evo-analysis').value = e.analise || '';
+        document.getElementById('evo-objective').value = e.objetivo || e.objective || '';
+        document.getElementById('evo-complaint').value = e.queixa || e.complaint || '';
+        document.getElementById('evo-demand').value = e.demanda || e.demand || '';
+        document.getElementById('evo-description').value = e.descricao || e.description || '';
+        document.getElementById('evo-analysis').value = e.analise || e.analysis || '';
+        document.getElementById('evo-planning').value = e.planejamento || e.planning || '';
+        document.getElementById('evo-procedures').value = e.procedimentos || e.procedures || '';
         openModal('modal-evolution');
       }
     });
@@ -1877,141 +2346,47 @@ async function handleEvolutionSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('evolution-id').value;
   const sessionId = document.getElementById('evolution-session-id').value;
+
   const evoData = {
-    sessaold: Number(sessionId),
-    pacienteld: Number(currentPatientId),
+    sessaoId: Number(sessionId),
+    pacienteId: Number(currentPatientId),
+    objetivo: document.getElementById('evo-objective').value,
     queixa: document.getElementById('evo-complaint').value,
     demanda: document.getElementById('evo-demand').value,
     descricao: document.getElementById('evo-description').value,
-    analise: document.getElementById('evo-analysis').value
+    analise: document.getElementById('evo-analysis').value,
+    planejamento: document.getElementById('evo-planning').value,
+    procedimentos: document.getElementById('evo-procedures').value
   };
+
   if (id) evoData.id = Number(id);
 
   try {
     await saveItem('evolucoes', evoData);
-    alert("✓ Evolução salva com sucesso.");
+    showToast("Evolução salva com sucesso.");
     closeModal('modal-evolution');
     loadProntuarioData(currentPatientId);
   } catch (err) {
-    alert("⚠ Erro ao salvar evolução.");
+    showToast("Não foi possível salvar. Tente novamente.", true);
   }
-}
-
-/* FINANCEIRO & FALTAS VIEWS */
-function initFinanceView() {
-  const now = new Date();
-  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  document.getElementById('finance-month-select').value = currentMonthStr;
-  renderFinancialReport();
-}
-
-async function renderFinancialReport() {
-  const selectedMonth = document.getElementById('finance-month-select').value;
-  if (!selectedMonth) return;
-  const sessions = await getAll('sessoes');
-  const patients = await getAll('pacientes');
-  const monthSessions = sessions.filter(s => (s.dataHora || s.datetime || '').startsWith(selectedMonth) && s.status !== 'falta');
-
-  let totalGross = 0, totalReceived = 0, totalPending = 0;
-  const tbody = document.getElementById('finance-table-body');
-  tbody.innerHTML = '';
-
-  monthSessions.forEach(s => {
-    const patient = patients.find(p => Number(p.id) === Number(s.pacienteld || s.patientId));
-    const val = parseFloat(s.valor || s.value) || 0;
-    totalGross += val;
-    const isPaid = (s.pagamentoStatus || s.paymentStatus) === 'pago';
-    if (isPaid) totalReceived += val; else totalPending += val;
-
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${new Date(s.dataHora).toLocaleString('pt-BR')}</td>
-      <td><strong>${patient ? (patient.nome || patient.name) : 'Paciente'}</strong></td>
-      <td>${val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-      <td>${s.status.toUpperCase()}</td>
-      <td><span class="badge ${isPaid ? 'badge-paid' : 'badge-pending'}">${isPaid ? 'PAGO' : 'PENDENTE'}</span></td>
-      <td><button class="btn-secondary" onclick="togglePaymentStatusFromFinance(${s.id})">Alternar Status</button></td>`;
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById('fin-total-gross').innerText = totalGross.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  document.getElementById('fin-total-received').innerText = totalReceived.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  document.getElementById('fin-total-pending').innerText = totalPending.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  const rate = totalGross > 0 ? Math.round((totalReceived / totalGross) * 100) : 0;
-  document.getElementById('fin-adimplence').innerText = `${rate}%`;
-}
-
-async function togglePaymentStatusFromFinance(sessionId) {
-  const session = await getById('sessoes', sessionId);
-  if (!session) return;
-  session.pagamentoStatus = session.pagamentoStatus === 'pago' ? 'pendente' : 'pago';
-  await saveItem('sessoes', session);
-  renderFinancialReport();
-  loadDashboardData();
-}
-
-async function initFaultsView() {
-  const patients = await getAll('pacientes');
-  const select = document.getElementById('fault-report-patient');
-  select.innerHTML = '<option value="">Todos os Pacientes</option>';
-  patients.forEach(p => { select.innerHTML += `<option value="${p.id}">${p.nome || p.name}</option>`; });
-  renderFaultsReport();
-}
-
-function toggleFaultPeriodInputs() {
-  const type = document.getElementById('fault-report-period-type').value;
-  document.getElementById('group-fault-week').style.display = type === 'semana' ? 'block' : 'none';
-  document.getElementById('group-fault-month').style.display = type === 'mes' ? 'block' : 'none';
-  document.getElementById('group-fault-year').style.display = type === 'ano' ? 'block' : 'none';
-}
-
-async function renderFaultsReport() {
-  const allSessions = await getAll('sessoes');
-  const patients = await getAll('pacientes');
-  const faults = allSessions.filter(s => s.status === 'falta');
-  const tbody = document.getElementById('faults-report-table-body');
-  tbody.innerHTML = '';
-
-  faults.forEach(f => {
-    const patient = patients.find(p => Number(p.id) === Number(f.pacienteld || f.patientId));
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${new Date(f.dataHora).toLocaleDateString('pt-BR')}</td>
-      <td>${new Date(f.dataHora).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</td>
-      <td><strong>${patient ? (patient.nome || patient.name) : 'Paciente'}</strong></td>
-      <td>${f.modalidade}</td>
-      <td>${f.motivoFalta || 'Não informado'}</td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-async function renderPatientFaultsHistory() {
-  if (!currentPatientId) return;
-  const allSessions = await getAll('sessoes');
-  const faults = allSessions.filter(s => Number(s.pacienteld || s.patientId) === Number(currentPatientId) && s.status === 'falta');
-  const tbody = document.getElementById('patient-faults-table-body');
-  tbody.innerHTML = '';
-
-  if (faults.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Nenhuma falta registrada.</td></tr>';
-    return;
-  }
-
-  faults.forEach(f => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${new Date(f.dataHora).toLocaleDateString('pt-BR')}</td>
-      <td>${new Date(f.dataHora).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</td>
-      <td>${f.modalidade}</td>
-      <td>${f.motivoFalta || 'Não informado'}</td>
-      <td><button class="btn-pdf" onclick="generateFaultPDF(${f.id})">Gerar PDF</button></td>`;
-    tbody.appendChild(tr);
-  });
 }
 
 async function openReceiptModal(sessionId) {
   document.getElementById('form-receipt').reset();
   document.getElementById('receipt-session-id').value = sessionId;
+  const statusDiv = document.getElementById('receipt-current-status');
+  const btnRemove = document.getElementById('btn-remove-receipt');
+
+  const session = await getById('sessoes', sessionId);
+  const rec = session ? (session.recibo || session.receipt) : null;
+
+  if (rec) {
+    statusDiv.innerHTML = `<p style="color: var(--success-color);">Recibo Anexado: <strong>${rec.nome || rec.name}</strong></p>`;
+    btnRemove.style.display = 'inline-block';
+  } else {
+    statusDiv.innerHTML = '<p style="color: var(--text-muted);">Nenhum recibo anexado.</p>';
+    btnRemove.style.display = 'none';
+  }
   openModal('modal-receipt');
 }
 
@@ -2019,15 +2394,21 @@ async function handleReceiptSubmit(e) {
   e.preventDefault();
   const sessionId = document.getElementById('receipt-session-id').value;
   const fileInput = document.getElementById('receipt-file');
+
   if (fileInput.files.length > 0) {
     const file = fileInput.files[0];
     const reader = new FileReader();
     reader.onload = async function(event) {
-      const session = await getById('sessoes', sessionId);
-      session.recibo = { nome: file.name, tipo: file.type, conteudo: event.target.result };
-      await saveItem('sessoes', session);
-      closeModal('modal-receipt');
-      loadProntuarioData(currentPatientId);
+      try {
+        const session = await getById('sessoes', sessionId);
+        session.recibo = { nome: file.name, tipo: file.type, conteudo: event.target.result };
+        await saveItem('sessoes', session);
+        showToast("Comprovante salvo com sucesso.");
+        closeModal('modal-receipt');
+        loadProntuarioData(currentPatientId);
+      } catch (err) {
+        showToast("Não foi possível salvar. Tente novamente.", true);
+      }
     };
     reader.readAsDataURL(file);
   } else {
@@ -2040,30 +2421,54 @@ async function removeReceipt() {
   const session = await getById('sessoes', sessionId);
   if (session) {
     delete session.recibo;
-    await saveItem('sessoes', session);
-    closeModal('modal-receipt');
-    loadProntuarioData(currentPatientId);
+    delete session.receipt;
+    try {
+      await saveItem('sessoes', session);
+      showToast("Comprovante removido.");
+      closeModal('modal-receipt');
+      loadProntuarioData(currentPatientId);
+    } catch (err) {
+      showToast("Não foi possível salvar. Tente novamente.", true);
+    }
   }
 }
 
-function openMonthlySummaryModal() { openModal('modal-monthly-summary'); }
+function openMonthlySummaryModal() {
+  document.getElementById('summary-month-select').value = '';
+  document.getElementById('summary-results').innerHTML = '<p style="color: var(--text-muted);">Escolha um mês para visualizar o consolidado do paciente.</p>';
+  openModal('modal-monthly-summary');
+}
+
 async function generateMonthlySummary() {
   const monthVal = document.getElementById('summary-month-select').value;
   if (!monthVal || !currentPatientId) return;
+
   const allSessions = await getAll('sessoes');
-  const patientSessions = allSessions.filter(s => Number(s.pacienteld || s.patientId) === Number(currentPatientId) && (s.dataHora || '').startsWith(monthVal));
-  
-  let realizadas = 0, faltas = 0, valorTotal = 0;
+  const patientSessions = allSessions.filter(s => Number(s.pacienteId || s.patientId) === Number(currentPatientId) && (s.dataHora || s.datetime || '').startsWith(monthVal));
+
+  let totalSessions = patientSessions.length;
+  let realizadas = 0, canceladas = 0, faltas = 0;
+  let valorTotal = 0, valorPago = 0;
+
   patientSessions.forEach(s => {
     if (s.status === 'realizada') realizadas++;
+    if (s.status === 'cancelada') canceladas++;
     if (s.status === 'falta') faltas++;
-    valorTotal += (parseFloat(s.valor) || 0);
+    if (s.status !== 'falta') {
+      const v = parseFloat(s.valor || s.value) || 0;
+      valorTotal += v;
+      if ((s.pagamentoStatus || s.paymentStatus) === 'pago') valorPago += v;
+    }
   });
 
   document.getElementById('summary-results').innerHTML = `
-    <p><strong>Total de Sessões no Mês:</strong> ${patientSessions.length}</p>
-    <p><strong>Realizadas:</strong> ${realizadas} | <strong>Faltas:</strong> ${faltas}</p>
-    <p><strong>Faturado:</strong> ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>`;
+    <p><strong>Total de Sessões no Mês:</strong> ${totalSessions}</p>
+    <p><strong>Realizadas:</strong> ${realizadas} | <strong>Canceladas:</strong> ${canceladas} | <strong>Faltas:</strong> ${faltas}</p>
+    <hr style="margin: 10px 0; border-color: var(--light-pink);">
+    <p><strong>Faturado:</strong> ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+    <p><strong>Pago:</strong> ${valorPago.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+    <p><strong>Pendente:</strong> ${(valorTotal - valorPago).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+  `;
 }
 </script>
 </body>
